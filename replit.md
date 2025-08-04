@@ -43,7 +43,7 @@ Preferred communication style: Simple, everyday language.
 - **Waveform Visualization**: Animated CSS-based waveform display component
 
 ### UI/UX Design Patterns
-- **Design System**: Dark theme with purple/blue accent colors
+- **Design System**: Dark theme with vibrant orange and teal accent colors
 - **Component Architecture**: Modular component structure with consistent props interfaces
 - **Responsive Design**: Mobile-first approach with responsive breakpoints
 - **Accessibility**: ARIA labels and keyboard navigation support

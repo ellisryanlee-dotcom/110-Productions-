@@ -9,14 +9,14 @@ export default function Header() {
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center space-x-4">
             <Link href="/" className="flex items-center space-x-2" data-testid="link-home">
-              <Music className="text-purple-accent text-2xl" />
+              <Music className="text-orange-accent text-2xl" />
               <span className="text-xl font-bold">MusicShare</span>
             </Link>
           </div>
           
           <div className="hidden md:flex items-center space-x-6">
             <nav className="flex space-x-6">
-              <Link href="/" className="text-warm-white hover:text-purple-accent transition-colors" data-testid="link-my-music">
+              <Link href="/" className="text-warm-white hover:text-orange-accent transition-colors" data-testid="link-my-music">
                 My Music
               </Link>
               <Link href="/upload" className="text-gray-text hover:text-warm-white transition-colors" data-testid="link-upload">
@@ -27,7 +27,7 @@ export default function Header() {
           
           <div className="flex items-center space-x-4">
             <Link href="/upload">
-              <Button className="bg-purple-accent hover:bg-purple-600" data-testid="button-upload-track">
+              <Button className="bg-orange-accent hover:bg-orange-600" data-testid="button-upload-track">
                 <Plus className="w-4 h-4 mr-2" />
                 Upload Track
               </Button>

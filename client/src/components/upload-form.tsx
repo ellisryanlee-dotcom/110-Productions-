@@ -155,7 +155,7 @@ export default function UploadForm() {
           {!selectedFile ? (
             <div
               className={`border-2 border-dashed rounded-xl p-12 text-center transition-colors cursor-pointer ${
-                dragActive ? "border-purple-accent bg-purple-accent/5" : "border-gray-border hover:border-purple-accent"
+                dragActive ? "border-orange-accent bg-orange-accent/5" : "border-gray-border hover:border-orange-accent"
               }`}
               onDragEnter={handleDrag}
               onDragLeave={handleDrag}
@@ -164,10 +164,10 @@ export default function UploadForm() {
               onClick={() => document.getElementById("file-input")?.click()}
               data-testid="file-drop-zone"
             >
-              <CloudUpload className="w-12 h-12 text-purple-accent mx-auto mb-4" />
+              <CloudUpload className="w-12 h-12 text-orange-accent mx-auto mb-4" />
               <h3 className="text-xl font-semibold mb-2">Drag & Drop Your Music</h3>
               <p className="text-gray-text mb-4">Support for MP3, WAV, FLAC files up to 50MB</p>
-              <Button className="bg-purple-accent hover:bg-purple-600" data-testid="button-choose-files">
+              <Button className="bg-orange-accent hover:bg-orange-600" data-testid="button-choose-files">
                 Choose Files
               </Button>
               <input
@@ -182,7 +182,7 @@ export default function UploadForm() {
           ) : (
             <div className="flex items-center justify-between p-4 bg-dark-card rounded-lg border border-gray-border">
               <div className="flex items-center space-x-3">
-                <Music className="w-8 h-8 text-purple-accent" />
+                <Music className="w-8 h-8 text-orange-accent" />
                 <div>
                   <p className="font-medium" data-testid="text-selected-file">{selectedFile.name}</p>
                   <p className="text-sm text-gray-text">
@@ -216,7 +216,7 @@ export default function UploadForm() {
                   <FormControl>
                     <Input 
                       placeholder="Enter track title" 
-                      className="bg-dark-elevated border-gray-border focus:border-purple-accent"
+                      className="bg-dark-elevated border-gray-border focus:border-orange-accent"
                       data-testid="input-title"
                       {...field} 
                     />
@@ -235,7 +235,7 @@ export default function UploadForm() {
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger 
-                        className="bg-dark-elevated border-gray-border focus:border-purple-accent"
+                        className="bg-dark-elevated border-gray-border focus:border-orange-accent"
                         data-testid="select-genre"
                       >
                         <SelectValue placeholder="Select a genre" />
@@ -265,7 +265,7 @@ export default function UploadForm() {
                 <FormControl>
                   <Textarea 
                     placeholder="Describe your track..." 
-                    className="bg-dark-elevated border-gray-border focus:border-purple-accent min-h-[100px]"
+                    className="bg-dark-elevated border-gray-border focus:border-orange-accent min-h-[100px]"
                     data-testid="textarea-description"
                     {...field} 
                   />
@@ -287,7 +287,7 @@ export default function UploadForm() {
             <Button 
               type="submit" 
               disabled={uploadMutation.isPending || !selectedFile}
-              className="bg-purple-accent hover:bg-purple-600"
+              className="bg-orange-accent hover:bg-orange-600"
               data-testid="button-upload"
             >
               {uploadMutation.isPending ? "Uploading..." : "Upload Track"}

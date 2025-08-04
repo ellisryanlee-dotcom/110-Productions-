@@ -74,7 +74,7 @@ export default function TrackCard({ track }: TrackCardProps) {
         <div className="mb-4">
           <Waveform 
             isPlaying={isCurrentTrack && isPlaying} 
-            accentColor="purple" 
+            accentColor="orange" 
           />
         </div>
         
@@ -83,7 +83,7 @@ export default function TrackCard({ track }: TrackCardProps) {
             <Button
               size="icon"
               onClick={handlePlay}
-              className="bg-purple-accent hover:bg-purple-600 w-10 h-10 rounded-full"
+              className="bg-orange-accent hover:bg-orange-600 w-10 h-10 rounded-full"
               data-testid={`button-play-track-${track.id}`}
             >
               <Play className="w-4 h-4" />

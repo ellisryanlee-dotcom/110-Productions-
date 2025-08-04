@@ -27,7 +27,7 @@ export default function Home() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin w-8 h-8 border-2 border-purple-accent border-t-transparent rounded-full mx-auto mb-4"></div>
+          <div className="animate-spin w-8 h-8 border-2 border-orange-accent border-t-transparent rounded-full mx-auto mb-4"></div>
           <p className="text-gray-text">Loading your music...</p>
         </div>
       </div>
@@ -73,15 +73,15 @@ export default function Home() {
               
               <div className="flex flex-wrap items-center gap-4 mb-4 text-gray-text">
                 <div className="flex items-center space-x-1">
-                  <PlayCircle className="w-4 h-4 text-purple-accent" />
+                  <PlayCircle className="w-4 h-4 text-orange-accent" />
                   <span data-testid="text-total-plays">{artist.totalPlays?.toLocaleString()} plays</span>
                 </div>
                 <div className="flex items-center space-x-1">
-                  <Users className="w-4 h-4 text-blue-accent" />
+                  <Users className="w-4 h-4 text-teal-accent" />
                   <span data-testid="text-followers">{artist.followers?.toLocaleString()} followers</span>
                 </div>
                 <div className="flex items-center space-x-1">
-                  <Music className="w-4 h-4 text-purple-accent" />
+                  <Music className="w-4 h-4 text-orange-accent" />
                   <span data-testid="text-track-count">{artist.tracks?.length || 0} tracks</span>
                 </div>
               </div>
@@ -89,7 +89,7 @@ export default function Home() {
               <div className="flex flex-wrap gap-3">
                 <Button 
                   onClick={handlePlayAll}
-                  className="bg-purple-accent hover:bg-purple-600" 
+                  className="bg-orange-accent hover:bg-orange-600" 
                   data-testid="button-play-all"
                 >
                   <Play className="w-4 h-4 mr-2" />
@@ -113,7 +113,7 @@ export default function Home() {
       <section className="mb-12">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold">Recent Uploads</h2>
-          <Button variant="ghost" className="text-purple-accent hover:text-purple-400">
+          <Button variant="ghost" className="text-orange-accent hover:text-orange-400">
             View All
           </Button>
         </div>
@@ -139,7 +139,7 @@ export default function Home() {
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold">All Tracks</h2>
           <div className="flex items-center space-x-4">
-            <select className="bg-dark-card border border-gray-border rounded-lg px-4 py-2 text-warm-white focus:outline-none focus:border-purple-accent">
+            <select className="bg-dark-card border border-gray-border rounded-lg px-4 py-2 text-warm-white focus:outline-none focus:border-orange-accent">
               <option>Recent</option>
               <option>Most Played</option>
               <option>Alphabetical</option>

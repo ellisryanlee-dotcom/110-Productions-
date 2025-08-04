@@ -91,7 +91,7 @@ export default function PlayerBar() {
               <Button 
                 size="icon" 
                 onClick={togglePlay}
-                className="bg-purple-accent hover:bg-purple-600 w-12 h-12 rounded-full"
+                className="bg-orange-accent hover:bg-orange-600 w-12 h-12 rounded-full"
                 data-testid="button-play-pause"
               >
                 {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}

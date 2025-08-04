@@ -2,14 +2,14 @@ import { useEffect, useRef } from "react";
 
 interface WaveformProps {
   isPlaying?: boolean;
-  accentColor?: "purple" | "blue";
+  accentColor?: "orange" | "teal";
   barCount?: number;
   className?: string;
 }
 
 export default function Waveform({ 
   isPlaying = false, 
-  accentColor = "purple", 
+  accentColor = "orange", 
   barCount = 15,
   className = ""
 }: WaveformProps) {
@@ -34,7 +34,7 @@ export default function Waveform({
     }
   }, [isPlaying]);
 
-  const colorClass = accentColor === "purple" ? "bg-purple-accent" : "bg-blue-accent";
+  const colorClass = accentColor === "orange" ? "bg-orange-accent" : "bg-teal-accent";
 
   return (
     <div 
