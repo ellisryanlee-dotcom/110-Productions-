@@ -1,5 +1,21 @@
-import { type Artist, type InsertArtist, type Track, type InsertTrack, type TrackWithArtist, type ArtistWithTracks } from "@shared/schema";
+import { 
+  type Artist, 
+  type InsertArtist, 
+  type Track, 
+  type InsertTrack, 
+  type TrackWithArtist, 
+  type ArtistWithTracks,
+  type Comment,
+  type InsertComment,
+  type CommentWithArtist,
+  type Like,
+  type InsertLike,
+  type TrackWithDetails
+} from "@shared/schema";
 import { randomUUID } from "crypto";
+import { db } from "./db";
+import { artists, tracks, comments, likes } from "@shared/schema";
+import { eq, desc, sql, and } from "drizzle-orm";
 
 export interface IStorage {
   // Artist operations
@@ -11,233 +27,335 @@ export interface IStorage {
   // Track operations
   getTrack(id: string): Promise<Track | undefined>;
   getTrackWithArtist(id: string): Promise<TrackWithArtist | undefined>;
+  getTrackWithDetails(id: string, artistId?: string): Promise<TrackWithDetails | undefined>;
   createTrack(track: InsertTrack): Promise<Track>;
   updateTrack(id: string, updates: Partial<Track>): Promise<Track | undefined>;
   deleteTrack(id: string): Promise<boolean>;
   getTracksByArtist(artistId: string): Promise<Track[]>;
   getAllTracksWithArtists(): Promise<TrackWithArtist[]>;
   incrementTrackPlays(id: string): Promise<void>;
-  toggleTrackLike(id: string): Promise<void>;
+
+  // Like operations
+  toggleLike(trackId: string, artistId: string): Promise<{ isLiked: boolean; likesCount: number }>;
+  getLikesCount(trackId: string): Promise<number>;
+  isTrackLiked(trackId: string, artistId: string): Promise<boolean>;
+
+  // Comment operations
+  createComment(comment: InsertComment): Promise<Comment>;
+  getCommentsByTrack(trackId: string): Promise<CommentWithArtist[]>;
+  deleteComment(id: string, artistId: string): Promise<boolean>;
 
   // Featured/Recent tracks
   getRecentTracks(limit?: number): Promise<TrackWithArtist[]>;
   getPopularTracks(limit?: number): Promise<TrackWithArtist[]>;
 }
 
-export class MemStorage implements IStorage {
-  private artists: Map<string, Artist>;
-  private tracks: Map<string, Track>;
+export class DatabaseStorage implements IStorage {
+  private seedInitialized = false;
 
-  constructor() {
-    this.artists = new Map();
-    this.tracks = new Map();
-    this.seedData();
+  private async ensureSeeded() {
+    if (!this.seedInitialized) {
+      await this.seedData();
+      this.seedInitialized = true;
+    }
   }
 
-  private seedData() {
-    // Create a sample artist
-    const sampleArtist: Artist = {
-      id: "artist-1",
-      name: "Alex Rivera",
-      username: "alexrivera",
-      bio: "Electronic music producer and DJ creating immersive soundscapes",
-      genre: "Electronic",
-      avatar: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=400&fit=crop",
-      coverImage: "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=1920&h=600&fit=crop",
-      followers: 8200,
-      totalPlays: 127500,
-      createdAt: new Date(),
-    };
-    this.artists.set(sampleArtist.id, sampleArtist);
+  private async seedData() {
+    try {
+      // Check if sample artist already exists
+      const existingArtist = await db.select().from(artists).where(eq(artists.username, "alexrivera")).limit(1);
+      
+      if (existingArtist.length === 0) {
+        // Create sample artist
+        const [sampleArtist] = await db.insert(artists).values({
+          name: "Alex Rivera",
+          username: "alexrivera", 
+          bio: "Electronic music producer and DJ creating immersive soundscapes",
+          genre: "Electronic",
+          avatar: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=400&fit=crop",
+          coverImage: "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=1920&h=600&fit=crop",
+          followers: 8200,
+          totalPlays: 127500,
+        }).returning();
 
-    // Create sample tracks
-    const sampleTracks: Track[] = [
-      {
-        id: "track-1",
-        title: "Neon Dreams",
-        description: "A journey through digital landscapes with ethereal synths and driving beats.",
-        genre: "Electronic",
-        duration: 261, // 4:21
-        filename: "neon-dreams.mp3",
-        fileUrl: "/uploads/neon-dreams.mp3",
-        artwork: "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=400&h=400&fit=crop",
-        plays: 12300,
-        likes: 456,
-        artistId: "artist-1",
-        isPublic: true,
-        createdAt: new Date(Date.now() - 86400000), // 1 day ago
-        updatedAt: new Date(Date.now() - 86400000),
-      },
-      {
-        id: "track-2",
-        title: "Synthwave City",
-        description: "Retro-futuristic vibes with analog warmth and nostalgic melodies.",
-        genre: "Synthwave",
-        duration: 312, // 5:12
-        filename: "synthwave-city.mp3",
-        fileUrl: "/uploads/synthwave-city.mp3",
-        artwork: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=400&fit=crop",
-        plays: 8700,
-        likes: 234,
-        artistId: "artist-1",
-        isPublic: true,
-        createdAt: new Date(Date.now() - 172800000), // 2 days ago
-        updatedAt: new Date(Date.now() - 172800000),
-      },
-      {
-        id: "track-3",
-        title: "Digital Horizon",
-        description: "Ambient textures meet rhythmic progression in this atmospheric piece.",
-        genre: "Ambient",
-        duration: 393, // 6:33
-        filename: "digital-horizon.mp3",
-        fileUrl: "/uploads/digital-horizon.mp3",
-        artwork: "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=400&h=400&fit=crop",
-        plays: 15100,
-        likes: 678,
-        artistId: "artist-1",
-        isPublic: true,
-        createdAt: new Date(Date.now() - 259200000), // 3 days ago
-        updatedAt: new Date(Date.now() - 259200000),
-      },
-    ];
-
-    sampleTracks.forEach(track => this.tracks.set(track.id, track));
+        // Create sample tracks
+        await db.insert(tracks).values([
+          {
+            title: "Neon Dreams",
+            description: "A journey through digital landscapes with ethereal synths and driving beats.",
+            genre: "Electronic",
+            duration: 261,
+            filename: "neon-dreams.mp3",
+            fileUrl: "/uploads/neon-dreams.mp3",
+            artwork: "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=400&h=400&fit=crop",
+            plays: 12300,
+            likes: 456,
+            artistId: sampleArtist.id,
+            isPublic: true,
+          },
+          {
+            title: "Synthwave City", 
+            description: "Retro-futuristic vibes with analog warmth and nostalgic melodies.",
+            genre: "Synthwave",
+            duration: 312,
+            filename: "synthwave-city.mp3",
+            fileUrl: "/uploads/synthwave-city.mp3",
+            artwork: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=400&fit=crop",
+            plays: 8700,
+            likes: 234,
+            artistId: sampleArtist.id,
+            isPublic: true,
+          },
+          {
+            title: "Digital Horizon",
+            description: "Ambient textures meet rhythmic progression in this atmospheric piece.",
+            genre: "Ambient", 
+            duration: 393,
+            filename: "digital-horizon.mp3",
+            fileUrl: "/uploads/digital-horizon.mp3",
+            artwork: "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=400&h=400&fit=crop",
+            plays: 15100,
+            likes: 678,
+            artistId: sampleArtist.id,
+            isPublic: true,
+          },
+        ]);
+      }
+    } catch (error) {
+      console.log("Sample data already exists or error seeding:", error);
+    }
   }
 
   async getArtist(id: string): Promise<Artist | undefined> {
-    return this.artists.get(id);
+    await this.ensureSeeded();
+    const [artist] = await db.select().from(artists).where(eq(artists.id, id)).limit(1);
+    return artist || undefined;
   }
 
   async getArtistByUsername(username: string): Promise<Artist | undefined> {
-    return Array.from(this.artists.values()).find(artist => artist.username === username);
+    const [artist] = await db.select().from(artists).where(eq(artists.username, username)).limit(1);
+    return artist || undefined;
   }
 
   async createArtist(insertArtist: InsertArtist): Promise<Artist> {
-    const id = randomUUID();
-    const artist: Artist = {
-      ...insertArtist,
-      id,
-      followers: 0,
-      totalPlays: 0,
-      createdAt: new Date(),
-      bio: insertArtist.bio || null,
-      genre: insertArtist.genre || null,
-      avatar: insertArtist.avatar || null,
-      coverImage: insertArtist.coverImage || null,
-    };
-    this.artists.set(id, artist);
+    const [artist] = await db.insert(artists).values(insertArtist).returning();
     return artist;
   }
 
   async updateArtist(id: string, updates: Partial<Artist>): Promise<Artist | undefined> {
-    const existing = this.artists.get(id);
-    if (!existing) return undefined;
-    
-    const updated = { ...existing, ...updates };
-    this.artists.set(id, updated);
-    return updated;
+    const [artist] = await db.update(artists)
+      .set(updates)
+      .where(eq(artists.id, id))
+      .returning();
+    return artist || undefined;
   }
 
   async getTrack(id: string): Promise<Track | undefined> {
-    return this.tracks.get(id);
+    const [track] = await db.select().from(tracks).where(eq(tracks.id, id)).limit(1);
+    return track || undefined;
   }
 
   async getTrackWithArtist(id: string): Promise<TrackWithArtist | undefined> {
-    const track = this.tracks.get(id);
-    if (!track) return undefined;
+    const result = await db
+      .select()
+      .from(tracks)
+      .innerJoin(artists, eq(tracks.artistId, artists.id))
+      .where(eq(tracks.id, id))
+      .limit(1);
     
-    const artist = this.artists.get(track.artistId);
-    if (!artist) return undefined;
+    if (!result[0]) return undefined;
     
-    return { ...track, artist };
+    return {
+      ...result[0].tracks,
+      artist: result[0].artists,
+    };
+  }
+
+  async getTrackWithDetails(id: string, artistId?: string): Promise<TrackWithDetails | undefined> {
+    const result = await db
+      .select({
+        track: tracks,
+        artist: artists,
+        likesCount: sql<number>`count(distinct ${likes.id})`.as('likesCount'),
+        commentsCount: sql<number>`count(distinct ${comments.id})`.as('commentsCount'),
+      })
+      .from(tracks)
+      .innerJoin(artists, eq(tracks.artistId, artists.id))
+      .leftJoin(likes, eq(likes.trackId, tracks.id))
+      .leftJoin(comments, eq(comments.trackId, tracks.id))
+      .where(eq(tracks.id, id))
+      .groupBy(tracks.id, artists.id)
+      .limit(1);
+
+    if (!result[0]) return undefined;
+
+    let isLiked = false;
+    if (artistId) {
+      isLiked = await this.isTrackLiked(id, artistId);
+    }
+
+    return {
+      ...result[0].track,
+      artist: result[0].artist,
+      likesCount: Number(result[0].likesCount) || 0,
+      commentsCount: Number(result[0].commentsCount) || 0,
+      isLiked,
+    };
   }
 
   async createTrack(insertTrack: InsertTrack): Promise<Track> {
-    const id = randomUUID();
-    const track: Track = {
-      ...insertTrack,
-      id,
-      plays: 0,
-      likes: 0,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      description: insertTrack.description || null,
-      genre: insertTrack.genre || null,
-      duration: insertTrack.duration || null,
-      artwork: insertTrack.artwork || null,
-    };
-    this.tracks.set(id, track);
+    const [track] = await db.insert(tracks).values(insertTrack).returning();
     return track;
   }
 
   async updateTrack(id: string, updates: Partial<Track>): Promise<Track | undefined> {
-    const existing = this.tracks.get(id);
-    if (!existing) return undefined;
-    
-    const updated = { ...existing, ...updates, updatedAt: new Date() };
-    this.tracks.set(id, updated);
-    return updated;
+    const [track] = await db.update(tracks)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(tracks.id, id))
+      .returning();
+    return track || undefined;
   }
 
   async deleteTrack(id: string): Promise<boolean> {
-    return this.tracks.delete(id);
+    const result = await db.delete(tracks).where(eq(tracks.id, id));
+    return (result.rowCount || 0) > 0;
   }
 
   async getTracksByArtist(artistId: string): Promise<Track[]> {
-    return Array.from(this.tracks.values())
-      .filter(track => track.artistId === artistId)
-      .sort((a, b) => (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0));
+    const result = await db
+      .select()
+      .from(tracks)
+      .where(eq(tracks.artistId, artistId))
+      .orderBy(desc(tracks.createdAt));
+    return result;
   }
 
   async getAllTracksWithArtists(): Promise<TrackWithArtist[]> {
-    const tracks = Array.from(this.tracks.values());
-    const tracksWithArtists: TrackWithArtist[] = [];
+    await this.ensureSeeded();
+    const result = await db
+      .select()
+      .from(tracks)
+      .innerJoin(artists, eq(tracks.artistId, artists.id))
+      .orderBy(desc(tracks.createdAt));
     
-    for (const track of tracks) {
-      const artist = this.artists.get(track.artistId);
-      if (artist) {
-        tracksWithArtists.push({ ...track, artist });
-      }
-    }
-    
-    return tracksWithArtists.sort((a, b) => (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0));
+    return result.map(row => ({
+      ...row.tracks,
+      artist: row.artists,
+    }));
   }
 
   async incrementTrackPlays(id: string): Promise<void> {
-    const track = this.tracks.get(id);
+    await db.update(tracks)
+      .set({ plays: sql`${tracks.plays} + 1` })
+      .where(eq(tracks.id, id));
+    
+    // Update artist total plays
+    const track = await this.getTrack(id);
     if (track) {
-      track.plays = (track.plays || 0) + 1;
-      this.tracks.set(id, track);
-      
-      // Update artist total plays
-      const artist = this.artists.get(track.artistId);
-      if (artist) {
-        artist.totalPlays = (artist.totalPlays || 0) + 1;
-        this.artists.set(artist.id, artist);
-      }
+      await db.update(artists)
+        .set({ totalPlays: sql`${artists.totalPlays} + 1` })
+        .where(eq(artists.id, track.artistId));
     }
   }
 
-  async toggleTrackLike(id: string): Promise<void> {
-    const track = this.tracks.get(id);
-    if (track) {
-      track.likes = (track.likes || 0) + 1;
-      this.tracks.set(id, track);
+  // Like operations
+  async toggleLike(trackId: string, artistId: string): Promise<{ isLiked: boolean; likesCount: number }> {
+    const existingLike = await db
+      .select()
+      .from(likes)
+      .where(and(eq(likes.trackId, trackId), eq(likes.artistId, artistId)))
+      .limit(1);
+
+    if (existingLike.length > 0) {
+      // Unlike
+      await db.delete(likes)
+        .where(and(eq(likes.trackId, trackId), eq(likes.artistId, artistId)));
+      await db.update(tracks)
+        .set({ likes: sql`${tracks.likes} - 1` })
+        .where(eq(tracks.id, trackId));
+    } else {
+      // Like
+      await db.insert(likes).values({ trackId, artistId });
+      await db.update(tracks)
+        .set({ likes: sql`${tracks.likes} + 1` })
+        .where(eq(tracks.id, trackId));
     }
+
+    const likesCount = await this.getLikesCount(trackId);
+    return { isLiked: existingLike.length === 0, likesCount };
+  }
+
+  async getLikesCount(trackId: string): Promise<number> {
+    const result = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(likes)
+      .where(eq(likes.trackId, trackId));
+    return Number(result[0]?.count) || 0;
+  }
+
+  async isTrackLiked(trackId: string, artistId: string): Promise<boolean> {
+    const result = await db
+      .select()
+      .from(likes)
+      .where(and(eq(likes.trackId, trackId), eq(likes.artistId, artistId)))
+      .limit(1);
+    return result.length > 0;
+  }
+
+  // Comment operations
+  async createComment(comment: InsertComment): Promise<Comment> {
+    const [newComment] = await db.insert(comments).values(comment).returning();
+    return newComment;
+  }
+
+  async getCommentsByTrack(trackId: string): Promise<CommentWithArtist[]> {
+    const result = await db
+      .select()
+      .from(comments)
+      .innerJoin(artists, eq(comments.artistId, artists.id))
+      .where(eq(comments.trackId, trackId))
+      .orderBy(desc(comments.createdAt));
+    
+    return result.map(row => ({
+      ...row.comments,
+      artist: row.artists,
+    }));
+  }
+
+  async deleteComment(id: string, artistId: string): Promise<boolean> {
+    const result = await db
+      .delete(comments)
+      .where(and(eq(comments.id, id), eq(comments.artistId, artistId)));
+    return (result.rowCount || 0) > 0;
   }
 
   async getRecentTracks(limit = 6): Promise<TrackWithArtist[]> {
-    const allTracks = await this.getAllTracksWithArtists();
-    return allTracks.slice(0, limit);
+    const result = await db
+      .select()
+      .from(tracks)
+      .innerJoin(artists, eq(tracks.artistId, artists.id))
+      .orderBy(desc(tracks.createdAt))
+      .limit(limit);
+    
+    return result.map(row => ({
+      ...row.tracks,
+      artist: row.artists,
+    }));
   }
 
   async getPopularTracks(limit = 10): Promise<TrackWithArtist[]> {
-    const allTracks = await this.getAllTracksWithArtists();
-    return allTracks
-      .sort((a, b) => (b.plays || 0) - (a.plays || 0))
-      .slice(0, limit);
+    const result = await db
+      .select()
+      .from(tracks)
+      .innerJoin(artists, eq(tracks.artistId, artists.id))
+      .orderBy(desc(tracks.plays))
+      .limit(limit);
+    
+    return result.map(row => ({
+      ...row.tracks,
+      artist: row.artists,
+    }));
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();

@@ -2,7 +2,7 @@ import type { Express } from "express";
 import express from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertTrackSchema, insertArtistSchema } from "@shared/schema";
+import { insertTrackSchema, insertArtistSchema, insertCommentSchema } from "@shared/schema";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
@@ -103,11 +103,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Toggle track like
+  // Toggle track like (legacy route - moved to new endpoint)
   app.post("/api/tracks/:id/like", async (req, res) => {
     try {
-      await storage.toggleTrackLike(req.params.id);
-      res.json({ success: true });
+      const { artistId } = req.body;
+      if (!artistId) {
+        return res.status(400).json({ message: "Artist ID is required" });
+      }
+      const result = await storage.toggleLike(req.params.id, artistId);
+      res.json(result);
     } catch (error) {
       res.status(500).json({ message: "Failed to toggle like" });
     }
@@ -182,6 +186,94 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(201).json(artist);
     } catch (error: any) {
       res.status(400).json({ message: error.message || "Failed to create artist" });
+    }
+  });
+
+  // Toggle like for a track
+  app.post("/api/tracks/:trackId/like", async (req, res) => {
+    try {
+      const { trackId } = req.params;
+      const { artistId } = req.body;
+      
+      if (!artistId) {
+        return res.status(400).json({ message: "Artist ID is required" });
+      }
+
+      const result = await storage.toggleLike(trackId, artistId);
+      res.json(result);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message || "Failed to toggle like" });
+    }
+  });
+
+  // Get comments for a track
+  app.get("/api/tracks/:trackId/comments", async (req, res) => {
+    try {
+      const { trackId } = req.params;
+      const comments = await storage.getCommentsByTrack(trackId);
+      res.json(comments);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message || "Failed to fetch comments" });
+    }
+  });
+
+  // Create a comment
+  app.post("/api/tracks/:trackId/comments", async (req, res) => {
+    try {
+      const { trackId } = req.params;
+      const commentData = {
+        ...req.body,
+        trackId,
+      };
+      
+      const validatedData = insertCommentSchema.parse(commentData);
+      const comment = await storage.createComment(validatedData);
+      
+      // Return comment with artist info
+      const commentWithArtist = await storage.getCommentsByTrack(trackId);
+      const newComment = commentWithArtist.find(c => c.id === comment.id);
+      
+      res.status(201).json(newComment);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message || "Failed to create comment" });
+    }
+  });
+
+  // Delete a comment
+  app.delete("/api/comments/:commentId", async (req, res) => {
+    try {
+      const { commentId } = req.params;
+      const { artistId } = req.body;
+      
+      if (!artistId) {
+        return res.status(400).json({ message: "Artist ID is required" });
+      }
+
+      const success = await storage.deleteComment(commentId, artistId);
+      if (!success) {
+        return res.status(404).json({ message: "Comment not found or unauthorized" });
+      }
+      
+      res.json({ message: "Comment deleted successfully" });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message || "Failed to delete comment" });
+    }
+  });
+
+  // Get track with detailed info (likes, comments count, etc.)
+  app.get("/api/tracks/:trackId/details", async (req, res) => {
+    try {
+      const { trackId } = req.params;
+      const { artistId } = req.query;
+      
+      const trackDetails = await storage.getTrackWithDetails(trackId, artistId as string);
+      if (!trackDetails) {
+        return res.status(404).json({ message: "Track not found" });
+      }
+      
+      res.json(trackDetails);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message || "Failed to fetch track details" });
     }
   });
 

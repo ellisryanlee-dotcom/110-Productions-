@@ -1,12 +1,12 @@
 import { type TrackWithArtist } from "@shared/schema";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Play, Heart, Share2, MoreHorizontal, PlayCircle } from "lucide-react";
+import { Play, Share2, MoreHorizontal, PlayCircle } from "lucide-react";
 import { useAudioPlayer } from "@/hooks/use-audio-player";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
-import { useToast } from "@/hooks/use-toast";
 import Waveform from "./waveform";
+import { TrackComments } from "./track-comments";
 
 interface TrackCardProps {
   track: TrackWithArtist;
@@ -14,35 +14,21 @@ interface TrackCardProps {
 
 export default function TrackCard({ track }: TrackCardProps) {
   const { playTrack, currentTrack, isPlaying } = useAudioPlayer();
-  const { toast } = useToast();
   const queryClient = useQueryClient();
 
   const isCurrentTrack = currentTrack?.id === track.id;
 
   const playMutation = useMutation({
-    mutationFn: () => apiRequest("POST", `/api/tracks/${track.id}/play`),
+    mutationFn: () => apiRequest(`/api/tracks/${track.id}/play`, { method: "POST" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/tracks"] });
       queryClient.invalidateQueries({ queryKey: ["/api/tracks/recent"] });
-    }
-  });
-
-  const likeMutation = useMutation({
-    mutationFn: () => apiRequest("POST", `/api/tracks/${track.id}/like`),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/tracks"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/tracks/recent"] });
-      toast({ description: "Track liked!" });
     }
   });
 
   const handlePlay = () => {
     playTrack(track);
     playMutation.mutate();
-  };
-
-  const handleLike = () => {
-    likeMutation.mutate();
   };
 
   const formatDuration = (seconds: number) => {
@@ -106,15 +92,6 @@ export default function TrackCard({ track }: TrackCardProps) {
             <Button 
               size="icon" 
               variant="ghost" 
-              onClick={handleLike}
-              className="text-gray-text hover:text-warm-white transition-colors"
-              data-testid={`button-like-track-${track.id}`}
-            >
-              <Heart className="w-4 h-4" />
-            </Button>
-            <Button 
-              size="icon" 
-              variant="ghost" 
               className="text-gray-text hover:text-warm-white transition-colors"
               data-testid={`button-share-track-${track.id}`}
             >
@@ -129,6 +106,11 @@ export default function TrackCard({ track }: TrackCardProps) {
               <MoreHorizontal className="w-4 h-4" />
             </Button>
           </div>
+        </div>
+
+        {/* Comments and Likes Section */}
+        <div className="mt-4 pt-4 border-t border-gray-border">
+          <TrackComments trackId={track.id} />
         </div>
       </CardContent>
     </Card>

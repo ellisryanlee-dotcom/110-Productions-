@@ -2,6 +2,7 @@ import { sql } from "drizzle-orm";
 import { pgTable, text, varchar, integer, timestamp, boolean } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
+import { relations } from "drizzle-orm";
 
 export const artists = pgTable("artists", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -33,6 +34,59 @@ export const tracks = pgTable("tracks", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+export const comments = pgTable("comments", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  content: text("content").notNull(),
+  trackId: varchar("track_id").references(() => tracks.id, { onDelete: "cascade" }).notNull(),
+  artistId: varchar("artist_id").references(() => artists.id).notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const likes = pgTable("likes", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  trackId: varchar("track_id").references(() => tracks.id, { onDelete: "cascade" }).notNull(),
+  artistId: varchar("artist_id").references(() => artists.id).notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Relations
+export const artistsRelations = relations(artists, ({ many }) => ({
+  tracks: many(tracks),
+  comments: many(comments),
+  likes: many(likes),
+}));
+
+export const tracksRelations = relations(tracks, ({ one, many }) => ({
+  artist: one(artists, {
+    fields: [tracks.artistId],
+    references: [artists.id],
+  }),
+  comments: many(comments),
+  likes: many(likes),
+}));
+
+export const commentsRelations = relations(comments, ({ one }) => ({
+  track: one(tracks, {
+    fields: [comments.trackId],
+    references: [tracks.id],
+  }),
+  artist: one(artists, {
+    fields: [comments.artistId],
+    references: [artists.id],
+  }),
+}));
+
+export const likesRelations = relations(likes, ({ one }) => ({
+  track: one(tracks, {
+    fields: [likes.trackId],
+    references: [tracks.id],
+  }),
+  artist: one(artists, {
+    fields: [likes.artistId],
+    references: [artists.id],
+  }),
+}));
+
 export const insertArtistSchema = createInsertSchema(artists).omit({
   id: true,
   followers: true,
@@ -48,11 +102,32 @@ export const insertTrackSchema = createInsertSchema(tracks).omit({
   updatedAt: true,
 });
 
+export const insertCommentSchema = createInsertSchema(comments).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertLikeSchema = createInsertSchema(likes).omit({
+  id: true,
+  createdAt: true,
+});
+
 export type InsertArtist = z.infer<typeof insertArtistSchema>;
 export type Artist = typeof artists.$inferSelect;
 export type InsertTrack = z.infer<typeof insertTrackSchema>;
 export type Track = typeof tracks.$inferSelect;
+export type InsertComment = z.infer<typeof insertCommentSchema>;
+export type Comment = typeof comments.$inferSelect;
+export type InsertLike = z.infer<typeof insertLikeSchema>;
+export type Like = typeof likes.$inferSelect;
 
 // Combined types for API responses
 export type TrackWithArtist = Track & { artist: Artist };
 export type ArtistWithTracks = Artist & { tracks: Track[] };
+export type CommentWithArtist = Comment & { artist: Artist };
+export type TrackWithDetails = Track & {
+  artist: Artist;
+  likesCount: number;
+  commentsCount: number;
+  isLiked: boolean;
+};
