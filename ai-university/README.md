@@ -21,16 +21,17 @@ ai-university/
   tools/
     innertube.py    stdlib-only client for youtubei.googleapis.com
     ripper.py       catalog / enrich / transcripts / top  (see --help)
+    ripper_ytdlp.py transcripts fallback for bot-gated networks (yt-dlp + PO token)
     librarian.md    extraction spec: transcripts → knowledge & style cards
   channels/
     nateherk/
       catalog.json      all 467 videos (302 long-form + 165 shorts), views/length/date
       details.json      descriptions, chapter lists (295), exact dates & views
-      transcripts/      one .md per video  ← pending network access (below)
+      transcripts/      one .md per video (top 50 long-form by views ripped)
   library/
     curriculum.md       AI University syllabus v0 (10 tracks + gaps)
     knowledge/          kc-* cards (what to teach)      ← filled by librarian
-    style/              sc-* cards (how to package it)  ← sc-0000 seeded
+    style/              sc-* cards (how to package it)  ← sc-0000 + per-video cards
 ```
 
 ## Commands
@@ -58,14 +59,15 @@ ripped videos are skipped; failures land in `transcripts/_failed.json`).
 
 - [x] Catalog + enrichment ripped for `@nateherk` (Dec 2024 → Aug 2026, complete)
 - [x] Curriculum v0 and channel style card from real metadata
-- [ ] **Transcripts** — blocked in the current cloud session: the environment's
-      network policy allows `*.googleapis.com` but not `www.youtube.com`, and
-      transcript bodies are only served from there. Two ways to unblock:
-      1. In the Claude Code environment settings, set the network policy to
-         allow `www.youtube.com` (or "no restrictions"), then run the
-         transcripts command above in a session, or
-      2. run it on any normal machine with Python 3 — no dependencies.
-- [ ] Librarian pass over top transcripts → knowledge/style cards
+- [x] **Transcripts** — top 50 long-form by views ripped. Note for cloud
+      sessions: `www.youtube.com` is reachable, but YouTube bot-gates
+      datacenter IPs ("Sign in to confirm you're not a bot") on the watch
+      page, every InnerTube player client, and `get_transcript` alike, so
+      `ripper.py transcripts` fails with "no caption tracks". The working
+      route is `tools/ripper_ytdlp.py` — yt-dlp plus a BotGuard PO-token
+      provider (setup in its docstring); output format is identical. On a
+      normal residential connection, plain `ripper.py transcripts` works.
+- [x] Librarian pass over top-50 transcripts → knowledge/style cards
 - [ ] House voice guide + first original script through the editor gate
 - [ ] Production (script → voiceover/video) and YouTube upload via Data API
       (one-time OAuth setup on the channel)
