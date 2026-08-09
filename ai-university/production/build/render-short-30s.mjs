@@ -57,6 +57,24 @@ function killTree(pid) {
   const pids = [...new Set([...descendants(pid), pid])];   // enumerate BEFORE killing
   for (const p of pids) { try { process.kill(p, 'SIGKILL'); } catch {} }
 }
+// The renderer/gpu helpers are reaped by killTree (ppid=main), but each frame also
+// leaves one idle chrome_crashpad_handler that instantly re-parents to launchd
+// (ppid=1) — unreachable by tree or token. Sweep those orphans periodically. This
+// only targets Google Chrome's crash MONITOR (never a browser window/tab), so it
+// won't close Ryan's Chrome; worst case it clears a stale crash reporter.
+function sweepCrashpads() {
+  let lines = [];
+  try { lines = execFileSync('ps', ['-Ao', 'pid=,ppid=,command='], { stdio: ['ignore', 'pipe', 'ignore'], maxBuffer: 8 << 20 })
+    .toString().split('\n'); } catch { return; }
+  for (const ln of lines) {
+    const m = ln.match(/^\s*(\d+)\s+(\d+)\s+(.*)$/);
+    if (!m) continue;
+    const [pid, ppid, cmd] = [Number(m[1]), Number(m[2]), m[3]];
+    if (ppid === 1 && cmd.includes('Google Chrome Framework') && cmd.includes('chrome_crashpad_handler')) {
+      try { process.kill(pid, 'SIGKILL'); } catch {}
+    }
+  }
+}
 async function renderFrame(i) {
   const pad = String(i).padStart(5, '0');
   const png = join(work, 'f_' + pad + '.png');
@@ -96,8 +114,13 @@ async function run() {
   await Promise.all(Array.from({ length: CONC }, worker));
 }
 console.log(`rendering ${N} frames @ ${FPS}fps (conc ${CONC})…`);
+const sweeper = setInterval(sweepCrashpads, 8000);       // reap orphaned crash monitors as we go
 await run();
+clearInterval(sweeper);
+sweepCrashpads();                                        // final cleanup
 console.log('frames complete');
+const rendered = Array.from({ length: N }, (_, i) => join(work, 'f_' + String(i).padStart(5, '0') + '.png')).filter(pngStable).length;
+if (rendered !== N) { console.error(`only ${rendered}/${N} frames rendered — aborting before assembly`); process.exit(2); }
 
 // 2) frames -> silent H.264, then mux the reused audio
 const silent = join(work, 'silent.mp4');
