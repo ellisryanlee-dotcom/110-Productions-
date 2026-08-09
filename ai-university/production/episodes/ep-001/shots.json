@@ -1,7 +1,510 @@
 {
  "episode": "ep-001",
- "status": "pre-production",
- "script_ref": null,
- "blocked_on": "house voice guide + first script through the editor gate (library/)",
- "shots": []
+ "title": "Claude Code, Nearly Free: The Cartridge Trick",
+ "status": "assembly-ready — render paused by user pending ADAM routing decision; S4 VO in temp voice",
+ "script_ref": "script.md",
+ "format": {
+  "resolution": "1920x1080",
+  "fps": 24,
+  "runtime_target_s": 298
+ },
+ "voice": {
+  "engine": "seed_audio",
+  "voice_id": "b847bc29-f184-583a-8ad9-d1f1e16d1a60",
+  "voice_type": "preset",
+  "name": "Dylan"
+ },
+ "rig_note": "ComfyUI/Wan rig not connected this session; per engine-routing.md production does not block — shots route to best in-session engine. Engine per shot logged below.",
+ "visual_system": {
+  "palette": {
+   "ink": "#0B0E14",
+   "amber": "#FFB300",
+   "teal": "#2DD4BF",
+   "white": "#F5F7FA"
+  },
+  "lens": "35mm look, shallow DOF on host shots; macro 100mm for cartridge motif; slow push-ins, no whip movement",
+  "host": "photorealistic woman, late 20s, East-Asian, short black bob with amber streak, matte black bomber jacket over heather-grey tee, thin silver chain — locked via Element",
+  "environment": "night studio lab: dark walnut desk, dual monitors off-screen glow, amber practical lamp key, teal LED strip rim, soft haze",
+  "motif": "translucent smoked-glass game cartridge with glowing amber core and teal edge-light; sleek matte-black console slot"
+ },
+ "shots": [
+  {
+   "id": "s01",
+   "seg": "S1",
+   "kind": "gen-video",
+   "dur_s": 5,
+   "shot_type": [
+    "human-hero",
+    "facial-performance"
+   ],
+   "visual": "Host seated at night-lab desk, slow push-in; she studies a glowing cartridge, turns it once, looks up past lens. No speech.",
+   "keyframe": "k01",
+   "engine_plan": "seedance-2.5 (premium trigger: photoreal human hero; rig absent)",
+   "attempts": [
+    {
+     "n": 1,
+     "engine": "seedance-2.5",
+     "job_id": "31065c35-e0e0-44e3-b7a2-0bdc4926fc7e",
+     "cost_credits_preflight": 32.5,
+     "result": "pass",
+     "note": "2 failed submissions first (mode param, 429 rate limit) — no charge"
+    }
+   ],
+   "final": {
+    "engine": "seedance-2.5",
+    "job_id": "31065c35-e0e0-44e3-b7a2-0bdc4926fc7e",
+    "attempt_n": 1
+   }
+  },
+  {
+   "id": "s02",
+   "seg": "S2",
+   "kind": "graphic-video",
+   "dur_s": 4,
+   "shot_type": [
+    "motion-graphics"
+   ],
+   "visual": "Title sting: 110 AI UNIVERSITY / EP.001 / CLAUDE CODE, NEARLY FREE on ink background, amber rule, subtle zoom.",
+   "source": "brand/title.png + zoompan",
+   "attempts": [],
+   "final": {
+    "engine": "html-graphics",
+    "cost_usd": 0
+   }
+  },
+  {
+   "id": "s03",
+   "seg": "S3",
+   "kind": "gen-video",
+   "dur_s": 5,
+   "shot_type": [
+    "product-macro",
+    "complex-camera"
+   ],
+   "visual": "Macro: cartridge slides into matte-black console slot, amber core ignites, teal rim flare, shallow DOF rack.",
+   "keyframe": "k02",
+   "engine_plan": "seedance-2.5 (hero motif; continuity standard)",
+   "attempts": [
+    {
+     "n": 1,
+     "engine": "kling-3.0-turbo",
+     "job_id": "a4839c70-b594-4242-910a-61eba2d7a39c",
+     "cost_credits_preflight": 7.5,
+     "result": "pass",
+     "note": "slot-in + ignition clean"
+    }
+   ],
+   "final": {
+    "engine": "kling-3.0-turbo",
+    "job_id": "a4839c70-b594-4242-910a-61eba2d7a39c",
+    "attempt_n": 1
+   }
+  },
+  {
+   "id": "s03b",
+   "seg": "S3",
+   "kind": "graphic",
+   "dur_s": 10,
+   "shot_type": [
+    "motion-graphics"
+   ],
+   "visual": "CLOSED vs OPEN split card: rented-through-API/sealed vs download-run-modify.",
+   "source": "brand/closed_open.png",
+   "attempts": [],
+   "final": {
+    "engine": "html-graphics",
+    "cost_usd": 0
+   }
+  },
+  {
+   "id": "s03c",
+   "seg": "S3",
+   "kind": "graphic",
+   "dur_s": 9,
+   "shot_type": [
+    "motion-graphics"
+   ],
+   "visual": "Generic benchmark-gap chart: two lines converging over release cycles (no vendor names), amber vs teal.",
+   "source": "brand/gap_chart.png",
+   "attempts": [],
+   "final": {
+    "engine": "html-graphics",
+    "cost_usd": 0
+   }
+  },
+  {
+   "id": "s04a",
+   "seg": "S4",
+   "kind": "gen-video",
+   "dur_s": 5,
+   "shot_type": [
+    "human-b-roll",
+    "body-movement"
+   ],
+   "visual": "Host at backlit shelf of cartridges, side profile, pulls one, weighs it in hand. Mid shot.",
+   "keyframe": "k03",
+   "engine_plan": "kling-3.0-turbo first (budget attempt per routing; not facial-critical) -> escalate seedance on fail",
+   "attempts": [
+    {
+     "n": 1,
+     "engine": "kling-3.0-turbo",
+     "job_id": "c0013243-b856-4e53-b67c-762248e43bad",
+     "cost_credits_preflight": 7.5,
+     "result": "pass",
+     "note": "human b-roll held identity; no escalation needed"
+    }
+   ],
+   "final": {
+    "engine": "kling-3.0-turbo",
+    "job_id": "c0013243-b856-4e53-b67c-762248e43bad",
+    "attempt_n": 1
+   }
+  },
+  {
+   "id": "s04b",
+   "seg": "S4",
+   "kind": "screen-capture",
+   "dur_s": 16,
+   "shot_type": [
+    "screen-capture"
+   ],
+   "visual": "Branded terminal: ollama pull <model> progress; ollama run <model> hello exchange; launcher model menu. Typed live.",
+   "source": "captures/terminal_ollama.webm (playwright)",
+   "attempts": [],
+   "final": {
+    "engine": "playwright-capture",
+    "cost_usd": 0
+   }
+  },
+  {
+   "id": "s04c",
+   "seg": "S4",
+   "kind": "graphic",
+   "dur_s": 8,
+   "shot_type": [
+    "motion-graphics"
+   ],
+   "visual": "One-time gate card: Anthropic sign-in + $5 minimum top-up, then unused. READ TEST / WRITE TEST checklist.",
+   "source": "brand/gate_card.png",
+   "attempts": [],
+   "final": {
+    "engine": "html-graphics",
+    "cost_usd": 0
+   }
+  },
+  {
+   "id": "s05",
+   "seg": "S5",
+   "kind": "gen-video",
+   "dur_s": 5,
+   "shot_type": [
+    "abstract",
+    "vfx"
+   ],
+   "visual": "Cartridge floating in dark; its glowing memory lattice dissolves block by block from the edges; core dims.",
+   "keyframe": "k04",
+   "engine_plan": "seedance-2.0 (abstract VFX, mid tier)",
+   "attempts": [
+    {
+     "n": 1,
+     "engine": "kling-3.0-turbo",
+     "job_id": "a6ba6bff-3637-49f2-89c7-63b11e365f1b",
+     "cost_credits_preflight": 7.5,
+     "result": "pass",
+     "note": "lattice dissolve excellent; minor pseudo-text on shell acceptable in motion"
+    }
+   ],
+   "final": {
+    "engine": "kling-3.0-turbo",
+    "job_id": "a6ba6bff-3637-49f2-89c7-63b11e365f1b",
+    "attempt_n": 1
+   }
+  },
+  {
+   "id": "s05b",
+   "seg": "S5",
+   "kind": "screen-capture",
+   "dur_s": 12,
+   "shot_type": [
+    "screen-capture"
+   ],
+   "visual": "Terminal: custom model created with explicit context window; new entry appears in menu; task re-run holds thread.",
+   "source": "captures/terminal_ctx.webm",
+   "attempts": [],
+   "final": {
+    "engine": "playwright-capture",
+    "cost_usd": 0
+   }
+  },
+  {
+   "id": "s06",
+   "seg": "S6",
+   "kind": "gen-video",
+   "dur_s": 5,
+   "shot_type": [
+    "environment",
+    "complex-camera"
+   ],
+   "visual": "Slow dolly down an endless dim library aisle; shelves hold hundreds of faintly glowing cartridges; a few marked FREE glow brighter.",
+   "keyframe": "k05",
+   "engine_plan": "veo-3 (reliable cinematic environment per roster)",
+   "attempts": [
+    {
+     "n": 1,
+     "engine": "kling-3.0-turbo",
+     "job_id": "da9baec1-ce93-42cd-b995-e3c8bb15ba2e",
+     "cost_credits_preflight": 7.5,
+     "result": "pass",
+     "note": "library dolly"
+    }
+   ],
+   "final": {
+    "engine": "kling-3.0-turbo",
+    "job_id": "da9baec1-ce93-42cd-b995-e3c8bb15ba2e",
+    "attempt_n": 1
+   }
+  },
+  {
+   "id": "s06b",
+   "seg": "S6",
+   "kind": "screen-capture",
+   "dur_s": 14,
+   "shot_type": [
+    "screen-capture"
+   ],
+   "visual": "settings.local.json typed: base URL, auth key, blank Anthropic key, EVERY model role set to free id (roles highlighted).",
+   "source": "captures/terminal_settings.webm",
+   "attempts": [],
+   "final": {
+    "engine": "playwright-capture",
+    "cost_usd": 0
+   }
+  },
+  {
+   "id": "s06c",
+   "seg": "S6",
+   "kind": "graphic",
+   "dur_s": 8,
+   "shot_type": [
+    "motion-graphics"
+   ],
+   "visual": "Router log card: request rows, cost column all $0.00, model ids matching; one row flagged red as the paid-fallback counterexample.",
+   "source": "brand/logs_card.png",
+   "attempts": [],
+   "final": {
+    "engine": "html-graphics",
+    "cost_usd": 0
+   }
+  },
+  {
+   "id": "s07",
+   "seg": "S7",
+   "kind": "graphic",
+   "dur_s": 22,
+   "shot_type": [
+    "motion-graphics"
+   ],
+   "visual": "Triage matrix: FREE CARTRIDGE column (summarize, search, scaffold, triage, research) vs FRONTIER column (bleeds-when-wrong); warnings strip: rate limits, fake web search; cheap-paid middle path.",
+   "source": "brand/triage.png",
+   "attempts": [],
+   "final": {
+    "engine": "html-graphics",
+    "cost_usd": 0
+   }
+  },
+  {
+   "id": "s08",
+   "seg": "S8",
+   "kind": "gen-video",
+   "dur_s": 5,
+   "shot_type": [
+    "human-hero"
+   ],
+   "visual": "Host rises from desk, taps the lamp off — amber dies, teal rim holds — walks out of frame. Room settles.",
+   "keyframe": "k06",
+   "engine_plan": "seedance-2.5 (human hero close)",
+   "attempts": [
+    {
+     "n": 1,
+     "engine": "kling-3.0-turbo",
+     "job_id": "de93ee7c-9553-4893-a723-ef8a6144e096",
+     "cost_credits_preflight": 7.5,
+     "result": "pass",
+     "note": "1 preset-recommendation bounce first (declined) — no charge"
+    }
+   ],
+   "final": {
+    "engine": "kling-3.0-turbo",
+    "job_id": "de93ee7c-9553-4893-a723-ef8a6144e096",
+    "attempt_n": 1
+   }
+  },
+  {
+   "id": "s08b",
+   "seg": "S8",
+   "kind": "graphic",
+   "dur_s": 8,
+   "shot_type": [
+    "motion-graphics"
+   ],
+   "visual": "End slate: 110 mark, episode title, 'Class dismissed.', next-episode tease line.",
+   "source": "brand/end_slate.png",
+   "attempts": [],
+   "final": {
+    "engine": "html-graphics",
+    "cost_usd": 0
+   }
+  }
+ ],
+ "keyframes": [
+  {
+   "id": "k00",
+   "purpose": "host identity master for Element",
+   "engine_plan": "soul_2",
+   "attempts": [
+    {
+     "n": 1,
+     "engine": "soul_2",
+     "job_id": "10df2515-3628-4823-915a-fe7c5398c2f8",
+     "result": "pass",
+     "note": "pass — identity master; variant b unused"
+    }
+   ],
+   "final": {
+    "engine": "soul_2",
+    "job_id": "10df2515-3628-4823-915a-fe7c5398c2f8"
+   }
+  },
+  {
+   "id": "k01",
+   "purpose": "s01 start frame",
+   "engine_plan": "nano_banana_2 + host element",
+   "attempts": [],
+   "final": {
+    "note": "reused k00 master as s01 start frame — no separate generation"
+   }
+  },
+  {
+   "id": "k02",
+   "purpose": "s03 start frame (cartridge macro)",
+   "engine_plan": "nano_banana_2",
+   "attempts": [
+    {
+     "n": 1,
+     "engine": "nano_banana_2",
+     "job_id": "fb421c8a-cda8-4a33-a17e-b4f255ffbac2",
+     "result": "pass",
+     "note": "pass"
+    }
+   ],
+   "final": {
+    "engine": "nano_banana_2",
+    "job_id": "fb421c8a-cda8-4a33-a17e-b4f255ffbac2"
+   }
+  },
+  {
+   "id": "k03",
+   "purpose": "s04a start frame",
+   "engine_plan": "nano_banana_2 + host element",
+   "attempts": [
+    {
+     "n": 1,
+     "engine": "nano_banana_2",
+     "job_id": "00f4b0c0-0777-4828-9cd5-862ccd2d2f7a",
+     "result": "pass",
+     "note": "pass — element identity held"
+    }
+   ],
+   "final": {
+    "engine": "nano_banana_2",
+    "job_id": "00f4b0c0-0777-4828-9cd5-862ccd2d2f7a"
+   }
+  },
+  {
+   "id": "k04",
+   "purpose": "s05 start frame (memory lattice)",
+   "engine_plan": "nano_banana_2",
+   "attempts": [
+    {
+     "n": 1,
+     "engine": "nano_banana_2",
+     "job_id": "3720a4ae-fc53-4cff-a3d7-3141e59b5b9e",
+     "result": "pass",
+     "note": "pass"
+    }
+   ],
+   "final": {
+    "engine": "nano_banana_2",
+    "job_id": "3720a4ae-fc53-4cff-a3d7-3141e59b5b9e"
+   }
+  },
+  {
+   "id": "k05",
+   "purpose": "s06 start frame (library aisle)",
+   "engine_plan": "nano_banana_2",
+   "attempts": [
+    {
+     "n": 1,
+     "engine": "nano_banana_2",
+     "job_id": "2c1b5423-b51d-49b2-afaf-e6281f26f317",
+     "result": "pass",
+     "note": "pass"
+    }
+   ],
+   "final": {
+    "engine": "nano_banana_2",
+    "job_id": "2c1b5423-b51d-49b2-afaf-e6281f26f317"
+   }
+  },
+  {
+   "id": "k06",
+   "purpose": "s08 start frame",
+   "engine_plan": "nano_banana_2 + host element",
+   "attempts": [
+    {
+     "n": 1,
+     "engine": "nano_banana_2",
+     "job_id": "5508cb83-1214-439b-b9f4-b2b7b2f48971",
+     "result": "pass",
+     "note": "pass — element identity held"
+    }
+   ],
+   "final": {
+    "engine": "nano_banana_2",
+    "job_id": "5508cb83-1214-439b-b9f4-b2b7b2f48971"
+   }
+  }
+ ],
+ "audio": {
+  "vo_segments": [
+   "S1",
+   "S3",
+   "S4",
+   "S5",
+   "S6",
+   "S7",
+   "S8"
+  ],
+  "music_note": "no music engine in-session (speech-only policy on audio tools); mix = VO + synthesized ambient bed (ffmpeg) + native in-video ambience; flag licensed track for ep-002",
+  "captions": "burned .ass from VO segment timings",
+  "vo_status": {
+   "voice_final": "Raina (1c3a4775-9afb-52c1-a2bf-b6543231a9a1) — user-directed swap from Dylan after gender mismatch with on-screen host",
+   "raina_segments_done": [
+    "S1",
+    "S3",
+    "S5",
+    "S6",
+    "S7",
+    "S8"
+   ],
+   "raina_s4": "BLOCKED — credits exhausted mid-batch (longest segment, length-priced); temp Dylan S4 marked TEMP VO in assembly; fix = one seed_audio call after top-up",
+   "dylan_full_set": "generated before swap decision — unused takes (1.4 credits)"
+  }
+ },
+ "budget": {
+  "credits_start": 136.85,
+  "credits_end_measured": 2.01,
+  "credits_spent_total": 134.84,
+  "note": "actual spend far above preflight estimates (preflights appear to quote a partial rate); biggest items: seedance s01 (~32.5+), 5x kling turbo (~37.5+), keyframes, 13x TTS. Exact per-job billing needs the transactions API once credits/API access allows."
+ }
 }

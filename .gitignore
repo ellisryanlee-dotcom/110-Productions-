@@ -8,3 +8,7 @@ __pycache__/
 
 # transcript working cache (local only, never committed)
 ai-university/channels/*/cache/
+
+# generated media stays out of git (job ids in shots.json re-fetch everything)
+ai-university/production/episodes/*/assets/
+ai-university/production/episodes/*/build/
