@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, initial-scale=1">
+<title>S013 — Empty brain: normal email vs almost-empty instructions · Crash Test Agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  /* ===== S013 — ROUND 1 / Break 1 "the empty brain".
+     Split view: LEFT a normal polite customer email (Dana Okafor,
+     "Where's my order?"); RIGHT the agent panel — tools wired &
+     connected (cyan = active/interactive) but the instructions field
+     is nearly empty (one lonely line), flagged red = broke. ===== */
+  .app { display: grid; grid-template-rows: 96px 1fr 44px; height: 100%; }
+
+  .topbar { display: flex; align-items: center; gap: var(--s5);
+    padding: 0 var(--s7); border-bottom: 1px solid var(--ct-line); background: var(--ct-surface); }
+  .brandchip { display: flex; align-items: center; gap: var(--s3); }
+  .brandchip .glyph { width: 40px; height: 40px; border-radius: 9px; display: grid; place-items: center;
+    background: var(--ct-surface-raised); border: 1px solid var(--ct-line); }
+  .brandchip .name { font-weight: 700; font-size: var(--ct-ui-2xl); letter-spacing: -0.01em; }
+  .topbar .sub { color: var(--ct-text-muted); font-size: var(--ct-ui-lg); }
+  .topbar .spacer { flex: 1; }
+  .round-tag { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.14em; color: var(--ct-break-glow);
+    padding: 8px 16px; border: 1px solid color-mix(in srgb, var(--ct-break) 45%, var(--ct-line));
+    border-radius: var(--ct-r-pill); background: var(--ct-break-wash); }
+
+  .split { display: grid; grid-template-columns: 1fr 1fr; min-height: 0; }
+  .pane { padding: var(--s7) var(--s7) var(--s6); overflow: hidden; position: relative; display: flex; flex-direction: column; }
+  .pane.left { border-right: 1px solid var(--ct-line); background: var(--ct-bg); }
+  .pane.right { background: var(--ct-bg); box-shadow: inset 0 0 200px rgba(255,59,48,0.07); }
+  .pane-title { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs);
+    text-transform: uppercase; letter-spacing: 0.12em; color: var(--ct-text-muted);
+    font-weight: 500; margin: 0 0 var(--s5); display: flex; align-items: center; gap: 12px; }
+  .pane-title .dotmark { width: 9px; height: 9px; border-radius: 50%; }
+
+  /* ---- LEFT: a calm, normal customer email ---- */
+  .mail { background: var(--ct-surface); border: 1px solid var(--ct-line); border-radius: var(--ct-r-lg);
+    box-shadow: var(--ct-shadow-2); overflow: hidden; flex: 1; display: flex; flex-direction: column; }
+  .mail .mhead { padding: 28px 34px 22px; border-bottom: 1px solid var(--ct-line); }
+  .mail .mhead .subj { font-family: var(--ct-font-body); font-weight: 700; font-size: var(--ct-ui-2xl); color: var(--ct-text); }
+  .mail .mhead .fromrow { display: flex; align-items: center; gap: 16px; margin-top: 18px; }
+  .mail .avatar { width: 52px; height: 52px; flex: 0 0 52px; border-radius: 50%; display: grid; place-items: center;
+    background: color-mix(in srgb, #8AA6D6 22%, var(--ct-surface-raised)); border: 1px solid #6E8BB8;
+    font-family: var(--ct-font-mono); font-weight: 700; font-size: var(--ct-ui-lg); color: #8AA6D6; }
+  .mail .who { display: flex; flex-direction: column; }
+  .mail .who b { font-size: var(--ct-ui-lg); font-weight: 600; color: var(--ct-text); }
+  .mail .who span { font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); color: var(--ct-text-muted); }
+  .mail .stamp { margin-left: auto; font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); color: var(--ct-text-muted); }
+  .mail .label { display: inline-flex; align-items: center; gap: 9px; padding: 7px 15px; border-radius: var(--ct-r-pill);
+    font-size: var(--ct-ui-sm); font-weight: 600; color: #8AA6D6;
+    background: color-mix(in srgb, #8AA6D6 15%, transparent); border: 1px solid color-mix(in srgb, #8AA6D6 45%, transparent);
+    margin-top: 20px; }
+  .mail .mbody { padding: 30px 34px; font-family: var(--ct-font-body); font-size: var(--ct-ui-lg);
+    line-height: 1.7; color: color-mix(in srgb, var(--ct-text) 92%, transparent); }
+  .mail .mbody p { margin: 0 0 18px; }
+  .mail .mbody .sig { color: var(--ct-text-muted); }
+  .mail .normal-chip { margin: auto 34px 30px; display: inline-flex; align-items: center; gap: 10px; align-self: flex-start;
+    font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); color: var(--ct-text-muted);
+    padding: 8px 14px; border-radius: var(--ct-r-pill); border: 1px solid var(--ct-line); background: var(--ct-surface-raised); }
+  .mail .normal-chip .tick { width: 8px; height: 8px; border-radius: 50%; background: #8AA6D6; }
+
+  /* ---- RIGHT: agent config — empty instructions + wired tools ---- */
+  .agentcard { background: var(--ct-surface); border: 1px solid var(--ct-line); border-radius: var(--ct-r-lg);
+    box-shadow: var(--ct-shadow-2); overflow: hidden; flex: 1; display: flex; flex-direction: column; }
+  .agentcard .abar { display: flex; align-items: center; gap: 12px; padding: 16px 24px;
+    background: var(--ct-surface-raised); border-bottom: 1px solid var(--ct-line); }
+  .agentcard .abar .g { width: 30px; height: 30px; border-radius: 7px; display: grid; place-items: center;
+    background: var(--ct-bg); border: 1px solid var(--ct-line); }
+  .agentcard .abar .t { font-family: var(--ct-font-mono); font-size: var(--ct-ui-md); color: var(--ct-text); }
+  .agentcard .abar .mode { margin-left: auto; font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs);
+    text-transform: uppercase; letter-spacing: 0.1em; color: var(--ct-accent); }
+
+  .field-label { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); text-transform: uppercase;
+    letter-spacing: 0.12em; color: var(--ct-text-muted); margin: 0 0 12px; display: flex; align-items: center; gap: 12px; }
+  .field-label .warn-chip { margin-left: auto; font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs);
+    letter-spacing: 0.06em; color: var(--ct-break-glow); padding: 5px 12px; border-radius: var(--ct-r-pill);
+    background: var(--ct-break-wash); border: 1px solid color-mix(in srgb, var(--ct-break) 45%, transparent); text-transform: none; }
+
+  .instr { margin: 24px 24px 0; padding: 22px 0 22px; border: 1px solid color-mix(in srgb, var(--ct-break) 40%, var(--ct-line));
+    border-radius: var(--ct-r-md); background: linear-gradient(180deg, var(--ct-bg), var(--ct-break-wash));
+    display: flex; box-shadow: inset 0 0 40px rgba(255,59,48,0.05); }
+  .instr .gutter { width: 66px; flex: 0 0 66px; border-right: 1px solid var(--ct-line); text-align: right;
+    padding-right: 16px; font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); color: var(--ct-text-muted); line-height: 2.05; opacity: 0.6; }
+  .instr .code { padding: 0 22px; font-family: var(--ct-font-mono); font-size: var(--ct-ui-md); line-height: 2.05; flex: 1; }
+  .instr .code .l1 { color: var(--ct-text); }
+  .instr .code .caret { display: inline-block; width: 10px; height: 22px; background: var(--ct-accent);
+    vertical-align: -4px; margin-left: 2px; box-shadow: 0 0 10px var(--ct-accent); }
+  .instr .code .blank { color: transparent; }
+  .instr-note { margin: 14px 24px 0; font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); color: var(--ct-break-glow);
+    display: flex; align-items: center; gap: 12px; }
+  .instr-note .x { width: 20px; height: 20px; flex: 0 0 20px; border-radius: 50%; display: grid; place-items: center;
+    background: var(--ct-break-deep); color: var(--ct-text); font-weight: 800; font-size: 13px; }
+
+  .tools-wrap { margin: auto 24px 24px; }
+  .tools-head { display: flex; align-items: baseline; gap: 12px; margin: 0 0 14px; }
+  .tools-head .k { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); text-transform: uppercase; letter-spacing: 0.12em; color: var(--ct-text-muted); }
+  .tools-head .n { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); color: var(--ct-accent-glow); }
+  .toolgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .tool { display: flex; align-items: center; gap: 14px; padding: 16px 18px; border-radius: var(--ct-r-md);
+    background: var(--ct-surface-raised); border: 1px solid color-mix(in srgb, var(--ct-accent) 30%, var(--ct-line)); }
+  .tool .ti { width: 40px; height: 40px; flex: 0 0 40px; border-radius: 9px; display: grid; place-items: center;
+    background: var(--ct-accent-wash); border: 1px solid color-mix(in srgb, var(--ct-accent) 40%, transparent); }
+  .tool .ti svg { width: 24px; height: 24px; }
+  .tool .ti svg [stroke] { stroke: var(--ct-accent); }
+  .tool .tn { font-family: var(--ct-font-body); font-weight: 600; font-size: var(--ct-ui-md); color: var(--ct-text); }
+  .tool .conn { margin-left: auto; display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); color: var(--ct-accent-glow); }
+  .tool .conn .d { width: 8px; height: 8px; border-radius: 50%; background: var(--ct-accent); box-shadow: 0 0 8px var(--ct-accent); }
+
+  .disclaimer { display: flex; align-items: center; justify-content: center;
+    background: var(--ct-surface); border-top: 1px solid var(--ct-line);
+    color: var(--ct-text-muted); font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); letter-spacing: 0.03em; }
+</style>
+</head>
+<body>
+  <div class="stage" role="img"
+       aria-label="Split view: left, a normal polite customer email from Dana Okafor asking where her order is; right, the Sift agent panel with four tools wired and connected but an almost-empty instructions field holding one lonely line, flagged as broken. Break one of twenty-five.">
+    <div class="grid-bg"></div>
+
+    <div class="app">
+      <header class="topbar">
+        <div class="brandchip">
+          <span class="glyph">
+            <svg width="26" height="26" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+              <path d="M12 16h40M18 32h28M26 48h12" stroke="var(--ct-accent)" stroke-width="5" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <span class="name">Sift</span>
+        </div>
+        <span class="sub">agent workbench &middot; Harbor Supply Co.</span>
+        <div class="spacer"></div>
+        <span class="round-tag">Round 1 &middot; Break 1 &middot; the empty brain</span>
+      </header>
+
+      <div class="split">
+        <!-- LEFT — a normal, polite inbound email -->
+        <section class="pane left">
+          <p class="pane-title"><span class="dotmark" style="background:#8AA6D6"></span>Inbound &middot; support@harborsupply.co</p>
+          <article class="mail">
+            <div class="mhead">
+              <div class="subj">Where&rsquo;s my order?</div>
+              <div class="fromrow">
+                <span class="avatar">DO</span>
+                <span class="who"><b>Dana Okafor</b><span>dana.okafor@harbor-galley.example</span></span>
+                <span class="stamp">today &middot; 9:12 AM</span>
+              </div>
+              <span class="label">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="#8AA6D6" stroke-width="2"/><path d="M12 8v5l3 2" stroke="#8AA6D6" stroke-width="2" stroke-linecap="round"/></svg>
+                Support
+              </span>
+            </div>
+            <div class="mbody">
+              <p>Hi there,</p>
+              <p>I placed order <b>#4471</b> last week and it still hasn&rsquo;t arrived. Could you let me know where it is and when I should expect it? No rush &mdash; just want to plan around it.</p>
+              <p>Thanks so much for your help!</p>
+              <p class="sig">Warm regards,<br>Dana Okafor</p>
+            </div>
+            <span class="normal-chip"><span class="tick"></span> perfectly normal, well-formed message</span>
+          </article>
+        </section>
+
+        <!-- RIGHT — agent config: tools wired, instructions almost empty -->
+        <section class="pane right">
+          <p class="pane-title"><span class="dotmark" style="background:var(--ct-break)"></span>Sift &middot; agent configuration</p>
+          <div class="agentcard">
+            <div class="abar">
+              <span class="g"><svg viewBox="0 0 24 24" fill="none"><path d="M7 4h7l4 4v12H7z" stroke="var(--ct-text-muted)" stroke-width="2" stroke-linejoin="round"/><path d="M14 4v4h4" stroke="var(--ct-text-muted)" stroke-width="2" stroke-linejoin="round"/></svg></span>
+              <span class="t">system-prompt.md</span>
+              <span class="mode">markdown</span>
+            </div>
+
+            <div style="padding:22px 24px 0">
+              <p class="field-label">Instructions <span class="warn-chip">1 line &middot; almost empty</span></p>
+            </div>
+            <div class="instr">
+              <div class="gutter">1<br>2<br>3<br>4</div>
+              <div class="code">
+                <div class="l1">You are a helpful assistant.<span class="caret"></span></div>
+                <div class="blank">&middot;</div>
+                <div class="blank">&middot;</div>
+                <div class="blank">&middot;</div>
+              </div>
+            </div>
+            <p class="instr-note"><span class="x">!</span> no role &middot; no context &middot; no rules &middot; no examples</p>
+
+            <div class="tools-wrap">
+              <div class="tools-head"><span class="k">Connected tools</span><span class="n">4 wired &middot; ready</span></div>
+              <div class="toolgrid">
+                <div class="tool">
+                  <span class="ti"><svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="6" stroke-width="2"/><path d="M15.5 15.5L20 20" stroke-width="2" stroke-linecap="round"/></svg></span>
+                  <span class="tn">Rolodash lookup</span>
+                  <span class="conn"><span class="d"></span>connected</span>
+                </div>
+                <div class="tool">
+                  <span class="ti"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="6" width="16" height="12" rx="2" stroke-width="2"/><path d="M4 8l8 5 8-5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                  <span class="tn">Send reply</span>
+                  <span class="conn"><span class="d"></span>connected</span>
+                </div>
+                <div class="tool">
+                  <span class="ti"><svg viewBox="0 0 24 24" fill="none"><path d="M4 7l7-3 9 3v10l-9 3-7-3z" stroke-width="2" stroke-linejoin="round"/><path d="M11 4v16" stroke-width="2"/></svg></span>
+                  <span class="tn">Order search</span>
+                  <span class="conn"><span class="d"></span>connected</span>
+                </div>
+                <div class="tool">
+                  <span class="ti"><svg viewBox="0 0 24 24" fill="none"><path d="M5 5h8l6 7-6 7H5z" stroke-width="2" stroke-linejoin="round"/><circle cx="9" cy="12" r="1.6" stroke-width="1.6"/></svg></span>
+                  <span class="tn">Apply label</span>
+                  <span class="conn"><span class="d"></span>connected</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="disclaimer">FICTIONAL DEMO &middot; Harbor Supply Co., Sift, Rolodash and Dana Okafor are invented for Crash Test Agents</div>
+    </div>
+
+    <!-- Kill-Counter HUD (global overlay) — Round 1 ticking, break 01 / 25 -->
+    <div class="ct-killcounter" data-state="ticking" aria-label="Kill counter: 1 of 25 breaks">
+      <span class="kc-dot"></span>
+      <span class="kc-label">Breaks</span>
+      <span class="kc-tally"><span class="kc-n">01</span><span class="kc-of">/ 25</span></span>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, initial-scale=1">
+<title>S018 — Hard-prompt correction block (Input / wrong / correct) · Crash Test Agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  /* ===== S018 — SCREEN-SIM. System-prompt builder, Examples section.
+     A three-field correction block: Input (real fumbled email) /
+     What it did wrong (RED) / Correct action (GREEN). A redundant
+     example drifts off to the side, crossed out, with a token-cost tag. ===== */
+  .app { display: grid; grid-template-rows: 96px 1fr 44px; height: 100%; }
+
+  .topbar { display: flex; align-items: center; gap: var(--s5);
+    padding: 0 var(--s7); border-bottom: 1px solid var(--ct-line); background: var(--ct-surface); }
+  .brandchip { display: flex; align-items: center; gap: var(--s3); }
+  .brandchip .glyph { width: 40px; height: 40px; border-radius: 9px; display: grid; place-items: center;
+    background: var(--ct-surface-raised); border: 1px solid var(--ct-line); }
+  .brandchip .name { font-weight: 700; font-size: var(--ct-ui-2xl); letter-spacing: -0.01em; }
+  .topbar .sub { color: var(--ct-text-muted); font-size: var(--ct-ui-lg); }
+  .topbar .spacer { flex: 1; }
+  .tabs { display: flex; gap: 6px; }
+  .tab { font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); color: var(--ct-text-muted);
+    padding: 9px 18px; border-radius: var(--ct-r-pill); border: 1px solid transparent; }
+  .tab.active { color: var(--ct-accent-glow); border-color: color-mix(in srgb, var(--ct-accent) 45%, var(--ct-line));
+    background: var(--ct-accent-wash); }
+
+  .body { position: relative; padding: var(--s7) var(--s8); overflow: hidden;
+    display: grid; grid-template-columns: 1140px 1fr; gap: var(--s7); align-content: start; }
+
+  .sec-head { grid-column: 1 / -1; display: flex; align-items: baseline; gap: 18px; margin-bottom: 4px; }
+  .sec-head .h { font-family: var(--ct-font-mono); font-size: var(--ct-ui-md); color: var(--ct-text-muted); }
+  .sec-head .h b { color: var(--ct-text); }
+  .sec-head .rule { flex: 1; height: 1px; background: var(--ct-line); align-self: center; }
+  .sec-head .cnt { font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); color: var(--ct-text-muted); }
+
+  /* ---- the correction block (the kept example) ---- */
+  .block { background: var(--ct-surface); border: 1px solid var(--ct-line);
+    border-radius: var(--ct-r-lg); box-shadow: var(--ct-shadow-2); overflow: hidden; }
+  .block .bh { display: flex; align-items: center; gap: 14px; padding: 18px 26px;
+    background: var(--ct-surface-raised); border-bottom: 1px solid var(--ct-line); }
+  .block .bh .pin { width: 30px; height: 30px; border-radius: 8px; display: grid; place-items: center;
+    background: var(--ct-accent-wash); border: 1px solid var(--ct-accent); }
+  .block .bh .pin svg { width: 18px; height: 18px; }
+  .block .bh .pin svg [stroke] { stroke: var(--ct-accent); }
+  .block .bh .bt { font-family: var(--ct-font-body); font-weight: 700; font-size: var(--ct-ui-xl); color: var(--ct-text); }
+  .block .bh .kept { margin-left: auto; font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs);
+    text-transform: uppercase; letter-spacing: 0.08em; color: var(--ct-fixed-glow);
+    border: 1px solid color-mix(in srgb, var(--ct-fixed) 45%, var(--ct-line)); border-radius: var(--ct-r-pill);
+    padding: 5px 14px; background: var(--ct-fixed-wash); }
+
+  .field { padding: 22px 26px; border-bottom: 1px solid var(--ct-line); }
+  .field:last-child { border-bottom: 0; }
+  .field .lab { display: inline-flex; align-items: center; gap: 10px; font-family: var(--ct-font-mono);
+    font-size: var(--ct-ui-sm); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; margin-bottom: 12px; }
+  .field .lab .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .field .val { font-family: var(--ct-font-mono); font-size: var(--ct-ui-md); line-height: 1.5; color: var(--ct-text); }
+
+  .field.input .lab { color: var(--ct-text-muted); }
+  .field.input .lab .dot { background: var(--ct-text-muted); }
+  .field.input .val { color: var(--ct-text-muted); }
+  .field.input .val .em { color: var(--ct-text); }
+  .field.input .val .glitch { color: var(--ct-break-glow); }
+
+  .field.wrong { background: linear-gradient(180deg, transparent, var(--ct-break-wash)); }
+  .field.wrong .lab { color: var(--ct-break-glow); }
+  .field.wrong .lab .dot { background: var(--ct-break); box-shadow: 0 0 10px var(--ct-break); }
+  .field.wrong .val { color: var(--ct-text); }
+  .field.wrong .val .x { color: var(--ct-break-glow); font-weight: 700; }
+
+  .field.correct { background: linear-gradient(180deg, transparent, var(--ct-fixed-wash)); }
+  .field.correct .lab { color: var(--ct-fixed-glow); }
+  .field.correct .lab .dot { background: var(--ct-fixed); box-shadow: 0 0 10px var(--ct-fixed); }
+  .field.correct .val { color: var(--ct-text); }
+  .field.correct .val .ok { color: var(--ct-fixed-glow); font-weight: 700; }
+
+  /* ---- right rail: the discarded redundant example, drifting off ---- */
+  .rail { position: relative; padding-top: 60px; }
+  .discard { position: relative; width: 520px; margin-left: 30px;
+    background: var(--ct-surface); border: 1px dashed var(--ct-line); border-radius: var(--ct-r-lg);
+    padding: 22px 26px; box-shadow: var(--ct-shadow-1); opacity: 0.5;
+    transform: rotate(4.5deg) translate(46px, 24px); filter: saturate(0.5); }
+  .discard::after { content: ""; position: absolute; left: 26px; right: 26px; top: 50%;
+    height: 2px; background: var(--ct-break); box-shadow: 0 0 8px var(--ct-break); transform: rotate(-2deg); }
+  .discard .dh { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--ct-text-muted); margin-bottom: 12px; }
+  .discard .dl { font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); color: var(--ct-text-muted);
+    line-height: 1.5; text-decoration: line-through; text-decoration-color: color-mix(in srgb, var(--ct-break) 70%, transparent); }
+
+  .token-tag { position: absolute; left: 70px; top: 8px; z-index: 3;
+    display: inline-flex; align-items: center; gap: 10px; padding: 10px 18px; border-radius: var(--ct-r-pill);
+    background: var(--ct-surface-raised); border: 1px solid color-mix(in srgb, var(--ct-warn) 55%, var(--ct-line));
+    box-shadow: var(--ct-shadow-2); font-family: var(--ct-font-mono); }
+  .token-tag .coin { width: 20px; height: 20px; border-radius: 50%; background: var(--ct-warn-deep);
+    border: 1px solid var(--ct-warn); display: grid; place-items: center; color: var(--ct-warn);
+    font-size: 13px; font-weight: 700; }
+  .token-tag .cost { color: var(--ct-warn); font-weight: 700; font-size: var(--ct-ui-md); }
+  .token-tag .cost .u { color: var(--ct-text-muted); font-weight: 400; }
+
+  .note { position: absolute; left: 30px; bottom: 96px; width: 560px;
+    font-family: var(--ct-font-body); font-size: var(--ct-caption); font-weight: 600;
+    color: var(--ct-text); line-height: 1.25; }
+  .note .muted { color: var(--ct-text-muted); font-weight: 500; font-size: var(--ct-lower); display: block; margin-top: 10px; }
+
+  .disclaimer { display: flex; align-items: center; justify-content: center; background: var(--ct-surface);
+    border-top: 1px solid var(--ct-line); color: var(--ct-text-muted); font-family: var(--ct-font-mono);
+    font-size: var(--ct-ui-xs); letter-spacing: 0.03em; }
+</style>
+</head>
+<body>
+  <div class="stage" role="img"
+       aria-label="System-prompt builder Examples section: a correction block with three fields, Input holding a real fumbled email, What it did wrong in red, Correct action in green; a redundant example drifts off crossed out with a token-cost tag saying don't pay for examples it already gets right">
+    <div class="grid-bg"></div>
+    <!-- Kill-Counter HUD (global overlay) — Round 1, ticking at 03/25 -->
+    <div class="ct-killcounter" data-state="ticking" aria-label="Kill counter: 3 of 25 breaks">
+      <span class="kc-dot"></span>
+      <span class="kc-label">Breaks</span>
+      <span class="kc-tally"><span class="kc-n">03</span><span class="kc-of">/ 25</span></span>
+    </div>
+
+    <div class="app">
+      <header class="topbar">
+        <div class="brandchip">
+          <span class="glyph">
+            <svg width="26" height="26" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+              <path d="M12 16h40M18 32h28M26 48h12" stroke="var(--ct-accent)" stroke-width="5" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <span class="name">Sift</span>
+        </div>
+        <span class="sub">system prompt · builder</span>
+        <div class="spacer"></div>
+        <div class="tabs">
+          <span class="tab">Role</span>
+          <span class="tab">Rules</span>
+          <span class="tab active">Examples</span>
+          <span class="tab">Final notes</span>
+        </div>
+      </header>
+
+      <div class="body">
+        <div class="sec-head">
+          <span class="h"><b>## Examples</b> — show it the miss, not the wins</span>
+          <span class="rule"></span>
+          <span class="cnt">1 correction · 1 discarded</span>
+        </div>
+
+        <!-- kept correction example -->
+        <section class="block">
+          <div class="bh">
+            <span class="pin"><svg viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-5" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><rect x="4" y="4" width="16" height="16" rx="3" stroke-width="2.2"/></svg></span>
+            <span class="bt">Correction · the email it fumbled</span>
+            <span class="kept">keep — teaches something</span>
+          </div>
+
+          <div class="field input">
+            <span class="lab"><span class="dot"></span> Input — real customer email</span>
+            <div class="val">From: <span class="em">Dana Okafor</span> &lt;dana.okafor@example.com&gt;<br>
+              "hey so <span class="em">order 4471</span> still not here?? tracking says <span class="glitch">&#9618;&#9618;</span> nothing, this is the 2nd time i'm asking — do i get a refund or what"</div>
+          </div>
+
+          <div class="field wrong">
+            <span class="lab"><span class="dot"></span> What it did wrong</span>
+            <div class="val"><span class="x">&#10007;</span> Auto-replied <b>"Your refund of $128.40 has been processed."</b> — no refund was ever issued, and it never checked the order in Rolodash.</div>
+          </div>
+
+          <div class="field correct">
+            <span class="lab"><span class="dot"></span> Correct action</span>
+            <div class="val"><span class="ok">&#10003;</span> Look up <b>#4471</b> in Rolodash first. If no refund exists, say so plainly, give the real shipment status, and offer to start one — <b>never invent a transaction.</b></div>
+          </div>
+        </section>
+
+        <!-- right rail: discarded redundant example -->
+        <aside class="rail">
+          <div class="token-tag">
+            <span class="coin">&#8383;</span>
+            <span class="cost">&minus;128 tokens <span class="u">/ every run</span></span>
+          </div>
+          <div class="discard" aria-label="Discarded redundant example, crossed out">
+            <div class="dh">redundant example &middot; already handled</div>
+            <div class="dl">Input: "What are your hours?"<br>Correct: "We're open 9&ndash;5 ET, Mon&ndash;Fri."<br>&mdash; it already gets this right, every time.</div>
+          </div>
+
+          <div class="note">
+            Don't pay tokens for examples it already gets right.
+            <span class="muted">Every example rides in the prompt on <i>every</i> run — spend them only on the misses.</span>
+          </div>
+        </aside>
+      </div>
+
+      <div class="disclaimer">FICTIONAL DEMO · Harbor Supply Co., Sift, Rolodash and all senders are invented for Crash Test Agents</div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, initial-scale=1">
+<title>S039 — ROUND 5 slate "secrets & permissions" · Crash Test Agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  /* ===== S039 — ROUND 5 title slate (reusable §7.2 template, HEAVIER/DARKER
+     variant). "the one that ends careers" — high-stakes, ominous treatment:
+     deeper vignette, a low red under-glow, a key + shield lockup. ===== */
+
+  /* heavy dark vignette + ominous low red bloom rising from the floor */
+  .atmos { position: absolute; inset: 0; z-index: 0; }
+  .atmos .vig { position: absolute; inset: 0;
+    background: radial-gradient(120% 100% at 50% 42%, rgba(11,14,20,0) 0%, rgba(5,7,12,0.55) 62%, rgba(3,4,8,0.95) 100%); }
+  .atmos .bloom { position: absolute; left: 50%; bottom: -260px; transform: translateX(-50%);
+    width: 1500px; height: 640px; border-radius: 50%;
+    background: radial-gradient(closest-side, rgba(178,31,22,0.28), rgba(178,31,22,0) 72%);
+    filter: blur(8px); }
+
+  .slate { position: absolute; inset: 0; z-index: 2; display: grid; place-items: center; }
+  .slate-inner { text-align: center; }
+
+  .kicker { font-family: var(--ct-font-mono); text-transform: uppercase; letter-spacing: 0.18em;
+    font-size: var(--ct-lower); color: var(--ct-break-glow); display: inline-flex; align-items: center; gap: 16px; }
+  .kicker .tick { width: 8px; height: 8px; border-radius: 50%; background: var(--ct-break);
+    box-shadow: 0 0 12px var(--ct-break); }
+
+  /* key + shield icon lockup above the number */
+  .emblem { display: flex; align-items: center; justify-content: center; gap: 34px; margin: 40px 0 28px; }
+  .emblem .ic { width: 96px; height: 96px; border-radius: var(--ct-r-lg); display: grid; place-items: center;
+    background: var(--ct-surface); border: 1px solid color-mix(in srgb, var(--ct-break) 42%, var(--ct-line));
+    box-shadow: var(--ct-shadow-2), inset 0 0 40px rgba(255,59,48,0.06); }
+  .emblem .ic svg { width: 56px; height: 56px; }
+  .emblem .ic svg [stroke] { stroke: var(--ct-break-glow); }
+  .emblem .sep { width: 1px; height: 64px; background: color-mix(in srgb, var(--ct-break) 30%, var(--ct-line)); }
+
+  .round { display: flex; align-items: stretch; justify-content: center; gap: 32px; margin-bottom: 26px; }
+  .round .spine { width: 12px; border-radius: 2px; flex: 0 0 12px;
+    background: linear-gradient(to bottom, var(--ct-break) 0 50%, var(--ct-fixed) 50% 100%);
+    box-shadow: 0 0 26px rgba(255,59,48,0.45), 0 0 26px rgba(43,213,118,0.28); }
+  .round .lab { font-family: var(--ct-font-display); font-stretch: 125%; font-weight: 900;
+    text-transform: uppercase; letter-spacing: 0.03em; line-height: 0.9; font-size: 200px; color: var(--ct-text);
+    text-shadow: 0 0 60px rgba(255,59,48,0.18); }
+
+  .sub { font-family: var(--ct-font-display); font-stretch: 125%; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.04em; font-size: var(--ct-h3); color: var(--ct-text); }
+  .sub .amp { color: var(--ct-break-glow); margin: 0 6px; }
+  .caption { font-family: var(--ct-font-body); font-weight: 500; font-size: var(--ct-caption);
+    color: var(--ct-text-muted); margin-top: 18px; }
+  .rulebar { width: 680px; height: 1px; margin: 40px auto 0;
+    background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--ct-break) 40%, var(--ct-line)), transparent); }
+</style>
+</head>
+<body>
+  <div class="stage" role="img"
+       aria-label="Ominous Round 5 slate reading secrets and permissions, with a key and shield emblem, high-stakes dark treatment with a low red glow">
+    <div class="grid-bg"></div>
+
+    <div class="atmos" aria-hidden="true">
+      <div class="bloom"></div>
+      <div class="vig"></div>
+    </div>
+
+    <div class="slate">
+      <div class="slate-inner">
+        <div class="kicker"><span class="tick"></span> the one that ends careers <span class="tick"></span></div>
+
+        <div class="emblem" aria-hidden="true">
+          <span class="ic">
+            <!-- key -->
+            <svg viewBox="0 0 64 64" fill="none"><circle cx="22" cy="24" r="11" stroke-width="4"/><path d="M30 30l22 22m-8 0h8v-8m-14 0l6 6" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="sep"></span>
+          <span class="ic">
+            <!-- shield / lock -->
+            <svg viewBox="0 0 64 64" fill="none"><path d="M32 8l20 7v13c0 13-8.5 22-20 28-11.5-6-20-15-20-28V15l20-7z" stroke-width="4" stroke-linejoin="round"/><rect x="24" y="29" width="16" height="13" rx="2" stroke-width="3.5"/><path d="M27 29v-4a5 5 0 0110 0v4" stroke-width="3.5" stroke-linecap="round"/></svg>
+          </span>
+        </div>
+
+        <div class="round">
+          <span class="spine" aria-hidden="true"></span>
+          <span class="lab">Round&nbsp;5</span>
+        </div>
+        <div class="sub">Secrets <span class="amp">&amp;</span> permissions</div>
+        <div class="caption">plaintext keys, over-privilege &mdash; and how to lock it down</div>
+        <div class="rulebar" aria-hidden="true"></div>
+      </div>
+    </div>
+
+    <!-- Kill-Counter HUD (global overlay) — Round 5 opens, ticking at 21/25 -->
+    <div class="ct-killcounter" data-state="ticking" aria-label="Kill counter: 21 of 25 breaks">
+      <span class="kc-dot"></span>
+      <span class="kc-label">Breaks</span>
+      <span class="kc-tally"><span class="kc-n">21</span><span class="kc-of">/ 25</span></span>
+    </div>
+  </div>
+</body>
+</html>

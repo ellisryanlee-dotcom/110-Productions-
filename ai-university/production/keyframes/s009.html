@@ -29,15 +29,14 @@
     font-size: var(--ct-ui-xs); color: var(--ct-text-muted); letter-spacing: 0.1em; }
   .pnode .ico { width: 76px; height: 76px; display: grid; place-items: center; border-radius: 16px;
     background: var(--ct-surface-raised); border: 1px solid var(--ct-line); }
-  .pnode .ico svg { width: 46px; height: 46px; }
-  .pnode .ico svg [stroke] { stroke: var(--ct-text); }
+  .pnode .ico svg { width: 46px; height: 46px; stroke: var(--ct-text); fill: none; }
   .pnode .nt { font-family: var(--ct-font-body); font-weight: 600; font-size: var(--ct-ui-2xl); color: var(--ct-text); text-align: center; }
 
   /* Rolodash = the CRM node, accent-highlighted since it names the fake tool */
   .pnode.crm { border-color: color-mix(in srgb, var(--ct-accent) 45%, var(--ct-line));
     box-shadow: 0 0 30px rgba(56,189,248,0.18), var(--ct-shadow-2); }
   .pnode.crm .ico { border-color: color-mix(in srgb, var(--ct-accent) 55%, var(--ct-line)); }
-  .pnode.crm .ico svg [stroke] { stroke: var(--ct-accent); }
+  .pnode.crm .ico svg { stroke: var(--ct-accent); }
   .pnode.crm .nt .brand { color: var(--ct-accent-glow); }
 
   .arrow { flex: 1; height: 3px; background: var(--ct-line); position: relative; }
