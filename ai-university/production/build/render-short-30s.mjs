@@ -33,94 +33,71 @@ const audio = join(work, 'audio.m4a');
 execFileSync('ffmpeg', ['-y', '-i', AUDIO_SRC, '-vn', '-c:a', 'aac', '-b:a', '192k', audio],
   { stdio: ['ignore', 'ignore', 'inherit'] });
 
-// 1) render frames with a bounded concurrency pool. Chrome writes the PNG then
-//    hangs (fresh --user-data-dir never self-exits), so we spawn it, poll for the
-//    finished screenshot, then kill the process — far faster than waiting on exit.
+// 1) render frames. Chrome writes the PNG but won't self-exit here, and its
+//    renderer/gpu/crashpad helpers setsid()/re-parent away from the launched
+//    process, so per-process tree/group/token kills all leak helpers that pile up
+//    and eventually thrash the box. Robust + safe fix: snapshot every Google Chrome
+//    PID that exists BEFORE we start (Ryan's browser, if any), render in barrier
+//    batches, and between batches SIGKILL every Google Chrome PID that isn't in the
+//    snapshot. Complete (catches all our helpers regardless of parentage) and safe
+//    (a pre-existing browser's PIDs are never in the kill set).
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 function pngStable(p) { try { return statSync(p).size > 20000; } catch { return false; } }
+const pngPath = (i) => join(work, 'f_' + String(i).padStart(5, '0') + '.png');
 
-// Chrome writes the screenshot but won't self-exit here, and its renderer/gpu
-// helpers setsid() out of the process group AND don't carry the profile path, so
-// neither a group-kill nor pkill-by-token reaps them — and they're byte-identical
-// to a GUI Chrome's helpers, so a blanket pkill would nuke Ryan's browser too.
-// Surgical fix: while our main Chrome is still alive, walk its descendant PID tree
-// (pgrep -P) and SIGKILL exactly that set. Never touches any other Chrome.
-function descendants(pid) {
-  let kids = [];
-  try { kids = execFileSync('pgrep', ['-P', String(pid)], { stdio: ['ignore', 'pipe', 'ignore'] })
-    .toString().trim().split('\n').filter(Boolean).map(Number); } catch {}
-  const out = [];
-  for (const k of kids) out.push(k, ...descendants(k));
-  return out;
+function listChrome() {
+  try {
+    return execFileSync('pgrep', ['-f', 'Google Chrome'], { stdio: ['ignore', 'pipe', 'ignore'] })
+      .toString().trim().split('\n').filter(Boolean).map(Number);
+  } catch { return []; }
 }
-function killTree(pid) {
-  const pids = [...new Set([...descendants(pid), pid])];   // enumerate BEFORE killing
-  for (const p of pids) { try { process.kill(p, 'SIGKILL'); } catch {} }
-}
-// The renderer/gpu helpers are reaped by killTree (ppid=main), but each frame also
-// leaves one idle chrome_crashpad_handler that instantly re-parents to launchd
-// (ppid=1) — unreachable by tree or token. Sweep those orphans periodically. This
-// only targets Google Chrome's crash MONITOR (never a browser window/tab), so it
-// won't close Ryan's Chrome; worst case it clears a stale crash reporter.
-function sweepCrashpads() {
-  let lines = [];
-  try { lines = execFileSync('ps', ['-Ao', 'pid=,ppid=,command='], { stdio: ['ignore', 'pipe', 'ignore'], maxBuffer: 8 << 20 })
-    .toString().split('\n'); } catch { return; }
-  for (const ln of lines) {
-    const m = ln.match(/^\s*(\d+)\s+(\d+)\s+(.*)$/);
-    if (!m) continue;
-    const [pid, ppid, cmd] = [Number(m[1]), Number(m[2]), m[3]];
-    if (ppid === 1 && cmd.includes('Google Chrome Framework') && cmd.includes('chrome_crashpad_handler')) {
-      try { process.kill(pid, 'SIGKILL'); } catch {}
-    }
-  }
-}
-async function renderFrame(i) {
-  const pad = String(i).padStart(5, '0');
-  const png = join(work, 'f_' + pad + '.png');
-  const prof = join(work, 'prof_' + pad);
-  for (let attempt = 0; attempt < 2; attempt++) {
-    const child = spawn(CHROME, [
-      '--headless=new', '--no-sandbox', '--no-first-run', '--no-default-browser-check',
-      '--disable-extensions', '--disable-background-networking', '--disable-gpu',
-      '--hide-scrollbars', '--force-device-scale-factor=1', '--window-size=1920,1080',
-      '--virtual-time-budget=1200', '--user-data-dir=' + prof,
-      '--screenshot=' + png, `file://${SCENE}?f=${i}`,
-    ], { stdio: 'ignore', detached: true });
-    let killed = false;
-    const hardCap = setTimeout(() => { killed = true; killTree(child.pid); }, 15000);
+const SNAP = new Set(listChrome());
+function sweepMine() { for (const p of listChrome()) if (!SNAP.has(p)) { try { process.kill(p, 'SIGKILL'); } catch {} } }
+
+function launchFrame(i) {
+  const png = pngPath(i);
+  const child = spawn(CHROME, [
+    '--headless=new', '--no-sandbox', '--no-first-run', '--no-default-browser-check',
+    '--disable-extensions', '--disable-background-networking', '--disable-gpu',
+    '--hide-scrollbars', '--force-device-scale-factor=1', '--window-size=1920,1080',
+    '--virtual-time-budget=1200', '--user-data-dir=' + join(work, 'prof_' + String(i).padStart(5, '0')),
+    '--screenshot=' + png, `file://${SCENE}?f=${i}`,
+  ], { stdio: 'ignore', detached: true });
+  return new Promise(async (res) => {
     for (let waited = 0; waited < 15000; waited += 150) {
       if (pngStable(png)) { const a = statSync(png).size; await sleep(120); if (statSync(png).size === a) break; }
-      if (child.exitCode !== null || killed) break;
+      if (child.exitCode !== null) break;
       await sleep(150);
     }
-    clearTimeout(hardCap);
-    killTree(child.pid);        // main still alive here => full tree is reachable
-    if (pngStable(png)) return png;
-  }
-  throw new Error('frame render failed: ' + i);
+    res(pngStable(png));
+  });
 }
 
-let done = 0;
-async function run() {
-  let next = 0;
-  async function worker() {
-    while (next < N) {
-      const i = next++;
-      await renderFrame(i);
-      if (++done % 90 === 0) console.log(`  rendered ${done}/${N} frames`);
-    }
+// barrier batches: launch CONC frames, await all screenshots, then reap the batch
+async function renderRange(indices) {
+  let done = 0;
+  for (let s = 0; s < indices.length; s += CONC) {
+    const chunk = indices.slice(s, s + CONC);
+    await Promise.all(chunk.map(launchFrame));
+    sweepMine();
+    done += chunk.length;
+    if (done % 90 === 0 || s + CONC >= indices.length) console.log(`  rendered ${done}/${indices.length}`);
   }
-  await Promise.all(Array.from({ length: CONC }, worker));
 }
-console.log(`rendering ${N} frames @ ${FPS}fps (conc ${CONC})…`);
-const sweeper = setInterval(sweepCrashpads, 8000);       // reap orphaned crash monitors as we go
-await run();
-clearInterval(sweeper);
-sweepCrashpads();                                        // final cleanup
+
+console.log(`rendering ${N} frames @ ${FPS}fps (batch ${CONC}); pre-existing Chrome PIDs: ${SNAP.size}`);
+await renderRange(Array.from({ length: N }, (_, i) => i));
+const missingFrames = () => Array.from({ length: N }, (_, i) => i).filter((i) => !pngStable(pngPath(i)));
+for (let pass = 0; pass < 4; pass++) {
+  const missing = missingFrames();
+  if (!missing.length) break;
+  console.log(`retry pass ${pass + 1}: ${missing.length} missing frame(s)`);
+  await renderRange(missing);
+}
+sweepMine();
+const missing = missingFrames();
+if (missing.length) { console.error(`still missing ${missing.length} frames: ${missing.slice(0, 10).join(',')}… — aborting`); process.exit(2); }
 console.log('frames complete');
-const rendered = Array.from({ length: N }, (_, i) => join(work, 'f_' + String(i).padStart(5, '0') + '.png')).filter(pngStable).length;
-if (rendered !== N) { console.error(`only ${rendered}/${N} frames rendered — aborting before assembly`); process.exit(2); }
 
 // 2) frames -> silent H.264, then mux the reused audio
 const silent = join(work, 'silent.mp4');
