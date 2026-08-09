@@ -1,0 +1,3478 @@
+{
+ "channel": "@nateherk",
+ "generated_at": "2026-08-09",
+ "git_archive_commit": "b8d02e5",
+ "drive_folder_id": null,
+ "id_policy": {
+  "next_kc": 401,
+  "note": "kc ids are allocated from next_kc by the orchestrator at dispatch; legacy ranges 0001-0016, 0101-0126, 0301-0304 are in use; scratchpad batch manifests are obsolete. sc id = view rank at rip time."
+ },
+ "context_policy": {
+  "source_token_ceiling_per_agent": 25000,
+  "note": "an agent's context may carry at most ~25K tokens of raw source text in total; videos above the ceiling are sharded into chapter-span assignments across multiple agents (tools/excerpt.py enforces the per-call cap)"
+ },
+ "videos": [
+  {
+   "id": "Ey18PDiaAYI",
+   "rank": 1,
+   "title": "Build & Sell n8n AI Agents (8+ Hour Course, No Code)",
+   "url": "https://www.youtube.com/watch?v=Ey18PDiaAYI",
+   "length": "8:26:39",
+   "seconds": 30399,
+   "views_text": "1.8M views",
+   "views_exact": "1,807,751 views",
+   "date_text": "May 23, 2025",
+   "chapters": [
+    {
+     "t": "00:00",
+     "title": "Course Agenda (8+ Hours)"
+    },
+    {
+     "t": "01:43",
+     "title": "AI Agents Simplified"
+    },
+    {
+     "t": "09:02",
+     "title": "The Industry Opportunity"
+    },
+    {
+     "t": "12:05",
+     "title": "n8n Foundations (workflows, variables, JSON)"
+    },
+    {
+     "t": "40:45",
+     "title": "n8n Data Types"
+    },
+    {
+     "t": "48:25",
+     "title": "23 Workflow Templates FREE"
+    },
+    {
+     "t": "49:09",
+     "title": "Step by Step AI Workflows"
+    },
+    {
+     "t": "51:25",
+     "title": "1) RAG Pipeline & Chatbot"
+    },
+    {
+     "t": "01:11:02",
+     "title": "2) Customer Support Workflow"
+    },
+    {
+     "t": "01:22:06",
+     "title": "3) LinkedIn Content Creator Workflow"
+    },
+    {
+     "t": "01:32:58",
+     "title": "Bonus Workflow: Invoice Processing"
+    },
+    {
+     "t": "02:09:54",
+     "title": "APIs Explained Simply"
+    },
+    {
+     "t": "02:34:21",
+     "title": "Perplexity API Setup"
+    },
+    {
+     "t": "02:40:36",
+     "title": "Firecrawl API Setup"
+    },
+    {
+     "t": "02:54:48",
+     "title": "Apify API Setup"
+    },
+    {
+     "t": "03:02:50",
+     "title": "Image Generation API Setup"
+    },
+    {
+     "t": "03:21:11",
+     "title": "Video Generation API Setup"
+    },
+    {
+     "t": "03:47:15",
+     "title": "Don't Use AI Agents Wrong"
+    },
+    {
+     "t": "04:00:26",
+     "title": "Build Your First Agent!"
+    },
+    {
+     "t": "04:24:06",
+     "title": "Postgres & Supabase Setup"
+    },
+    {
+     "t": "04:34:46",
+     "title": "Multi Agent System Architecture"
+    },
+    {
+     "t": "04:55:22",
+     "title": "4 Agent Architectures"
+    },
+    {
+     "t": "05:12:52",
+     "title": "Prompting AI Agents"
+    },
+    {
+     "t": "05:39:58",
+     "title": "Output Parsing"
+    },
+    {
+     "t": "05:46:25",
+     "title": "Human in the Loop"
+    },
+    {
+     "t": "06:02:16",
+     "title": "Error Workflows"
+    },
+    {
+     "t": "06:11:47",
+     "title": "Dynamic Brain"
+    },
+    {
+     "t": "06:25:03",
+     "title": "Webhooks"
+    },
+    {
+     "t": "06:31:24",
+     "title": "Voice Email Agent"
+    },
+    {
+     "t": "06:47:31",
+     "title": "Front End w/ Lovable"
+    },
+    {
+     "t": "07:06:59",
+     "title": "What is MCP?"
+    },
+    {
+     "t": "07:19:49",
+     "title": "MCP & Self Host n8n Setup"
+    },
+    {
+     "t": "07:45:05",
+     "title": "Lessons from 6 Months of Building Agents"
+    },
+    {
+     "t": "08:25:36",
+     "title": "If You Made it Here, You Rock"
+    }
+   ],
+   "transcript": {
+    "file": "transcripts/Ey18PDiaAYI.md",
+    "sha256": "6f664b6ba8c9174ee262475b43a3b742f41438fade97b08c6d813d451aa5fda5",
+    "bytes": 633003,
+    "est_tokens": 158250,
+    "git_archive_commit": "b8d02e5",
+    "drive_file_id": null,
+    "drive_status": "pending_bulk_upload"
+   },
+   "extraction": {
+    "status": "partial",
+    "kc_ids": [
+     "kc-0001",
+     "kc-0002",
+     "kc-0003",
+     "kc-0004",
+     "kc-0005",
+     "kc-0006",
+     "kc-0007",
+     "kc-0008",
+     "kc-0009",
+     "kc-0010",
+     "kc-0011",
+     "kc-0012",
+     "kc-0013",
+     "kc-0014",
+     "kc-0015",
+     "kc-0016"
+    ],
+    "sc_id": "sc-0001",
+    "sc_written": false,
+    "chapter_coverage": {},
+    "notes": "16 cards kc-0001..0016 — covered through orchestration/workflow patterns; later modules (approx. chapters after ~5h mark: selling, client delivery) NOT yet extracted; style card missing"
+   }
+  },
+  {
+   "id": "9FuNtfsnRNo",
+   "rank": 2,
+   "title": "I Built the Ultimate Team of AI Agents in n8n With No Code (Free Template)",
+   "url": "https://www.youtube.com/watch?v=9FuNtfsnRNo",
+   "length": "23:45",
+   "seconds": 1425,
+   "views_text": "1.1M views",
+   "views_exact": "1,111,853 views",
+   "date_text": "Feb 2, 2025",
+   "chapters": [
+    {
+     "t": "00:00",
+     "title": "The Ultimate Personal Assistant"
+    },
+    {
+     "t": "00:48",
+     "title": "Calendar & Email Demos"
+    },
+    {
+     "t": "04:17",
+     "title": "Blog Creation Demo"
+    },
+    {
+     "t": "05:29",
+     "title": "One More Demo"
+    },
+    {
+     "t": "06:16",
+     "title": "Download This Template (Free)"
+    },
+    {
+     "t": "07:10",
+     "title": "Voice/Text Input"
+    },
+    {
+     "t": "08:52",
+     "title": "Ultimate Assistant Prompt"
+    },
+    {
+     "t": "10:24",
+     "title": "Calling Workflows as Tools"
+    },
+    {
+     "t": "12:55",
+     "title": "Email Agent Breakdown"
+    },
+    {
+     "t": "15:37",
+     "title": "Configuring The Tools ($FromAI)"
+    },
+    {
+     "t": "18:58",
+     "title": "Calendar Agent Breakdown"
+    },
+    {
+     "t": "20:45",
+     "title": "Contact Agent Breakdown"
+    },
+    {
+     "t": "21:39",
+     "title": "Content Creator Agent"
+    }
+   ],
+   "transcript": {
+    "file": "transcripts/9FuNtfsnRNo.md",
+    "sha256": "36df60ca1f9d4924b0cd18912037161335de1650bc1c77891cabdae9b55ba0ac",
+    "bytes": 30900,
+    "est_tokens": 7725,
+    "git_archive_commit": "b8d02e5",
+    "drive_file_id": null,
+    "drive_status": "pending_bulk_upload"
+   },
+   "extraction": {
+    "status": "partial",
+    "kc_ids": [
+     "kc-0301",
+     "kc-0302",
+     "kc-0303",
+     "kc-0304"
+    ],
+    "sc_id": "sc-0002",
+    "sc_written": false,
+    "chapter_coverage": {},
+    "notes": "4 cards kc-0301..0304 — core architecture covered; interface/memory chapters unverified; style card missing"
+   }
+  },
+  {
+   "id": "mpALXah_PBg",
+   "rank": 3,
+   "title": "Build & Sell with Claude Code (10+ Hour Course)",
+   "url": "https://www.youtube.com/watch?v=mpALXah_PBg",
+   "length": "10:00:06",
+   "seconds": 36006,
+   "views_text": "900K views",
+   "views_exact": "900,741 views",
+   "date_text": "Mar 12, 2026",
+   "chapters": [
+    {
+     "t": "00:00",
+     "title": "Course Outline"
+    },
+    {
+     "t": "01:14",
+     "title": "Why Learn This"
+    },
+    {
+     "t": "26:08",
+     "title": "Getting Set Up"
+    },
+    {
+     "t": "41:25",
+     "title": "Operations"
+    },
+    {
+     "t": "50:53",
+     "title": "Tokens and Context Windows"
+    },
+    {
+     "t": "55:10",
+     "title": "Claude.md"
+    },
+    {
+     "t": "58:57",
+     "title": "Building Your First Workflow"
+    },
+    {
+     "t": "1:25:05",
+     "title": "Building Second Workflow"
+    },
+    {
+     "t": "1:50:43",
+     "title": "Deploying Automations"
+    },
+    {
+     "t": "3:05:46",
+     "title": "Project Architecture & Commands"
+    },
+    {
+     "t": "3:17:39",
+     "title": "RAG"
+    },
+    {
+     "t": "3:32:59",
+     "title": "Turning n8n Workflow into App"
+    },
+    {
+     "t": "4:12:42",
+     "title": "Website Building Hacks"
+    },
+    {
+     "t": "4:40:07",
+     "title": "3D Animated Websites"
+    },
+    {
+     "t": "5:00:02",
+     "title": "APIs and MCPs"
+    },
+    {
+     "t": "5:28:16",
+     "title": "Google CLI"
+    },
+    {
+     "t": "5:39:42",
+     "title": "Building Your Own Executive Assistant"
+    },
+    {
+     "t": "6:08:03",
+     "title": "Skills"
+    },
+    {
+     "t": "6:51:30",
+     "title": "Sub-agents"
+    },
+    {
+     "t": "7:11:20",
+     "title": "Agent Teams"
+    },
+    {
+     "t": "7:27:30",
+     "title": "Browser Automation"
+    },
+    {
+     "t": "7:42:30",
+     "title": "Permissions & Context Management"
+    },
+    {
+     "t": "7:50:09",
+     "title": "GitHub & Worktrees"
+    },
+    {
+     "t": "7:56:45",
+     "title": "Fun Hacks"
+    },
+    {
+     "t": "8:25:06",
+     "title": "The Selling AI Mindset"
+    },
+    {
+     "t": "8:39:41",
+     "title": "Finding Clients"
+    },
+    {
+     "t": "8:54:01",
+     "title": "First Client in 7 Days"
+    },
+    {
+     "t": "9:14:56",
+     "title": "Pricing AI Workflows"
+    },
+    {
+     "t": "9:35:36",
+     "title": "Delivering AI Projects"
+    },
+    {
+     "t": "9:58:55",
+     "title": "Thank You! Join AIS FREE"
+    }
+   ],
+   "transcript": {
+    "file": "transcripts/mpALXah_PBg.md",
+    "sha256": "b02598e6aebfffeb561c7d2256c47db8640f7a973af5194b829d2af2bf9ed871",
+    "bytes": 805126,
+    "est_tokens": 201281,
+    "git_archive_commit": "b8d02e5",
+    "drive_file_id": null,
+    "drive_status": "pending_bulk_upload"
+   },
+   "extraction": {
+    "status": "partial",
+    "kc_ids": [
+     "kc-0101",
+     "kc-0102",
+     "kc-0103",
+     "kc-0104",
+     "kc-0105",
+     "kc-0106",
+     "kc-0107",
+     "kc-0108",
+     "kc-0109",
+     "kc-0110",
+     "kc-0111",
+     "kc-0112",
+     "kc-0113",
+     "kc-0114",
+     "kc-0115",
+     "kc-0116",
+     "kc-0117",
+     "kc-0118",
+     "kc-0119",
+     "kc-0120",
+     "kc-0121",
+     "kc-0122",
+     "kc-0123",
+     "kc-0124",
+     "kc-0125",
+     "kc-0126"
+    ],
+    "sc_id": "sc-0003",
+    "sc_written": false,
+    "chapter_coverage": {},
+    "notes": "26 cards kc-0101..0126 — extraction essentially complete; style card missing; verify tail modules only if a gap surfaces"
+   }
+  },
+  {
+   "id": "ldETapkr8Hg",
+   "rank": 4,
+   "title": "I Built a Marketing Team with 1 AI Agent and No Code (free n8n template)",
+   "url": "https://www.youtube.com/watch?v=ldETapkr8Hg",
+   "length": "33:56",
+   "seconds": 2036,
+   "views_text": "898K views",
+   "views_exact": "898,503 views",
+   "date_text": "Apr 26, 2025",
+   "chapters": [
+    {
+     "t": "00:00",
+     "title": "What We’re Covering Today"
+    },
+    {
+     "t": "00:41",
+     "title": "Live Demo"
+    },
+    {
+     "t": "05:08",
+     "title": "The Breakdown"
+    },
+    {
+     "t": "05:43",
+     "title": "The Marketing Agent"
+    },
+    {
+     "t": "07:35",
+     "title": "Create Image Workflow"
+    },
+    {
+     "t": "12:52",
+     "title": "Edit Image Workflow"
+    },
+    {
+     "t": "14:57",
+     "title": "Search Images Workflow"
+    },
+    {
+     "t": "17:37",
+     "title": "Blog Post Workflow"
+    },
+    {
+     "t": "21:46",
+     "title": "Video Generation Workflow"
+    },
+    {
+     "t": "28:25",
+     "title": "Cost Breakdown"
+    },
+    {
+     "t": "31:08",
+     "title": "Set This Up (FREE)"
+    },
+    {
+     "t": "33:09",
+     "title": "Want to Learn Building AI Agents?"
+    }
+   ],
+   "transcript": {
+    "file": "transcripts/ldETapkr8Hg.md",
+    "sha256": "26d5995e810f014264d5c5b436d9c8de6c0a87faf30723f0886c49f55d3f7a99",
+    "bytes": 44357,
+    "est_tokens": 11089,
+    "git_archive_commit": "b8d02e5",
+    "drive_file_id": null,
+    "drive_status": "pending_bulk_upload"
+   },
+   "extraction": {
+    "status": "none",
+    "kc_ids": [],
+    "sc_id": "sc-0004",
+    "sc_written": false,
+    "chapter_coverage": {},
+    "notes": ""
+   }
+  },
+  {
+   "id": "sboNwYmH3AY",
+   "rank": 5,
+   "title": "Andrej Karpathy Just 10x’d Everyone’s Claude Code",
+   "url": "https://www.youtube.com/watch?v=sboNwYmH3AY",
+   "length": "17:47",
+   "seconds": 1067,
+   "views_text": "665K views",
+   "views_exact": "665,180 views",
+   "date_text": "Apr 5, 2026",
+   "chapters": [
+    {
+     "t": "0:00",
+     "title": "What We're Building"
+    },
+    {
+     "t": "1:40",
+     "title": "Karpathy's LLM Wiki Idea"
+    },
+    {
+     "t": "3:12",
+     "title": "Why It Matters & How It Works"
+    },
+    {
+     "t": "5:39",
+     "title": "Setting Up Obsidian & Claude Code"
+    },
+    {
+     "t": "8:35",
+     "title": "Ingesting Your First Article"
+    },
+    {
+     "t": "13:02",
+     "title": "Querying & Connecting Projects"
+    },
+    {
+     "t": "15:36",
+     "title": "LLM Wiki vs Traditional RAG"
+    },
+    {
+     "t": "17:20",
+     "title": "Final Thoughts"
+    }
+   ],
+   "transcript": {
+    "file": "transcripts/sboNwYmH3AY.md",
+    "sha256": "75fe2421567f7a46860f808e4d8222c0dc4b016d49f0ed338f51ec6852bcc2af",
+    "bytes": 23439,
+    "est_tokens": 5859,
+    "git_archive_commit": "b8d02e5",
+    "drive_file_id": null,
+    "drive_status": "pending_bulk_upload"
+   },
+   "extraction": {
+    "status": "none",
+    "kc_ids": [],
+    "sc_id": "sc-0005",
+    "sc_written": false,
+    "chapter_coverage": {},
+    "notes": ""
+   }
+  },
+  {
+   "id": "6MC1XqZSltw",
+   "rank": 6,
+   "title": "I Turned Claude Into a 24/7 Trader",
+   "url": "https://www.youtube.com/watch?v=6MC1XqZSltw",
+   "length": "33:16",
+   "seconds": 1996,
+   "views_text": "584K views",
+   "views_exact": "584,459 views",
+   "date_text": "Apr 16, 2026",
+   "chapters": [
+    {
+     "t": "00:00",
+     "title": "What We're Building"
+    },
+    {
+     "t": "02:05",
+     "title": "The Tech Stack"
+    },
+    {
+     "t": "05:40",
+     "title": "The Mental Model"
+    },
+    {
+     "t": "07:29",
+     "title": "1) Strategy"
+    },
+    {
+     "t": "10:44",
+     "title": "2) Scaffold"
+    },
+    {
+     "t": "12:10",
+     "title": "FREE SETUP PROMPTS"
+    },
+    {
+     "t": "13:25",
+     "title": "Setting up Project"
+    },
+    {
+     "t": "17:55",
+     "title": "3) & 4) Guardrails & Skillls"
+    },
+    {
+     "t": "20:13",
+     "title": "5) Routines"
+    },
+    {
+     "t": "26:59",
+     "title": "Setting up Cloud Environment"
+    },
+    {
+     "t": "28:06",
+     "title": "6) Deploy & Test"
+    },
+    {
+     "t": "31:35",
+     "title": "Final Thoughts"
+    },
+    {
+     "t": "00:01",
+     "title": "Meant to say Opus 4.7"
+    }
+   ],
+   "transcript": {
+    "file": "transcripts/6MC1XqZSltw.md",
+    "sha256": "1d64f1be9a04b8633657dc6e8936227fcb02db8917039bf2f2dc08d196780aba",
+    "bytes": 43747,
+    "est_tokens": 10936,
+    "git_archive_commit": "b8d02e5",
+    "drive_file_id": null,
+    "drive_status": "pending_bulk_upload"
+   },
+   "extraction": {
+    "status": "none",
+    "kc_ids": [],
+    "sc_id": "sc-0006",
+    "sc_written": false,
+    "chapter_coverage": {},
+    "notes": ""
+   }
+  },
+  {
+   "id": "O2k_qwZA8HU",
+   "rank": 7,
+   "title": "Ollama + Claude Code = 99% CHEAPER",
+   "url": "https://www.youtube.com/watch?v=O2k_qwZA8HU",
+   "length": "25:23",
+   "seconds": 1523,
+   "views_text": "530K views",
+   "views_exact": "530,615 views",
+   "date_text": "Apr 3, 2026",
+   "chapters": [
+    {
+     "t": "0:00",
+     "title": "Intro"
+    },
+    {
+     "t": "1:39",
+     "title": "Open Source vs Closed Source Models"
+    },
+    {
+     "t": "5:05",
+     "title": "Method 1: Local Models with Ollama"
+    },
+    {
+     "t": "8:45",
+     "title": "Launching Claude Code with Ollama"
+    },
+    {
+     "t": "16:16",
+     "title": "When to Use Open Source Models"
+    },
+    {
+     "t": "17:20",
+     "title": "Method 2: Open Router"
+    },
+    {
+     "t": "23:00",
+     "title": "Open Source Limitations"
+    },
+    {
+     "t": "24:55",
+     "title": "Final Thoughts"
+    }
+   ],
+   "transcript": {
+    "file": "transcripts/O2k_qwZA8HU.md",
+    "sha256": "e7c3270ccebeac492062fc8cba35b40f8f1f102d919e502b35148653bbade729",
+    "bytes": 32112,
+    "est_tokens": 8028,
+    "git_archive_commit": "b8d02e5",
+    "drive_file_id": null,
+    "drive_status": "pending_bulk_upload"
+   },
+   "extraction": {
+    "status": "none",
+    "kc_ids": [],
+    "sc_id": "sc-0007",
+    "sc_written": false,
+    "chapter_coverage": {},
+    "notes": ""
+   }
+  },
+  {
+   "id": "86HM0RUWhCk",
+   "rank": 8,
+   "title": "Building Beautiful Websites with Claude Code Is Too Easy",
+   "url": "https://www.youtube.com/watch?v=86HM0RUWhCk",
+   "length": "27:51",
+   "seconds": 1671,
+   "views_text": "528K views",
+   "views_exact": "528,220 views",
+   "date_text": "Feb 19, 2026",
+   "chapters": [
+    {
+     "t": "0:00",
+     "title": "Introduction"
+    },
+    {
+     "t": "1:55",
+     "title": "Hack #0"
+    },
+    {
+     "t": "3:40",
+     "title": "Hack #1"
+    },
+    {
+     "t": "8:01",
+     "title": "Hack #2"
+    },
+    {
+     "t": "9:44",
+     "title": "Hack #3"
+    },
+    {
+     "t": "17:17",
+     "title": "Hack #4"
+    },
+    {
+     "t": "21:13",
+     "title": "Deploying to GitHub & Vercel"
+    },
+    {
+     "t": "27:17",
+     "title": "Want to Master AI Automation?"
+    }
+   ],
+   "transcript": {
+    "file": "transcripts/86HM0RUWhCk.md",
+    "sha256": "fe672e47b5ecde165b435fd16b024466d2349a8585f62df2f015594cfa346a4b",
+    "bytes": 35970,
+    "est_tokens": 8992,
+    "git_archive_commit": "b8d02e5",
+    "drive_file_id": null,
+    "drive_status": "pending_bulk_upload"
+   },
+   "extraction": {
+    "status": "none",
+    "kc_ids": [],
+    "sc_id": "sc-0008",
+    "sc_written": false,
+    "chapter_coverage": {},
+    "notes": ""
+   }
+  },
+  {
+   "id": "ZHH3sr234zY",
+   "rank": 9,
+   "title": "n8n Masterclass: Build AI Agents & Automate Workflows (Beginner to Pro)",
+   "url": "https://www.youtube.com/watch?v=ZHH3sr234zY",
+   "length": "1:31:43",
+   "seconds": 5503,
+   "views_text": "523K views",
+   "views_exact": "523,388 views",
+   "date_text": "Oct 20, 2024",
+   "chapters": [
+    {
+     "t": "00:00",
+     "title": "What is n8n?"
+    },
+    {
+     "t": "02:50",
+     "title": "Why Should You Learn n8n?"
+    },
+    {
+     "t": "04:53",
+     "title": "Part 1: Getting Started"
+    },
+    {
+     "t": "05:09",
+     "title": "Self-Hosted vs Cloud"
+    },
+    {
+     "t": "08:25",
+     "title": "Workflows, Nodes, Executions"
+    },
+    {
+     "t": "09:45",
+     "title": "n8n Interface"
+    },
+    {
+     "t": "16:05",
+     "title": "Part 2: Core Concepts"
+    },
+    {
+     "t": "16:28",
+     "title": "Types of Nodes"
+    },
+    {
+     "t": "19:00",
+     "title": "Building Example Workflow"
+    },
+    {
+     "t": "36:28",
+     "title": "Part 3: RAG and Vector Databases"
+    },
+    {
+     "t": "36:55",
+     "title": "What is RAG?"
+    },
+    {
+     "t": "38:23",
+     "title": "What are Vector Databases?"
+    },
+    {
+     "t": "44:07",
+     "title": "Building RAG AI Agent"
+    },
+    {
+     "t": "1:01:56",
+     "title": "Part 4: Expanding Agents"
+    },
+    {
+     "t": "1:02:31",
+     "title": "n8n Workflows as Tools"
+    },
+    {
+     "t": "1:05:23",
+     "title": "Showcasing Agent Examples"
+    },
+    {
+     "t": "1:10:20",
+     "title": "Part 5: APIs & HTTP Requests"
+    },
+    {
+     "t": "1:11:33",
+     "title": "What is an API?"
+    },
+    {
+     "t": "1:12:49",
+     "title": "What is an HTTP Request?"
+    },
+    {
+     "t": "1:13:14",
+     "title": "How They Work Together"
+    },
+    {
+     "t": "1:15:04",
+     "title": "HTTP Request Examples in n8n"
+    },
+    {
+     "t": "1:21:42",
+     "title": "Part 6: The Final Part"
+    },
+    {
+     "t": "1:22:24",
+     "title": "Error Workflows"
+    },
+    {
+     "t": "1:26:20",
+     "title": "Best Practices"
+    },
+    {
+     "t": "1:28:30",
+     "title": "Next Steps"
+    }
+   ],
+   "transcript": {
+    "file": "transcripts/ZHH3sr234zY.md",
+    "sha256": "11e94867c557d344a389a1f35da8023c6102b27694e3083995fa0a14a3236845",
+    "bytes": 108505,
+    "est_tokens": 27126,
+    "git_archive_commit": "b8d02e5",
+    "drive_file_id": null,
+    "drive_status": "pending_bulk_upload"
+   },
+   "extraction": {
+    "status": "none",
+    "kc_ids": [],
+    "sc_id": "sc-0009",
+    "sc_written": false,
+    "chapter_coverage": {},
+    "notes": ""
+   }
+  },
+  {
+   "id": "HNKlFTd1maM",
+   "rank": 10,
+   "title": "How I Sold These 4 AI Agents for $23,000 (as a beginner)",
+   "url": "https://www.youtube.com/watch?v=HNKlFTd1maM",
+   "length": "14:18",
+   "seconds": 858,
+   "views_text": "463K views",
+   "views_exact": "463,745 views",
+   "date_text": "Aug 31, 2025",
+   "chapters": [
+    {
+     "t": "0:00",
+     "title": "Intro"
+    },
+    {
+     "t": "0:26",
+     "title": "AI Agent 1"
+    },
+    {
+     "t": "2:57",
+     "title": "AI Agent 2"
+    },
+    {
+     "t": "4:58",
+     "title": "AI Agent 3"
+    },
+    {
+     "t": "7:33",
+     "title": "AI Agent 4"
+    },
+    {
+     "t": "9:09",
+     "title": "How to do it yourself"
+    }
+   ],
+   "transcript": {
+    "file": "transcripts/HNKlFTd1maM.md",
+    "sha256": "0edc1ac1c100aaf65641bb6478b0e4ab0186646dbf9364939c018af889bf8f7d",
+    "bytes": 19281,
+    "est_tokens": 4820,
+    "git_archive_commit": "b8d02e5",
+    "drive_file_id": null,
+    "drive_status": "pending_bulk_upload"
+   },
+   "extraction": {
+    "status": "none",
+    "kc_ids": [],
+    "sc_id": "sc-0010",
+    "sc_written": false,
+    "chapter_coverage": {},
+    "notes": ""
+   }
+  },
+  {
+   "id": "jqoFP9QapXI",
+   "rank": 11,
+   "title": "32 Tricks to Level Up Claude Code in 16 Mins",
+   "url": "https://www.youtube.com/watch?v=jqoFP9QapXI",
+   "length": "16:16",
+   "seconds": 976,
+   "views_text": "415K views",
+   "views_exact": "415,112 views",
+   "date_text": "Apr 27, 2026",
+   "chapters": [
+    {
+     "t": "0:00",
+     "title": "Intro"
+    },
+    {
+     "t": "0:14",
+     "title": "Beginner Hacks"
+    },
+    {
+     "t": "4:53",
+     "title": "Intermediate Hacks"
+    },
+    {
+     "t": "10:29",
+     "title": "Pro Hacks"
+    },
+    {
+     "t": "15:53",
+     "title": "Final Thoughts"
+    }
+   ],
+   "transcript": {
+    "file": "transcripts/jqoFP9QapXI.md",
+    "sha256": "163a9be9c5606d4f304929a43dc753a5b4f6943938ec65196b87a1248181f7c5",
+    "bytes": 22777,
+    "est_tokens": 5694,
+    "git_archive_commit": "b8d02e5",
+    "drive_file_id": null,
+    "drive_status": "pending_bulk_upload"
+   },
+   "extraction": {
+    "status": "none",
+    "kc_ids": [],
+    "sc_id": "sc-0011",
+    "sc_written": false,
+    "chapter_coverage": {},
+    "notes": ""
+   }
+  },
+  {
+   "id": "QIsJe-nZ5XE",
+   "rank": 12,
+   "title": "How to Sell AI Workflows (Without Starting an Agency)",
+   "url": "https://www.youtube.com/watch?v=QIsJe-nZ5XE",
+   "length": "14:07",
+   "seconds": 847,
+   "views_text": "413K views",
+   "views_exact": "413,232 views",
+   "date_text": "Aug 24, 2025",
+   "chapters": [
+    {
+     "t": "0:00",
+     "title": "Intro"
+    },
+    {
+     "t": "0:33",
+     "title": "The Agency Trap"
+    },
+    {
+     "t": "4:23",
+     "title": "The Better Alternative"
+    },
+    {
+     "t": "5:54",
+     "title": "The Next Step"
+    },
+    {
+     "t": "7:24",
+     "title": "How to Sell AI Workflows"
+    },
+    {
+     "t": "10:25",
+     "title": "The Transition you need to make"
+    }
+   ],
+   "transcript": {
+    "file": "transcripts/QIsJe-nZ5XE.md",
+    "sha256": "2c3a2a43f1f3b17f102172eee7fd9a26fda7ae4daffe9982712927121200107d",
+    "bytes": 19427,
+    "est_tokens": 4856,
+    "git_archive_commit": "b8d02e5",
+    "drive_file_id": null,
+    "drive_status": "pending_bulk_upload"
+   },
+   "extraction": {
+    "status": "none",
+    "kc_ids": [],
+    "sc_id": "sc-0012",
+    "sc_written": false,
+    "chapter_coverage": {},
+    "notes": ""
+   }
+  },
+  {
+   "id": "eRS3CmvrOvA",
+   "rank": 13,
+   "title": "I Tried 100+ Claude Code Skills. These 6 Are The Best",
+   "url": "https://www.youtube.com/watch?v=eRS3CmvrOvA",
+   "length": "13:39",
+   "seconds": 819,
+   "views_text": "411K views",
+   "views_exact": "411,129 views",
+   "date_text": "May 3, 2026",
+   "chapters": [
+    {
+     "t": "0:00",
+     "title": "Intro"
+    },
+    {
+     "t": "0:42",
+     "title": "Skill #1"
+    },
+    {
+     "t": "2:57",
+     "title": "Skill #2"
+    },
+    {
+     "t": "4:37",
+     "title": "Skill #3"
+    },
+    {
+     "t": "6:17",
+     "title": "Skill #4"
+    },
+    {
+     "t": "8:06",
+     "title": "Skill #5"
+    },
+    {
+     "t": "9:44",
+     "title": "Skill #6"
+    },
+    {
+     "t": "11:52",
+     "title": "Bonus"
+    },
+    {
+     "t": "12:25",
+     "title": "How to Sell These Skills"
+    }
+   ],
+   "transcript": {
+    "file": "transcripts/eRS3CmvrOvA.md",
+    "sha256": "9bb5cdf12590f21954deccf7595d73b4f1c664202f6e4a4208922b407b0581e9",
+    "bytes": 19633,
+    "est_tokens": 4908,
+    "git_archive_commit": "b8d02e5",
+    "drive_file_id": null,
+    "drive_status": "pending_bulk_upload"
+   },
+   "extraction": {
+    "status": "none",
+    "kc_ids": [],
+    "sc_id": "sc-0013",
+    "sc_written": false,
+    "chapter_coverage": {},
+    "notes": ""
+   }
+  },
+  {
+   "id": "saggDHHnmtQ",
+   "rank": 14,
+   "title": "Master 95% of Claude Code in 36 Mins (as a beginner)",
+   "url": "https://www.youtube.com/watch?v=saggDHHnmtQ",
+   "length": "36:58",
+   "seconds": 2218,
+   "views_text": "410K views",
+   "views_exact": "410,611 views",
+   "date_text": "Jan 21, 2026",
+   "chapters": [
+    {
+     "t": "00:00",
+     "title": "Today’s Agenda"
+    },
+    {
+     "t": "01:22",
+     "title": "1) Interface / Setup"
+    },
+    {
+     "t": "04:58",
+     "title": "2) WAT Framework"
+    },
+    {
+     "t": "10:30",
+     "title": "3) Planning the Automation"
+    },
+    {
+     "t": "18:53",
+     "title": "4) Superpowers (MCPs & Skills)"
+    },
+    {
+     "t": "23:40",
+     "title": "5) Testing & Optimization"
+    },
+    {
+     "t": "28:55",
+     "title": "6) Deploying the Automation"
+    },
+    {
+     "t": "35:21",
+     "title": "Final Thoughts / Want to Dive Deeper?"
+    }
+   ],
+   "transcript": {
+    "file": "transcripts/saggDHHnmtQ.md",
+    "sha256": "c9db79913759749dc72502e629b72fe339965b8e2911a378ebc6993f1e63c23f",
+    "bytes": 49326,
+    "est_tokens": 12331,
+    "git_archive_commit": "b8d02e5",
+    "drive_file_id": null,
+    "drive_status": "pending_bulk_upload"
+   },
+   "extraction": {
+    "status": "none",
+    "kc_ids": [],
+    "sc_id": "sc-0014",
+    "sc_written": false,
+    "chapter_coverage": {},
+    "notes": ""
+   }
+  },
+  {
+   "id": "bCljOfCH8Ms",
+   "rank": 15,
+   "title": "Build & Sell Claude Code Operating Systems (2+ Hour Course)",
+   "url": "https://www.youtube.com/watch?v=bCljOfCH8Ms",
+   "length": "2:33:21",
+   "seconds": 9201,
+   "views_text": "395K views",
+   "views_exact": "395,872 views",
+   "date_text": "May 1, 2026",
+   "chapters": [
+    {
+     "t": "0:00",
+     "title": "Intro"
+    },
+    {
+     "t": "3:30",
+     "title": "The Three Ms of AI"
+    },
+    {
+     "t": "11:30",
+     "title": "The Four Cs of an AIOS"
+    },
+    {
+     "t": "15:00",
+     "title": "Mapping Your Tools"
+    },
+    {
+     "t": "20:30",
+     "title": "Cloning the Repo & VS Code Setup"
+    },
+    {
+     "t": "29:00",
+     "title": "The Onboarding Skill"
+    },
+    {
+     "t": "36:30",
+     "title": "Connecting ClickUp"
+    },
+    {
+     "t": "47:30",
+     "title": "Audit & Level Up Skills"
+    },
+    {
+     "t": "51:30",
+     "title": "Google Workspace CLI"
+    },
+    {
+     "t": "1:06:00",
+     "title": "Capabilities & Building Skills"
+    },
+    {
+     "t": "1:25:30",
+     "title": "Live Skill Build"
+    },
+    {
+     "t": "1:35:30",
+     "title": "Cadence & Cloud Routines"
+    },
+    {
+     "t": "1:56:30",
+     "title": "Loop & Reminders"
+    },
+    {
+     "t": "2:05:00",
+     "title": "Karpathy's LLM Wiki"
+    },
+    {
+     "t": "2:23:30",
+     "title": "Dashboards with Artifacts"
+    },
+    {
+     "t": "2:27:30",
+     "title": "Daily Loop & Success Criteria"
+    },
+    {
+     "t": "2:32:00",
+     "title": "Final Thoughts"
+    }
+   ],
+   "transcript": {
+    "file": "transcripts/bCljOfCH8Ms.md",
+    "sha256": "d929f03f958740cfb358fcd5cfdf05d01cb9eacf6e6a58f1747c729efa237e07",
+    "bytes": 194408,
+    "est_tokens": 48602,
+    "git_archive_commit": "b8d02e5",
+    "drive_file_id": null,
+    "drive_status": "pending_bulk_upload"
+   },
+   "extraction": {
+    "status": "none",
+    "kc_ids": [],
+    "sc_id": "sc-0015",
+    "sc_written": false,
+    "chapter_coverage": {},
+    "notes": ""
+   }
+  },
+  {
+   "id": "6DLZK7XDOGo",
+   "rank": 16,
+   "title": "How I'd Teach a 10 Year Old to Build AI Agents (No Code, n8n)",
+   "url": "https://www.youtube.com/watch?v=6DLZK7XDOGo",
+   "length": "19:27",
+   "seconds": 1167,
+   "views_text": "388K views",
+   "views_exact": "388,584 views",
+   "date_text": "Jan 16, 2025",
+   "chapters": [
+    {
+     "t": "00:00",
+     "title": "Components of an AI Agent"
+    },
+    {
+     "t": "03:50",
+     "title": "Step 1: Chat Input"
+    },
+    {
+     "t": "04:18",
+     "title": "Step 2: Adding the Brain"
+    },
+    {
+     "t": "05:49",
+     "title": "Step 3: Adding Memory"
+    },
+    {
+     "t": "07:45",
+     "title": "Step 4: Adding Send Email Tool"
+    },
+    {
+     "t": "10:21",
+     "title": "Step 5: Adding Instructions (System Message)"
+    },
+    {
+     "t": "12:04",
+     "title": "Testing the Email Agent"
+    },
+    {
+     "t": "13:43",
+     "title": "Reviewing the Agent Log"
+    },
+    {
+     "t": "15:00",
+     "title": "Step 6: Adding Contact Database Tool"
+    },
+    {
+     "t": "16:57",
+     "title": "Final Test"
+    },
+    {
+     "t": "18:05",
+     "title": "Final Thoughts"
+    }
+   ],
+   "transcript": {
+    "file": "transcripts/6DLZK7XDOGo.md",
+    "sha256": "452995f55060f3bd8b35201ba8f2c9b20690bedf187dbd4376ef4de76c14b32f",
+    "bytes": 22856,
+    "est_tokens": 5714,
+    "git_archive_commit": "b8d02e5",
+    "drive_file_id": null,
+    "drive_status": "pending_bulk_upload"
+   },
+   "extraction": {
+    "status": "none",
+    "kc_ids": [],
+    "sc_id": "sc-0016",
+    "sc_written": false,
+    "chapter_coverage": {},
+    "notes": ""
+   }
+  },
+  {
+   "id": "ZeJXI2MAhj0",
+   "rank": 17,
+   "title": "Stop Learning n8n in 2026...Learn THIS Instead",
+   "url": "https://www.youtube.com/watch?v=ZeJXI2MAhj0",
+   "length": "18:38",
+   "seconds": 1118,
+   "views_text": "387K views",
+   "views_exact": "",
+   "date_text": "",
+   "chapters": [],
+   "transcript": {
+    "file": "transcripts/ZeJXI2MAhj0.md",
+    "sha256": "2c61b907c7ed75065fc2c40adef90bb3e88292141c73b40a611f6ba2c617eaa2",
+    "bytes": 27856,
+    "est_tokens": 6964,
+    "git_archive_commit": "b8d02e5",
+    "drive_file_id": null,
+    "drive_status": "pending_bulk_upload"
+   },
+   "extraction": {
+    "status": "none",
+    "kc_ids": [],
+    "sc_id": "sc-0017",
+    "sc_written": false,
+    "chapter_coverage": {},
+    "notes": ""
+   }
+  },
+  {
+   "id": "ZNbgOhxhzXg",
+   "rank": 18,
+   "title": "Claude Just Destroyed Every Video Editing Tool",
+   "url": "https://www.youtube.com/watch?v=ZNbgOhxhzXg",
+   "length": "32:00",
+   "seconds": 1920,
+   "views_text": "376K views",
+   "views_exact": "376,027 views",
+   "date_text": "Apr 18, 2026",
+   "chapters": [
+    {
+     "t": "0:00",
+     "title": "Demo"
+    },
+    {
+     "t": "1:42",
+     "title": "Claude Design Examples"
+    },
+    {
+     "t": "4:44",
+     "title": "Method 1: Claude Design"
+    },
+    {
+     "t": "10:33",
+     "title": "Method 2: Hyperframes"
+    },
+    {
+     "t": "15:41",
+     "title": "Setting Up Hyperframes"
+    },
+    {
+     "t": "18:35",
+     "title": "Live Edit With Feedback"
+    },
+    {
+     "t": "30:45",
+     "title": "Cost and Speed"
+    },
+    {
+     "t": "31:46",
+     "title": "Final Thoughts"
+    }
+   ],
+   "transcript": {
+    "file": "transcripts/ZNbgOhxhzXg.md",
+    "sha256": "8029415c9466c519a2c36c95157cc6e40b3ae294a033d0944d4e8ffe39cd354f",
+    "bytes": 39894,
+    "est_tokens": 9973,
+    "git_archive_commit": "b8d02e5",
+    "drive_file_id": null,
+    "drive_status": "pending_bulk_upload"
+   },
+   "extraction": {
+    "status": "none",
+    "kc_ids": [],
+    "sc_id": "sc-0018",
+    "sc_written": false,
+    "chapter_coverage": {},
+    "notes": ""
+   }
+  },
+  {
+   "id": "BcfjIBd49C8",
+   "rank": 19,
+   "title": "I Built a 24/7 Viral Shorts Machine with No-Code (free n8n template)",
+   "url": "https://www.youtube.com/watch?v=BcfjIBd49C8",
+   "length": "31:23",
+   "seconds": 1883,
+   "views_text": "350K views",
+   "views_exact": "350,698 views",
+   "date_text": "May 18, 2025",
+   "chapters": [
+    {
+     "t": "00:00",
+     "title": "What We’re Covering"
+    },
+    {
+     "t": "01:02",
+     "title": "Some Example Outputs"
+    },
+    {
+     "t": "02:33",
+     "title": "Step 1) Generating Prompts"
+    },
+    {
+     "t": "05:23",
+     "title": "Step 2) Generate Images"
+    },
+    {
+     "t": "09:49",
+     "title": "Step 3) Generate Videos"
+    },
+    {
+     "t": "12:51",
+     "title": "Step 4) Generate Sound"
+    },
+    {
+     "t": "15:32",
+     "title": "Step 5) Render Video"
+    },
+    {
+     "t": "18:39",
+     "title": "Upload to Socials"
+    },
+    {
+     "t": "23:36",
+     "title": "How to Set This up (Free Resources)"
+    },
+    {
+     "t": "28:02",
+     "title": "Cost Breakdown"
+    },
+    {
+     "t": "30:28",
+     "title": "Join the #1 AI Community"
+    }
+   ],
+   "transcript": {
+    "file": "transcripts/BcfjIBd49C8.md",
+    "sha256": "aea112710e667645c0187a47df63dd8ae113154fef631828127196e08ff3d64c",
+    "bytes": 38603,
+    "est_tokens": 9650,
+    "git_archive_commit": "b8d02e5",
+    "drive_file_id": null,
+    "drive_status": "pending_bulk_upload"
+   },
+   "extraction": {
+    "status": "none",
+    "kc_ids": [],
+    "sc_id": "sc-0019",
+    "sc_written": false,
+    "chapter_coverage": {},
+    "notes": ""
+   }
+  },
+  {
+   "id": "8QQ_INxAhRs",
+   "rank": 20,
+   "title": "I Turned Claude Into the Ultimate Second Brain",
+   "url": "https://www.youtube.com/watch?v=8QQ_INxAhRs",
+   "length": "34:21",
+   "seconds": 2061,
+   "views_text": "344K views",
+   "views_exact": "344,113 views",
+   "date_text": "Jun 9, 2026",
+   "chapters": [
+    {
+     "t": "0:00",
+     "title": "Intro: Claude Fable & My Second Brain"
+    },
+    {
+     "t": "1:47",
+     "title": "The Mindset Shift"
+    },
+    {
+     "t": "2:47",
+     "title": "The Four Cs Framework"
+    },
+    {
+     "t": "4:55",
+     "title": "Context: Your Routing Tree"
+    },
+    {
+     "t": "9:51",
+     "title": "Connections: Static vs Live Data"
+    },
+    {
+     "t": "11:51",
+     "title": "What Fable Already Knows About Me"
+    },
+    {
+     "t": "16:48",
+     "title": "Capabilities: Skills & Workflows"
+    },
+    {
+     "t": "22:53",
+     "title": "Cadence: Automating While You Sleep"
+    },
+    {
+     "t": "26:15",
+     "title": "Usage Tips"
+    },
+    {
+     "t": "31:05",
+     "title": "Lightning Round Q&A"
+    },
+    {
+     "t": "34:02",
+     "title": "Final Thoughts"
+    }
+   ],
+   "transcript": {
+    "file": "transcripts/8QQ_INxAhRs.md",
+    "sha256": "69ceb93f7cf15d353645b1122a4665e1f0d371848901ddb7cd310e861534c98f",
+    "bytes": 44130,
+    "est_tokens": 11032,
+    "git_archive_commit": "b8d02e5",
+    "drive_file_id": null,
+    "drive_status": "pending_bulk_upload"
+   },
+   "extraction": {
+    "status": "none",
+    "kc_ids": [],
+    "sc_id": "sc-0020",
+    "sc_written": false,
+    "chapter_coverage": {},
+    "notes": ""
+   }
+  },
+  {
+   "id": "A0OwvNOLNlw",
+   "rank": 21,
+   "title": "How to Build a WhatsApp Agent with n8n (credential tutorial)",
+   "url": "https://www.youtube.com/watch?v=A0OwvNOLNlw",
+   "length": "7:04",
+   "seconds": 424,
+   "views_text": "342K views",
+   "views_exact": "342,350 views",
+   "date_text": "Aug 5, 2025",
+   "chapters": [
+    {
+     "t": "00:00",
+     "title": "WhatsApp Trigger Setup"
+    },
+    {
+     "t": "02:00",
+     "title": "WhatsApp Send Message Setup"
+    },
+    {
+     "t": "04:08",
+     "title": "Testing Workflow"
+    },
+    {
+     "t": "06:29",
+     "title": "Want to Master n8n Automations?"
+    }
+   ],
+   "transcript": {
+    "file": "transcripts/A0OwvNOLNlw.md",
+    "sha256": "fa93315582a5844cb0a67980fb0aae877e2e4f51453e10a69b97a742c13d641d",
+    "bytes": 10249,
+    "est_tokens": 2562,
+    "git_archive_commit": "b8d02e5",
+    "drive_file_id": null,
+    "drive_status": "pending_bulk_upload"
+   },
+   "extraction": {
+    "status": "none",
+    "kc_ids": [],
+    "sc_id": "sc-0021",
+    "sc_written": false,
+    "chapter_coverage": {},
+    "notes": ""
+   }
+  },
+  {
+   "id": "gb5TlGw6Uks",
+   "rank": 22,
+   "title": "Hermes Agent: Zero to Personal AI Assistant (1 Hour Course)",
+   "url": "https://www.youtube.com/watch?v=gb5TlGw6Uks",
+   "length": "58:23",
+   "seconds": 3503,
+   "views_text": "336K views",
+   "views_exact": "336,858 views",
+   "date_text": "May 9, 2026",
+   "chapters": [
+    {
+     "t": "0:00",
+     "title": "Intro"
+    },
+    {
+     "t": "3:30",
+     "title": "What Is Hermes Agent"
+    },
+    {
+     "t": "4:30",
+     "title": "Hermes vs Claude Code vs OpenClaw"
+    },
+    {
+     "t": "7:30",
+     "title": "The Five Pillars"
+    },
+    {
+     "t": "16:30",
+     "title": "VPS Setup"
+    },
+    {
+     "t": "25:30",
+     "title": "Onboarding & Telegram"
+    },
+    {
+     "t": "33:00",
+     "title": "GitHub Backup & First Cron"
+    },
+    {
+     "t": "46:30",
+     "title": "Best Practices & Security"
+    },
+    {
+     "t": "50:30",
+     "title": "Scaling Multiple Agents"
+    },
+    {
+     "t": "56:00",
+     "title": "Final Thoughts"
+    }
+   ],
+   "transcript": {
+    "file": "transcripts/gb5TlGw6Uks.md",
+    "sha256": "f2832e594bc2fee047a419198d0f89f242ceaa29a440b65936f9f12f3b4e0c31",
+    "bytes": 76401,
+    "est_tokens": 19100,
+    "git_archive_commit": "b8d02e5",
+    "drive_file_id": null,
+    "drive_status": "pending_bulk_upload"
+   },
+   "extraction": {
+    "status": "none",
+    "kc_ids": [],
+    "sc_id": "sc-0022",
+    "sc_written": false,
+    "chapter_coverage": {},
+    "notes": ""
+   }
+  },
+  {
+   "id": "Aw3BkmhYu4I",
+   "rank": 23,
+   "title": "Claude Video Editing Just Became Unrecognizable",
+   "url": "https://www.youtube.com/watch?v=Aw3BkmhYu4I",
+   "length": "28:13",
+   "seconds": 1693,
+   "views_text": "314K views",
+   "views_exact": "314,063 views",
+   "date_text": "Apr 22, 2026",
+   "chapters": [
+    {
+     "t": "0:00",
+     "title": "Intro"
+    },
+    {
+     "t": "1:07",
+     "title": "How the Pipeline Works"
+    },
+    {
+     "t": "3:06",
+     "title": "Claude Desktop Setup"
+    },
+    {
+     "t": "5:59",
+     "title": "Trimming the Raw Video"
+    },
+    {
+     "t": "7:21",
+     "title": "Hyperframes vs Remotion"
+    },
+    {
+     "t": "9:45",
+     "title": "Teaching Your Style"
+    },
+    {
+     "t": "14:37",
+     "title": "Prompting the Motion Graphics"
+    },
+    {
+     "t": "21:37",
+     "title": "Preview and Iterate"
+    },
+    {
+     "t": "25:06",
+     "title": "Final Render"
+    }
+   ],
+   "transcript": {
+    "file": "transcripts/Aw3BkmhYu4I.md",
+    "sha256": "3f3dc72977b26604aa783714c6d3acb50c4a5d82ec71cf2979061739584b0115",
+    "bytes": 35975,
+    "est_tokens": 8993,
+    "git_archive_commit": "b8d02e5",
+    "drive_file_id": null,
+    "drive_status": "pending_bulk_upload"
+   },
+   "extraction": {
+    "status": "none",
+    "kc_ids": [],
+    "sc_id": "sc-0023",
+    "sc_written": false,
+    "chapter_coverage": {},
+    "notes": ""
+   }
+  },
+  {
+   "id": "Fqeo8q8-nJg",
+   "rank": 24,
+   "title": "How I'd Learn n8n if I had to Start Over in 2026",
+   "url": "https://www.youtube.com/watch?v=Fqeo8q8-nJg",
+   "length": "14:18",
+   "seconds": 858,
+   "views_text": "293K views",
+   "views_exact": "293,741 views",
+   "date_text": "Dec 10, 2025",
+   "chapters": [
+    {
+     "t": "00:00",
+     "title": "Don't Start With AI Agents"
+    },
+    {
+     "t": "02:53",
+     "title": "The Transition Curve"
+    },
+    {
+     "t": "04:00",
+     "title": "Key Skills"
+    },
+    {
+     "t": "07:05",
+     "title": "The 4 Pillars of Automations"
+    },
+    {
+     "t": "08:27",
+     "title": "Think Like a Process Engineer"
+    },
+    {
+     "t": "09:53",
+     "title": "Testing, Refinement, and MVPs"
+    },
+    {
+     "t": "10:52",
+     "title": "Importance of Tracking & Logging"
+    },
+    {
+     "t": "11:32",
+     "title": "Escaping Tutorial Hell"
+    },
+    {
+     "t": "12:36",
+     "title": "Selling Automation & ROI"
+    }
+   ],
+   "transcript": {
+    "file": "transcripts/Fqeo8q8-nJg.md",
+    "sha256": "e77e8f24b8159a373a6c7188ca6cbee047320b98c336ec76e46bd0c4689aed30",
+    "bytes": 21582,
+    "est_tokens": 5395,
+    "git_archive_commit": "b8d02e5",
+    "drive_file_id": null,
+    "drive_status": "pending_bulk_upload"
+   },
+   "extraction": {
+    "status": "none",
+    "kc_ids": [],
+    "sc_id": "sc-0024",
+    "sc_written": false,
+    "chapter_coverage": {},
+    "notes": ""
+   }
+  },
+  {
+   "id": "vDVSGVpB2vc",
+   "rank": 25,
+   "title": "How to Build Claude Agent Teams Better Than 99% of People",
+   "url": "https://www.youtube.com/watch?v=vDVSGVpB2vc",
+   "length": "16:30",
+   "seconds": 990,
+   "views_text": "278K views",
+   "views_exact": "278,882 views",
+   "date_text": "Mar 23, 2026",
+   "chapters": [
+    {
+     "t": "0:00",
+     "title": "Agent Teams Demo"
+    },
+    {
+     "t": "1:24",
+     "title": "What Are Agent Teams"
+    },
+    {
+     "t": "2:29",
+     "title": "How to Set Them Up"
+    },
+    {
+     "t": "4:32",
+     "title": "How to Prompt Agent Teams"
+    },
+    {
+     "t": "6:30",
+     "title": "Dos and Don'ts"
+    },
+    {
+     "t": "7:12",
+     "title": "Live Build in VS Code"
+    },
+    {
+     "t": "10:15",
+     "title": "Tmux Split-Pane View"
+    },
+    {
+     "t": "11:45",
+     "title": "Key Rules for Better Teams"
+    },
+    {
+     "t": "13:12",
+     "title": "Common Pitfalls and Fixes"
+    },
+    {
+     "t": "14:05",
+     "title": "When to Use Agent Teams"
+    },
+    {
+     "t": "16:08",
+     "title": "Outro"
+    }
+   ],
+   "transcript": {
+    "file": "transcripts/vDVSGVpB2vc.md",
+    "sha256": "927a9f7b08145f5b606d4a37f3fb2a87ce01a680da317442d63af61b45abafd3",
+    "bytes": 22763,
+    "est_tokens": 5690,
+    "git_archive_commit": "b8d02e5",
+    "drive_file_id": null,
+    "drive_status": "pending_bulk_upload"
+   },
+   "extraction": {
+    "status": "none",
+    "kc_ids": [],
+    "sc_id": "sc-0025",
+    "sc_written": false,
+    "chapter_coverage": {},
+    "notes": ""
+   }
+  },
+  {
+   "id": "ZRb7D6R64hM",
+   "rank": 26,
+   "title": "Every Level of Claude Explained in 21 Minutes",
+   "url": "https://www.youtube.com/watch?v=ZRb7D6R64hM",
+   "length": "21:43",
+   "seconds": 1303,
+   "views_text": "272K views",
+   "views_exact": "272,541 views",
+   "date_text": "May 12, 2026",
+   "chapters": [
+    {
+     "t": "00:00",
+     "title": "400 hours in"
+    },
+    {
+     "t": "00:12",
+     "title": "Level 1"
+    },
+    {
+     "t": "01:03",
+     "title": "Level 2"
+    },
+    {
+     "t": "02:13",
+     "title": "Hidden artifacts"
+    },
+    {
+     "t": "03:35",
+     "title": "Office takeover"
+    },
+    {
+     "t": "04:54",
+     "title": "Level 3"
+    },
+    {
+     "t": "07:21",
+     "title": "Figma killer?"
+    },
+    {
+     "t": "09:24",
+     "title": "Level 4"
+    },
+    {
+     "t": "10:40",
+     "title": "Shift tab twice"
+    },
+    {
+     "t": "13:54",
+     "title": "Slash rewind"
+    },
+    {
+     "t": "15:56",
+     "title": "Level 5"
+    }
+   ],
+   "transcript": {
+    "file": "transcripts/ZRb7D6R64hM.md",
+    "sha256": "8e240735630892fad4c642fb167159a204740f7997890fb852ad6af731b508aa",
+    "bytes": 31676,
+    "est_tokens": 7919,
+    "git_archive_commit": "b8d02e5",
+    "drive_file_id": null,
+    "drive_status": "pending_bulk_upload"
+   },
+   "extraction": {
+    "status": "none",
+    "kc_ids": [],
+    "sc_id": "sc-0026",
+    "sc_written": false,
+    "chapter_coverage": {},
+    "notes": ""
+   }
+  },
+  {
+   "id": "49V-5Ock8LU",
+   "rank": 27,
+   "title": "18 Claude Code Token Hacks in 18 Minutes",
+   "url": "https://www.youtube.com/watch?v=49V-5Ock8LU",
+   "length": "18:57",
+   "seconds": 1137,
+   "views_text": "268K views",
+   "views_exact": "268,205 views",
+   "date_text": "Apr 1, 2026",
+   "chapters": [
+    {
+     "t": "0:00",
+     "title": "The Token Problem"
+    },
+    {
+     "t": "0:48",
+     "title": "How Tokens Actually Work"
+    },
+    {
+     "t": "3:04",
+     "title": "Tier 1 Hacks"
+    },
+    {
+     "t": "8:48",
+     "title": "Tier 2 Hacks"
+    },
+    {
+     "t": "12:15",
+     "title": "Is Hitting Your Limit Actually Bad?"
+    },
+    {
+     "t": "13:17",
+     "title": "Tier 3 Hacks"
+    },
+    {
+     "t": "17:32",
+     "title": "What To Do Right Now"
+    },
+    {
+     "t": "18:12",
+     "title": "Final Thoughts"
+    }
+   ],
+   "transcript": {
+    "file": "transcripts/49V-5Ock8LU.md",
+    "sha256": "fe10bcf725bdb9541024b67bff7ccd84bfd88e8a7e1f3e19d119eabaaac61d9d",
+    "bytes": 23550,
+    "est_tokens": 5887,
+    "git_archive_commit": "b8d02e5",
+    "drive_file_id": null,
+    "drive_status": "pending_bulk_upload"
+   },
+   "extraction": {
+    "status": "none",
+    "kc_ids": [],
+    "sc_id": "sc-0027",
+    "sc_written": false,
+    "chapter_coverage": {},
+    "notes": ""
+   }
+  },
+  {
+   "id": "tDGiWn0flK8",
+   "rank": 28,
+   "title": "From Zero to Your First Agentic AI Workflow in 26 Minutes (Claude Code)",
+   "url": "https://www.youtube.com/watch?v=tDGiWn0flK8",
+   "length": "26:23",
+   "seconds": 1583,
+   "views_text": "262K views",
+   "views_exact": "262,686 views",
+   "date_text": "Feb 23, 2026",
+   "chapters": [
+    {
+     "t": "0:00",
+     "title": "Intro"
+    },
+    {
+     "t": "0:31",
+     "title": "What are Agentic AI Workflows"
+    },
+    {
+     "t": "3:27",
+     "title": "How to build an Agentic Workflow"
+    },
+    {
+     "t": "25:45",
+     "title": "How to build 10x faster"
+    }
+   ],
+   "transcript": {
+    "file": "transcripts/tDGiWn0flK8.md",
+    "sha256": "75244294c6e3e27b01e2d8dc7e38445dcd54eddffc6851dce9ae75a4d1a4988f",
+    "bytes": 40268,
+    "est_tokens": 10067,
+    "git_archive_commit": "b8d02e5",
+    "drive_file_id": null,
+    "drive_status": "pending_bulk_upload"
+   },
+   "extraction": {
+    "status": "none",
+    "kc_ids": [],
+    "sc_id": "sc-0028",
+    "sc_written": false,
+    "chapter_coverage": {},
+    "notes": ""
+   }
+  },
+  {
+   "id": "3Ai1EPznlAc",
+   "rank": 29,
+   "title": "Set up Google Credentials in n8n in 5 minutes (2025)",
+   "url": "https://www.youtube.com/watch?v=3Ai1EPznlAc",
+   "length": "4:43",
+   "seconds": 283,
+   "views_text": "257K views",
+   "views_exact": "257,412 views",
+   "date_text": "Nov 29, 2024",
+   "chapters": [],
+   "transcript": {
+    "file": "transcripts/3Ai1EPznlAc.md",
+    "sha256": "ed849e3e31c3555987f19c6051c5cc9a8c79e2815a0a73283163688bd4c6e1e5",
+    "bytes": 6571,
+    "est_tokens": 1642,
+    "git_archive_commit": "b8d02e5",
+    "drive_file_id": null,
+    "drive_status": "pending_bulk_upload"
+   },
+   "extraction": {
+    "status": "none",
+    "kc_ids": [],
+    "sc_id": "sc-0029",
+    "sc_written": false,
+    "chapter_coverage": {},
+    "notes": ""
+   }
+  },
+  {
+   "id": "8C6iCpJ9HPo",
+   "rank": 30,
+   "title": "I built this AI Agent in 2 hours (and got paid $1200)",
+   "url": "https://www.youtube.com/watch?v=8C6iCpJ9HPo",
+   "length": "10:24",
+   "seconds": 624,
+   "views_text": "253K views",
+   "views_exact": "253,769 views",
+   "date_text": "Aug 17, 2025",
+   "chapters": [
+    {
+     "t": "00:00",
+     "title": "The 'AI Agent' I sold"
+    },
+    {
+     "t": "1:42",
+     "title": "How I got somebody to pay me for it"
+    },
+    {
+     "t": "4:58",
+     "title": "What this means for anyone getting started"
+    },
+    {
+     "t": "6:17",
+     "title": "What i'd do if I had to start from scratch"
+    }
+   ],
+   "transcript": {
+    "file": "transcripts/8C6iCpJ9HPo.md",
+    "sha256": "1dd646709a8885c9a6c6c8e82cc1b9a21fb047e9b0f8be03c266a8a89eb88e86",
+    "bytes": 14693,
+    "est_tokens": 3673,
+    "git_archive_commit": "b8d02e5",
+    "drive_file_id": null,
+    "drive_status": "pending_bulk_upload"
+   },
+   "extraction": {
+    "status": "none",
+    "kc_ids": [],
+    "sc_id": "sc-0030",
+    "sc_written": false,
+    "chapter_coverage": {},
+    "notes": ""
+   }
+  },
+  {
+   "id": "CBNbcbMs_Lc",
+   "rank": 31,
+   "title": "100 Hours Testing Clawdbot vs Claude Code (honest results)",
+   "url": "https://www.youtube.com/watch?v=CBNbcbMs_Lc",
+   "length": "22:47",
+   "seconds": 1367,
+   "views_text": "251K views",
+   "views_exact": "251,601 views",
+   "date_text": "Jan 27, 2026",
+   "chapters": [
+    {
+     "t": "00:00",
+     "title": "What We’re Covering Today"
+    },
+    {
+     "t": "03:21",
+     "title": "1) Out of the Box Ability"
+    },
+    {
+     "t": "06:53",
+     "title": "2) Setup Friction & Risk"
+    },
+    {
+     "t": "08:45",
+     "title": "3) Cost"
+    },
+    {
+     "t": "10:33",
+     "title": "4) Power & Access"
+    },
+    {
+     "t": "12:33",
+     "title": "5) Security"
+    },
+    {
+     "t": "16:32",
+     "title": "6) Everyday Usability"
+    },
+    {
+     "t": "17:53",
+     "title": "7) Actual ROI"
+    },
+    {
+     "t": "19:48",
+     "title": "8) The ICP"
+    },
+    {
+     "t": "21:00",
+     "title": "Who Wins?"
+    },
+    {
+     "t": "21:46",
+     "title": "Want to Master AI Automations?"
+    }
+   ],
+   "transcript": {
+    "file": "transcripts/CBNbcbMs_Lc.md",
+    "sha256": "f07e912f52325861f6b6c371570f0eb5638829e39d17d1c032a4ea01a3308cd3",
+    "bytes": 29990,
+    "est_tokens": 7497,
+    "git_archive_commit": "b8d02e5",
+    "drive_file_id": null,
+    "drive_status": "pending_bulk_upload"
+   },
+   "extraction": {
+    "status": "none",
+    "kc_ids": [],
+    "sc_id": "sc-0031",
+    "sc_written": false,
+    "chapter_coverage": {},
+    "notes": ""
+   }
+  },
+  {
+   "id": "eu8UJtuIi-E",
+   "rank": 32,
+   "title": "I Gave OpenClaw $10,000 to Trade Stocks",
+   "url": "https://www.youtube.com/watch?v=eu8UJtuIi-E",
+   "length": "18:56",
+   "seconds": 1136,
+   "views_text": "248K views",
+   "views_exact": "248,852 views",
+   "date_text": "Apr 9, 2026",
+   "chapters": [
+    {
+     "t": "00:12",
+     "title": "$10,000 AI Trading Bet?"
+    },
+    {
+     "t": "01:02",
+     "title": "Win $100 Cash Prize!"
+    },
+    {
+     "t": "03:59",
+     "title": "Day 7: Big Loss?"
+    },
+    {
+     "t": "06:21",
+     "title": "Bots Sending Mean Emails?"
+    },
+    {
+     "t": "08:22",
+     "title": "Beating the Stock Market?"
+    },
+    {
+     "t": "12:53",
+     "title": "The Final Big Reveal!"
+    }
+   ],
+   "transcript": {
+    "file": "transcripts/eu8UJtuIi-E.md",
+    "sha256": "4040d1e856bde1908a4c431a32e6f127d7ddc365d64c1dc4e289da0812a2138c",
+    "bytes": 22637,
+    "est_tokens": 5659,
+    "git_archive_commit": "b8d02e5",
+    "drive_file_id": null,
+    "drive_status": "pending_bulk_upload"
+   },
+   "extraction": {
+    "status": "none",
+    "kc_ids": [],
+    "sc_id": "sc-0032",
+    "sc_written": false,
+    "chapter_coverage": {},
+    "notes": ""
+   }
+  },
+  {
+   "id": "Y3PcRp5RFzk",
+   "rank": 33,
+   "title": "I’ve Built 500 AI Workflows, This is What Businesses Want in 2026",
+   "url": "https://www.youtube.com/watch?v=Y3PcRp5RFzk",
+   "length": "14:51",
+   "seconds": 891,
+   "views_text": "246K views",
+   "views_exact": "246,685 views",
+   "date_text": "Mar 30, 2026",
+   "chapters": [
+    {
+     "t": "00:42",
+     "title": "Easiest Automation to Sell"
+    },
+    {
+     "t": "02:54",
+     "title": "The “Boring” Money Maker"
+    },
+    {
+     "t": "05:12",
+     "title": "Why Leads Don’t Convert"
+    },
+    {
+     "t": "07:40",
+     "title": "Hidden Money in Your CRM"
+    },
+    {
+     "t": "09:37",
+     "title": "The Stickiest Automation to Sale"
+    },
+    {
+     "t": "11:00",
+     "title": "The Most Profitable Automation I've seen"
+    },
+    {
+     "t": "11:50",
+     "title": "How to Sell Them?"
+    }
+   ],
+   "transcript": {
+    "file": "transcripts/Y3PcRp5RFzk.md",
+    "sha256": "8743dfc9d893837460cea4878b0988c156554a4cedaf0efabf0c9171d061f7e5",
+    "bytes": 22363,
+    "est_tokens": 5590,
+    "git_archive_commit": "b8d02e5",
+    "drive_file_id": null,
+    "drive_status": "pending_bulk_upload"
+   },
+   "extraction": {
+    "status": "none",
+    "kc_ids": [],
+    "sc_id": "sc-0033",
+    "sc_written": false,
+    "chapter_coverage": {},
+    "notes": ""
+   }
+  },
+  {
+   "id": "HJ-dwefABss",
+   "rank": 34,
+   "title": "Claude Code + Paperclip Just Destroyed OpenClaw",
+   "url": "https://www.youtube.com/watch?v=HJ-dwefABss",
+   "length": "20:33",
+   "seconds": 1233,
+   "views_text": "244K views",
+   "views_exact": "244,518 views",
+   "date_text": "Mar 28, 2026",
+   "chapters": [
+    {
+     "t": "0:00",
+     "title": "My AI Company Dashboard"
+    },
+    {
+     "t": "1:38",
+     "title": "What Is Paperclip?"
+    },
+    {
+     "t": "3:48",
+     "title": "Free Resource Guide"
+    },
+    {
+     "t": "4:05",
+     "title": "Why Paperclip Blew Up"
+    },
+    {
+     "t": "5:07",
+     "title": "How to Install & Get Started"
+    },
+    {
+     "t": "5:54",
+     "title": "Building a Company From Scratch"
+    },
+    {
+     "t": "8:00",
+     "title": "Agent Configuration & Heartbeats"
+    },
+    {
+     "t": "11:03",
+     "title": "Setting Up Projects & Hiring QA"
+    },
+    {
+     "t": "14:32",
+     "title": "Adding Skills"
+    },
+    {
+     "t": "16:08",
+     "title": "Routines"
+    },
+    {
+     "t": "17:34",
+     "title": "Importing Company Templates"
+    },
+    {
+     "t": "19:13",
+     "title": "Secrets & API Keys With Claude Code"
+    },
+    {
+     "t": "20:07",
+     "title": "Final Thoughts"
+    }
+   ],
+   "transcript": {
+    "file": "transcripts/HJ-dwefABss.md",
+    "sha256": "2d2c3411ea4949f4ac9b2f15d1ab30ba64fab0967c3810d86346f9f92b9059f8",
+    "bytes": 27548,
+    "est_tokens": 6887,
+    "git_archive_commit": "b8d02e5",
+    "drive_file_id": null,
+    "drive_status": "pending_bulk_upload"
+   },
+   "extraction": {
+    "status": "none",
+    "kc_ids": [],
+    "sc_id": "sc-0034",
+    "sc_written": false,
+    "chapter_coverage": {},
+    "notes": ""
+   }
+  },
+  {
+   "id": "XeIx4S6YvGo",
+   "rank": 35,
+   "title": "I Tested OpenAI's AgentKit Against n8n: What You Need to Know",
+   "url": "https://www.youtube.com/watch?v=XeIx4S6YvGo",
+   "length": "21:22",
+   "seconds": 1282,
+   "views_text": "238K views",
+   "views_exact": "238,008 views",
+   "date_text": "Oct 7, 2025",
+   "chapters": [
+    {
+     "t": "00:00",
+     "title": "What We’re Covering Today"
+    },
+    {
+     "t": "02:25",
+     "title": "1) Ease of Use"
+    },
+    {
+     "t": "05:41",
+     "title": "2) Triggers"
+    },
+    {
+     "t": "08:47",
+     "title": "3) Agent Tools"
+    },
+    {
+     "t": "11:04",
+     "title": "4) Model Support"
+    },
+    {
+     "t": "12:19",
+     "title": "5) UI/Chat Components"
+    },
+    {
+     "t": "14:04",
+     "title": "6) Deployment/Control"
+    },
+    {
+     "t": "15:30",
+     "title": "Final Thoughts & Comparisons"
+    },
+    {
+     "t": "20:25",
+     "title": "Want to Become a Master AI Problem Solver?"
+    }
+   ],
+   "transcript": {
+    "file": "transcripts/XeIx4S6YvGo.md",
+    "sha256": "330c7031f0a92f887c16da8c322c481ad6c49ec65eba979b7745223e1ded5363",
+    "bytes": 27798,
+    "est_tokens": 6949,
+    "git_archive_commit": "b8d02e5",
+    "drive_file_id": null,
+    "drive_status": "pending_bulk_upload"
+   },
+   "extraction": {
+    "status": "none",
+    "kc_ids": [],
+    "sc_id": "sc-0035",
+    "sc_written": false,
+    "chapter_coverage": {},
+    "notes": ""
+   }
+  },
+  {
+   "id": "AO5aW01DKHo",
+   "rank": 36,
+   "title": "Agentic Workflows Just Changed AI Automation Forever! (Claude Code)",
+   "url": "https://www.youtube.com/watch?v=AO5aW01DKHo",
+   "length": "21:40",
+   "seconds": 1300,
+   "views_text": "237K views",
+   "views_exact": "237,539 views",
+   "date_text": "Jan 25, 2026",
+   "chapters": [],
+   "transcript": {
+    "file": "transcripts/AO5aW01DKHo.md",
+    "sha256": "7bde4e4ce95c3ad00a6e0835503bf262caf22a46b1868c3f840a41ae07d5ae62",
+    "bytes": 32157,
+    "est_tokens": 8039,
+    "git_archive_commit": "b8d02e5",
+    "drive_file_id": null,
+    "drive_status": "pending_bulk_upload"
+   },
+   "extraction": {
+    "status": "none",
+    "kc_ids": [],
+    "sc_id": "sc-0036",
+    "sc_written": false,
+    "chapter_coverage": {},
+    "notes": ""
+   }
+  },
+  {
+   "id": "q0TgUtj6vIs",
+   "rank": 37,
+   "title": "The NEW Nano Banana 2 + Claude Code = $10k Websites",
+   "url": "https://www.youtube.com/watch?v=q0TgUtj6vIs",
+   "length": "20:15",
+   "seconds": 1215,
+   "views_text": "231K views",
+   "views_exact": "231,836 views",
+   "date_text": "Mar 3, 2026",
+   "chapters": [
+    {
+     "t": "00:00",
+     "title": "What We're Building"
+    },
+    {
+     "t": "00:40",
+     "title": "Setting up VS Code"
+    },
+    {
+     "t": "02:05",
+     "title": "Grab my FREE Skills"
+    },
+    {
+     "t": "04:14",
+     "title": "Live Build Starts"
+    },
+    {
+     "t": "11:38",
+     "title": "What is Local Host?"
+    },
+    {
+     "t": "13:34",
+     "title": "Hosting Our Website on the Cloud"
+    },
+    {
+     "t": "16:07",
+     "title": "Managing Website Versions"
+    },
+    {
+     "t": "18:20",
+     "title": "How to Sell These"
+    },
+    {
+     "t": "19:20",
+     "title": "Final Thoughts"
+    }
+   ],
+   "transcript": {
+    "file": "transcripts/q0TgUtj6vIs.md",
+    "sha256": "81d14a5d687dcc7eedf560fd9f0421fbb4a5b165e2be1b239de328ca2b02b7c9",
+    "bytes": 27207,
+    "est_tokens": 6801,
+    "git_archive_commit": "b8d02e5",
+    "drive_file_id": null,
+    "drive_status": "pending_bulk_upload"
+   },
+   "extraction": {
+    "status": "none",
+    "kc_ids": [],
+    "sc_id": "sc-0037",
+    "sc_written": false,
+    "chapter_coverage": {},
+    "notes": ""
+   }
+  },
+  {
+   "id": "Q46OLxFshAQ",
+   "rank": 38,
+   "title": "How I'd Make Money with AI in 2026 (if I had to Start Over)",
+   "url": "https://www.youtube.com/watch?v=Q46OLxFshAQ",
+   "length": "23:59",
+   "seconds": 1439,
+   "views_text": "230K views",
+   "views_exact": "230,244 views",
+   "date_text": "Oct 3, 2025",
+   "chapters": [
+    {
+     "t": "00:00",
+     "title": "Intro"
+    },
+    {
+     "t": "0:58",
+     "title": "Stage 1"
+    },
+    {
+     "t": "5:01",
+     "title": "Stage 2"
+    },
+    {
+     "t": "9:27",
+     "title": "Stage 3"
+    },
+    {
+     "t": "14:00",
+     "title": "Stage 4"
+    },
+    {
+     "t": "18:24",
+     "title": "Recap"
+    },
+    {
+     "t": "19:48",
+     "title": "How to progress 10x faster"
+    }
+   ],
+   "transcript": {
+    "file": "transcripts/Q46OLxFshAQ.md",
+    "sha256": "c1bff9cc53a4ce885d060c9e95852cad2ac2c5adb3edbdb59c737e1af73478ae",
+    "bytes": 33380,
+    "est_tokens": 8345,
+    "git_archive_commit": "b8d02e5",
+    "drive_file_id": null,
+    "drive_status": "pending_bulk_upload"
+   },
+   "extraction": {
+    "status": "none",
+    "kc_ids": [],
+    "sc_id": "sc-0038",
+    "sc_written": false,
+    "chapter_coverage": {},
+    "notes": ""
+   }
+  },
+  {
+   "id": "RAZVk5NPNtE",
+   "rank": 39,
+   "title": "Claude Code Skills Just Got Even Better",
+   "url": "https://www.youtube.com/watch?v=RAZVk5NPNtE",
+   "length": "16:15",
+   "seconds": 975,
+   "views_text": "227K views",
+   "views_exact": "227,514 views",
+   "date_text": "Mar 5, 2026",
+   "chapters": [
+    {
+     "t": "00:00",
+     "title": "What is a Skill?"
+    },
+    {
+     "t": "00:52",
+     "title": "Two types of Skills"
+    },
+    {
+     "t": "03:27",
+     "title": "Anthropic's Skill Creator"
+    },
+    {
+     "t": "04:23",
+     "title": "Evals"
+    },
+    {
+     "t": "06:15",
+     "title": "Trigger Tuning"
+    },
+    {
+     "t": "07:47",
+     "title": "Installing this Skill"
+    },
+    {
+     "t": "08:44",
+     "title": "Building new Skill"
+    },
+    {
+     "t": "12:24",
+     "title": "Final Result"
+    },
+    {
+     "t": "14:18",
+     "title": "Final Output"
+    }
+   ],
+   "transcript": {
+    "file": "transcripts/RAZVk5NPNtE.md",
+    "sha256": "dd559f4583a2a23d10a6ec286d907f466355d36012608eacd2a33f3460bbead6",
+    "bytes": 21890,
+    "est_tokens": 5472,
+    "git_archive_commit": "b8d02e5",
+    "drive_file_id": null,
+    "drive_status": "pending_bulk_upload"
+   },
+   "extraction": {
+    "status": "none",
+    "kc_ids": [],
+    "sc_id": "sc-0039",
+    "sc_written": false,
+    "chapter_coverage": {},
+    "notes": ""
+   }
+  },
+  {
+   "id": "Gc03J27xmBc",
+   "rank": 40,
+   "title": "How I Automated Faceless Shorts with AI in n8n (free template)",
+   "url": "https://www.youtube.com/watch?v=Gc03J27xmBc",
+   "length": "36:56",
+   "seconds": 2216,
+   "views_text": "227K views",
+   "views_exact": "227,401 views",
+   "date_text": "Mar 11, 2025",
+   "chapters": [
+    {
+     "t": "00:00",
+     "title": "What We’re Covering"
+    },
+    {
+     "t": "01:11",
+     "title": "Quick Demo"
+    },
+    {
+     "t": "02:05",
+     "title": "Faceless Shorts Examples"
+    },
+    {
+     "t": "02:42",
+     "title": "Back to the Demo"
+    },
+    {
+     "t": "03:52",
+     "title": "The Demo Short"
+    },
+    {
+     "t": "05:39",
+     "title": "Get The FREE Resources"
+    },
+    {
+     "t": "06:20",
+     "title": "Generating Image Prompts"
+    },
+    {
+     "t": "11:36",
+     "title": "Generating Images"
+    },
+    {
+     "t": "16:31",
+     "title": "Generating Videos"
+    },
+    {
+     "t": "19:45",
+     "title": "Generating Audio"
+    },
+    {
+     "t": "26:16",
+     "title": "Render & Upload"
+    },
+    {
+     "t": "34:23",
+     "title": "Expand This Template & Costs"
+    }
+   ],
+   "transcript": {
+    "file": "transcripts/Gc03J27xmBc.md",
+    "sha256": "1ce955e356a8cee2d2a90266d7458ae86a87f5ef8180c7a392a3b045743bf28c",
+    "bytes": 43628,
+    "est_tokens": 10907,
+    "git_archive_commit": "b8d02e5",
+    "drive_file_id": null,
+    "drive_status": "pending_bulk_upload"
+   },
+   "extraction": {
+    "status": "none",
+    "kc_ids": [],
+    "sc_id": "sc-0040",
+    "sc_written": false,
+    "chapter_coverage": {},
+    "notes": ""
+   }
+  },
+  {
+   "id": "B6k_vAjndMo",
+   "rank": 41,
+   "title": "Claude Code is Better at n8n than I am (Beginner's Guide)",
+   "url": "https://www.youtube.com/watch?v=B6k_vAjndMo",
+   "length": "28:07",
+   "seconds": 1687,
+   "views_text": "222K views",
+   "views_exact": "222,471 views",
+   "date_text": "Jan 14, 2026",
+   "chapters": [
+    {
+     "t": "00:00",
+     "title": "Quick Demo"
+    },
+    {
+     "t": "01:10",
+     "title": "Claude Code / VS Code Setup"
+    },
+    {
+     "t": "03:30",
+     "title": "Project “System Prompt”"
+    },
+    {
+     "t": "07:39",
+     "title": "The Project Tech Stack"
+    },
+    {
+     "t": "11:49",
+     "title": "Installing n8n MCP and n8n Skills"
+    },
+    {
+     "t": "17:25",
+     "title": "Building an n8n Workflow"
+    },
+    {
+     "t": "23:45",
+     "title": "Using Claude Code Deeper"
+    },
+    {
+     "t": "27:28",
+     "title": "FREE Resources"
+    }
+   ],
+   "transcript": {
+    "file": "transcripts/B6k_vAjndMo.md",
+    "sha256": "0245d6e4d6b67ebfd62b461b500e9f18abe85006fe648b8f84f4a7de98b5d019",
+    "bytes": 35987,
+    "est_tokens": 8996,
+    "git_archive_commit": "b8d02e5",
+    "drive_file_id": null,
+    "drive_status": "pending_bulk_upload"
+   },
+   "extraction": {
+    "status": "none",
+    "kc_ids": [],
+    "sc_id": "sc-0041",
+    "sc_written": false,
+    "chapter_coverage": {},
+    "notes": ""
+   }
+  },
+  {
+   "id": "kUpTUEwKnrk",
+   "rank": 42,
+   "title": "Build Anything with Lovable + n8n AI Agents (beginner's guide)",
+   "url": "https://www.youtube.com/watch?v=kUpTUEwKnrk",
+   "length": "20:15",
+   "seconds": 1215,
+   "views_text": "217K views",
+   "views_exact": "217,663 views",
+   "date_text": "Apr 1, 2025",
+   "chapters": [
+    {
+     "t": "00:00",
+     "title": "How This works"
+    },
+    {
+     "t": "01:11",
+     "title": "Building App with Lovable"
+    },
+    {
+     "t": "05:30",
+     "title": "Configuring n8n Webhook"
+    },
+    {
+     "t": "06:42",
+     "title": "Building n8n AI Agent"
+    },
+    {
+     "t": "10:20",
+     "title": "Sending Data Back to Lovable"
+    },
+    {
+     "t": "12:13",
+     "title": "Adding Level System to the App"
+    },
+    {
+     "t": "13:33",
+     "title": "Adding Drop Down Selection to the App"
+    },
+    {
+     "t": "16:12",
+     "title": "Making n8n Workflow Active"
+    },
+    {
+     "t": "18:45",
+     "title": "Final Thoughts"
+    }
+   ],
+   "transcript": {
+    "file": "transcripts/kUpTUEwKnrk.md",
+    "sha256": "76f4b53a10faaeee879514d523ee24b13c68aa3f95075078af2f381c781a0ca3",
+    "bytes": 26424,
+    "est_tokens": 6606,
+    "git_archive_commit": "b8d02e5",
+    "drive_file_id": null,
+    "drive_status": "pending_bulk_upload"
+   },
+   "extraction": {
+    "status": "none",
+    "kc_ids": [],
+    "sc_id": "sc-0042",
+    "sc_written": false,
+    "chapter_coverage": {},
+    "notes": ""
+   }
+  },
+  {
+   "id": "zKBPwDpBfhs",
+   "rank": 43,
+   "title": "Master 95% of Claude Code Skills in 28 Minutes",
+   "url": "https://www.youtube.com/watch?v=zKBPwDpBfhs",
+   "length": "27:19",
+   "seconds": 1639,
+   "views_text": "215K views",
+   "views_exact": "215,449 views",
+   "date_text": "Feb 26, 2026",
+   "chapters": [
+    {
+     "t": "0:00",
+     "title": "Intro & live demo"
+    },
+    {
+     "t": "2:41",
+     "title": "What are skills?"
+    },
+    {
+     "t": "3:35",
+     "title": "Why you should care"
+    },
+    {
+     "t": "5:24",
+     "title": "Anatomy of a skill"
+    },
+    {
+     "t": "6:45",
+     "title": "Reference files"
+    },
+    {
+     "t": "11:00",
+     "title": "How Claude knows when to use a skill"
+    },
+    {
+     "t": "13:17",
+     "title": "The feedback cycle & when to build a skill"
+    },
+    {
+     "t": "17:13",
+     "title": "Six-step skill building framework"
+    },
+    {
+     "t": "18:10",
+     "title": "Live skill build"
+    },
+    {
+     "t": "22:54",
+     "title": "Testing the skill & iterating on results"
+    },
+    {
+     "t": "23:55",
+     "title": "Testing, debugging & common fixes"
+    },
+    {
+     "t": "26:57",
+     "title": "Want to master AI Automation?"
+    }
+   ],
+   "transcript": {
+    "file": "transcripts/zKBPwDpBfhs.md",
+    "sha256": "13a1702c9798ab3b8947cb0c21f2a1f9801e869054b7bf0250bee10f2499bef3",
+    "bytes": 36296,
+    "est_tokens": 9074,
+    "git_archive_commit": "b8d02e5",
+    "drive_file_id": null,
+    "drive_status": "pending_bulk_upload"
+   },
+   "extraction": {
+    "status": "none",
+    "kc_ids": [],
+    "sc_id": "sc-0043",
+    "sc_written": false,
+    "chapter_coverage": {},
+    "notes": ""
+   }
+  },
+  {
+   "id": "EthxaDswUFo",
+   "rank": 44,
+   "title": "I Tested GPT 5.6 Sol vs Fable 5. What You Need To Know.",
+   "url": "https://www.youtube.com/watch?v=EthxaDswUFo",
+   "length": "20:25",
+   "seconds": 1225,
+   "views_text": "209K views",
+   "views_exact": "209,982 views",
+   "date_text": "Jul 9, 2026",
+   "chapters": [
+    {
+     "t": "0:00",
+     "title": "Intro & Benchmarks"
+    },
+    {
+     "t": "0:51",
+     "title": "Test 1: Browser Bike Game"
+    },
+    {
+     "t": "3:31",
+     "title": "Test 2: Scroll-Stopping Website"
+    },
+    {
+     "t": "6:16",
+     "title": "Test 3: Five Visual Worlds"
+    },
+    {
+     "t": "12:38",
+     "title": "API One-Off Tests"
+    },
+    {
+     "t": "17:00",
+     "title": "Final Verdict: Manager vs Worker"
+    },
+    {
+     "t": "19:20",
+     "title": "Where Each Model Ranks"
+    },
+    {
+     "t": "19:50",
+     "title": "Final Thoughts"
+    }
+   ],
+   "transcript": {
+    "file": "transcripts/EthxaDswUFo.md",
+    "sha256": "5c842a8e37c40fbe5ae82854aeeebf4f2d16569f58b076f439dadaa6e23dab45",
+    "bytes": 24585,
+    "est_tokens": 6146,
+    "git_archive_commit": "b8d02e5",
+    "drive_file_id": null,
+    "drive_status": "pending_bulk_upload"
+   },
+   "extraction": {
+    "status": "none",
+    "kc_ids": [],
+    "sc_id": "sc-0044",
+    "sc_written": false,
+    "chapter_coverage": {},
+    "notes": ""
+   }
+  },
+  {
+   "id": "99VHENEKA9o",
+   "rank": 45,
+   "title": "100 Hours Testing Claude Code vs Antigravity (honest results)",
+   "url": "https://www.youtube.com/watch?v=99VHENEKA9o",
+   "length": "23:32",
+   "seconds": 1412,
+   "views_text": "209K views",
+   "views_exact": "209,222 views",
+   "date_text": "Apr 13, 2026",
+   "chapters": [
+    {
+     "t": "00:00",
+     "title": "Intro"
+    },
+    {
+     "t": "00:40",
+     "title": "How Do They Work?"
+    },
+    {
+     "t": "01:23",
+     "title": "Where Do You Build?"
+    },
+    {
+     "t": "03:19",
+     "title": "Who Makes Better Stuff?"
+    },
+    {
+     "t": "04:41",
+     "title": "The \"Taste\" Test"
+    },
+    {
+     "t": "06:27",
+     "title": "The Price of Power"
+    },
+    {
+     "t": "12:41",
+     "title": "Live Test: Can They Build an App?"
+    },
+    {
+     "t": "21:32",
+     "title": "The Final Verdict"
+    }
+   ],
+   "transcript": {
+    "file": "transcripts/99VHENEKA9o.md",
+    "sha256": "602673c3edc74534e688208875e1de25cb84864c5ad43641dde73ade15d632c0",
+    "bytes": 33019,
+    "est_tokens": 8254,
+    "git_archive_commit": "b8d02e5",
+    "drive_file_id": null,
+    "drive_status": "pending_bulk_upload"
+   },
+   "extraction": {
+    "status": "none",
+    "kc_ids": [],
+    "sc_id": "sc-0045",
+    "sc_written": false,
+    "chapter_coverage": {},
+    "notes": ""
+   }
+  },
+  {
+   "id": "DG1wRgEpdO4",
+   "rank": 46,
+   "title": "Claude’s New AI Just Changed the Internet Forever",
+   "url": "https://www.youtube.com/watch?v=DG1wRgEpdO4",
+   "length": "7:50",
+   "seconds": 470,
+   "views_text": "208K views",
+   "views_exact": "208,251 views",
+   "date_text": "Apr 7, 2026",
+   "chapters": [
+    {
+     "t": "0:00",
+     "title": "What Is Claude Mythos?"
+    },
+    {
+     "t": "1:01",
+     "title": "Benchmarks & Real Numbers"
+    },
+    {
+     "t": "3:15",
+     "title": "Project Glasswing"
+    },
+    {
+     "t": "4:36",
+     "title": "What This Means for You"
+    },
+    {
+     "t": "6:00",
+     "title": "My Honest Take"
+    }
+   ],
+   "transcript": {
+    "file": "transcripts/DG1wRgEpdO4.md",
+    "sha256": "6474d93121f94d3cc72dc827a3d92337bdf09c56674bc9760f159b9956474e02",
+    "bytes": 9995,
+    "est_tokens": 2498,
+    "git_archive_commit": "b8d02e5",
+    "drive_file_id": null,
+    "drive_status": "pending_bulk_upload"
+   },
+   "extraction": {
+    "status": "none",
+    "kc_ids": [],
+    "sc_id": "sc-0046",
+    "sc_written": false,
+    "chapter_coverage": {},
+    "notes": ""
+   }
+  },
+  {
+   "id": "KUvSzvFeZls",
+   "rank": 47,
+   "title": "How I Built JARVIS with No Code (Tutorial w/ Lovable, ElevenLabs, n8n)",
+   "url": "https://www.youtube.com/watch?v=KUvSzvFeZls",
+   "length": "34:26",
+   "seconds": 2066,
+   "views_text": "208K views",
+   "views_exact": "208,407 views",
+   "date_text": "Mar 23, 2025",
+   "chapters": [
+    {
+     "t": "00:00",
+     "title": "Quick Demos"
+    },
+    {
+     "t": "03:02",
+     "title": "A Peek Under the Hood"
+    },
+    {
+     "t": "04:49",
+     "title": "The Tech Stack"
+    },
+    {
+     "t": "05:45",
+     "title": "Get the Resources (Free)"
+    },
+    {
+     "t": "06:06",
+     "title": "Step 1) Lovable Walkthrough"
+    },
+    {
+     "t": "12:10",
+     "title": "Step 2) ElevenLabs Walkthrough"
+    },
+    {
+     "t": "21:43",
+     "title": "Step 3) n8n Walkthrough"
+    }
+   ],
+   "transcript": {
+    "file": "transcripts/KUvSzvFeZls.md",
+    "sha256": "e643a4df8f61f7b54de8daaf52a0acecf48b1c69c7a17cf793851793ed10d81e",
+    "bytes": 44826,
+    "est_tokens": 11206,
+    "git_archive_commit": "b8d02e5",
+    "drive_file_id": null,
+    "drive_status": "pending_bulk_upload"
+   },
+   "extraction": {
+    "status": "none",
+    "kc_ids": [],
+    "sc_id": "sc-0047",
+    "sc_written": false,
+    "chapter_coverage": {},
+    "notes": ""
+   }
+  },
+  {
+   "id": "Wu67lLD8bB0",
+   "rank": 48,
+   "title": "Google’s New Tool Just 10x’d Claude Code",
+   "url": "https://www.youtube.com/watch?v=Wu67lLD8bB0",
+   "length": "11:49",
+   "seconds": 709,
+   "views_text": "205K views",
+   "views_exact": "205,047 views",
+   "date_text": "Mar 9, 2026",
+   "chapters": [
+    {
+     "t": "0:00",
+     "title": "What GWS CLI Can Do"
+    },
+    {
+     "t": "1:00",
+     "title": "Resource Guide Demo"
+    },
+    {
+     "t": "2:03",
+     "title": "Why Use This"
+    },
+    {
+     "t": "3:06",
+     "title": "GitHub Repo Walkthrough"
+    },
+    {
+     "t": "4:08",
+     "title": "Full Installation Guide"
+    },
+    {
+     "t": "7:57",
+     "title": "Demos"
+    },
+    {
+     "t": "10:50",
+     "title": "Final Thoughts"
+    }
+   ],
+   "transcript": {
+    "file": "transcripts/Wu67lLD8bB0.md",
+    "sha256": "fd7b1aab9169ecc068046282b95a0939a90890ab62fa35eab8dfe770a02e0bb1",
+    "bytes": 16211,
+    "est_tokens": 4052,
+    "git_archive_commit": "b8d02e5",
+    "drive_file_id": null,
+    "drive_status": "pending_bulk_upload"
+   },
+   "extraction": {
+    "status": "none",
+    "kc_ids": [],
+    "sc_id": "sc-0048",
+    "sc_written": false,
+    "chapter_coverage": {},
+    "notes": ""
+   }
+  },
+  {
+   "id": "DTCyvo6cC54",
+   "rank": 49,
+   "title": "Every Level of a Claude Second Brain Explained",
+   "url": "https://www.youtube.com/watch?v=DTCyvo6cC54",
+   "length": "31:00",
+   "seconds": 1860,
+   "views_text": "202K views",
+   "views_exact": "202,791 views",
+   "date_text": "Jun 17, 2026",
+   "chapters": [
+    {
+     "t": "0:00",
+     "title": "Intro"
+    },
+    {
+     "t": "3:25",
+     "title": "The 5 Levels Overview"
+    },
+    {
+     "t": "4:19",
+     "title": "Level 1"
+    },
+    {
+     "t": "8:11",
+     "title": "Level 2"
+    },
+    {
+     "t": "13:03",
+     "title": "Level 3"
+    },
+    {
+     "t": "19:27",
+     "title": "Level 4"
+    },
+    {
+     "t": "25:25",
+     "title": "Level 5"
+    },
+    {
+     "t": "28:48",
+     "title": "Finding Your Level"
+    },
+    {
+     "t": "30:41",
+     "title": "Final Thoughts"
+    }
+   ],
+   "transcript": {
+    "file": "transcripts/DTCyvo6cC54.md",
+    "sha256": "4fb39541d420406acbd1b85ad412b4d5bf2e138de510e1bc6355afa86697cdf7",
+    "bytes": 40266,
+    "est_tokens": 10066,
+    "git_archive_commit": "b8d02e5",
+    "drive_file_id": null,
+    "drive_status": "pending_bulk_upload"
+   },
+   "extraction": {
+    "status": "none",
+    "kc_ids": [],
+    "sc_id": "sc-0049",
+    "sc_written": false,
+    "chapter_coverage": {},
+    "notes": ""
+   }
+  },
+  {
+   "id": "jBanaNBY-sM",
+   "rank": 50,
+   "title": "I Built the Ultimate Army of Media Agents in n8n (free template)",
+   "url": "https://www.youtube.com/watch?v=jBanaNBY-sM",
+   "length": "29:37",
+   "seconds": 1777,
+   "views_text": "197K views",
+   "views_exact": "197,949 views",
+   "date_text": "Aug 15, 2025",
+   "chapters": [
+    {
+     "t": "00:00",
+     "title": "Creating VFX Ad"
+    },
+    {
+     "t": "06:16",
+     "title": "Social Media Research"
+    },
+    {
+     "t": "08:22",
+     "title": "Posting to Social Media"
+    },
+    {
+     "t": "09:31",
+     "title": "Main Agent Configuration"
+    },
+    {
+     "t": "13:46",
+     "title": "Creative Agent"
+    },
+    {
+     "t": "20:47",
+     "title": "Posting & Doc Workflows"
+    },
+    {
+     "t": "21:59",
+     "title": "Social Media Agent"
+    },
+    {
+     "t": "23:21",
+     "title": "Cost Breakdown"
+    },
+    {
+     "t": "25:45",
+     "title": "Setup Instructions FREE TEMPLATE"
+    },
+    {
+     "t": "28:44",
+     "title": "Want to Master n8n?"
+    }
+   ],
+   "transcript": {
+    "file": "transcripts/jBanaNBY-sM.md",
+    "sha256": "d4107ccb36036e2437a8713a428eaf9fe01a3f8dd2188d864123e2f6b2492607",
+    "bytes": 38712,
+    "est_tokens": 9678,
+    "git_archive_commit": "b8d02e5",
+    "drive_file_id": null,
+    "drive_status": "pending_bulk_upload"
+   },
+   "extraction": {
+    "status": "none",
+    "kc_ids": [],
+    "sc_id": "sc-0050",
+    "sc_written": false,
+    "chapter_coverage": {},
+    "notes": ""
+   }
+  }
+ ]
+}

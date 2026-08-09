@@ -23,16 +23,27 @@ ai-university/
     ripper.py       catalog / enrich / transcripts / top  (see --help)
     ripper_ytdlp.py transcripts fallback for bot-gated networks (yt-dlp + PO token)
     librarian.md    extraction spec: transcripts → knowledge & style cards
+    librarian_contract.md  per-video agent protocol (context budget, card formats)
+    excerpt.py      timestamp-span retrieval from cold-stored transcripts (25K cap)
   channels/
     nateherk/
       catalog.json      all 467 videos (302 long-form + 165 shorts), views/length/date
       details.json      descriptions, chapter lists (295), exact dates & views
-      transcripts/      one .md per video (top 50 long-form by views ripped)
+      sources.json      SOURCE LEDGER: checksums, Drive pointers, extraction status,
+                        card ids, chapter coverage, id/context policies
+      transcripts/      cold-stored — Drive + git history; see its README
+      cache/            gitignored working copies, auto-restored by excerpt.py
   library/
     curriculum.md       AI University syllabus v0 (10 tracks + gaps)
     knowledge/          kc-* cards (what to teach)      ← filled by librarian
     style/              sc-* cards (how to package it)  ← sc-0000 + per-video cards
 ```
+
+**Token architecture:** raw sources are cold (Drive canonical, git history as
+mirror); the library holds distilled cards + the ledger; agents pull only
+timestamp spans via `excerpt.py` (hard ~25K source-token ceiling per agent —
+oversized videos are sharded by chapter across agents). Cards cite their
+backing window in `source_span`, so audits retrieve minutes, not transcripts.
 
 ## Commands
 

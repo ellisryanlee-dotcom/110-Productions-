@@ -5,3 +5,6 @@ server/public
 vite.config.ts.*
 *.tar.gz
 __pycache__/
+
+# transcript working cache (local only, never committed)
+ai-university/channels/*/cache/
