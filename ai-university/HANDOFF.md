@@ -42,11 +42,17 @@ script against sources before production. Full rules: `tools/librarian.md`.
   transcript work — if you get connection errors on youtube.com, you are in the
   wrong environment: STOP and tell Ellis to relaunch you in the Full one.
 - Catalog/enrich need only `youtubei.googleapis.com` → work in ANY environment.
-- Transcripts need `www.youtube.com` (watch page + timedtext). `ripper.py
-  transcripts` already implements this correctly (scrape watch page →
-  captionTracks → json3). Do NOT try InnerTube `get_transcript` or `player` on
-  googleapis hosts — they return FAILED_PRECONDITION / LOGIN_REQUIRED from
-  datacenter IPs; that path is a dead end.
+- Transcripts need `www.youtube.com`. **Update (Aug 2026):** the old direct
+  watch-page → captionTracks → timedtext scrape now returns an empty body —
+  YouTube gates the `timedtext` baseUrl behind a proof-of-origin (`pot`) token,
+  so the naive path yields `Expecting value: line 1 column 1 (char 0)` on every
+  video. `ripper.py transcripts` now fetches the json3 via **yt-dlp** (android
+  client, gets past the pot gate); the legacy scrape is kept only as a fallback.
+  Requirements on the runner: `pip install yt-dlp certifi`. On macOS/python.org
+  builds you must also `export SSL_CERT_FILE=$(python3 -c "import certifi;print(certifi.where())")`
+  or every fetch fails with `CERTIFICATE_VERIFY_FAILED`.
+- Do NOT try InnerTube `get_transcript` or `player` on googleapis hosts — they
+  return FAILED_PRECONDITION / LOGIN_REQUIRED from datacenter IPs; dead end.
 - Keep the ripper's default throttle (`--sleep 1.5`) — be polite to YouTube.
 
 ## NEXT STEPS (in order)

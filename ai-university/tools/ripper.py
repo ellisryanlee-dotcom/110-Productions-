@@ -24,9 +24,13 @@ Stdlib only; no pip installs needed. Two subcommands:
 """
 
 import argparse
+import glob
 import json
+import os
 import re
+import subprocess
 import sys
+import tempfile
 import time
 import urllib.parse
 import urllib.request
@@ -110,8 +114,24 @@ def pick_caption_track(player):
     return sorted(tracks, key=score, reverse=True)[0]
 
 
-def fetch_transcript(video_id):
-    """-> (segments [(start_seconds, text)], track_kind) or raises."""
+def _parse_json3(data):
+    """json3 caption blob -> [(start_seconds, text)]."""
+    segments = []
+    for ev in data.get("events", []):
+        text = "".join(seg.get("utf8", "") for seg in ev.get("segs", []) or [])
+        text = text.replace("\n", " ").strip()
+        if text:
+            segments.append((ev.get("tStart", ev.get("t", 0)) / 1000.0, text))
+    return segments
+
+
+def _fetch_transcript_scrape(video_id):
+    """Legacy path: watch page -> captionTracks -> timedtext json3.
+
+    Kept as a fallback. As of mid-2026 YouTube gates the timedtext baseUrl
+    behind a proof-of-origin (pot) token, so this often returns an empty body
+    from most IPs — fetch_transcript() prefers the yt-dlp path below.
+    """
     player = fetch_player_response(video_id)
     track = pick_caption_track(player)
     if track is None:
@@ -120,17 +140,57 @@ def fetch_transcript(video_id):
     url += ("&" if "?" in url else "?") + "fmt=json3"
     req = urllib.request.Request(url, headers=WATCH_HEADERS)
     with urllib.request.urlopen(req, timeout=60) as r:
-        data = json.loads(r.read().decode("utf-8", "replace"))
-    segments = []
-    for ev in data.get("events", []):
-        text = "".join(seg.get("utf8", "") for seg in ev.get("segs", []) or [])
-        text = text.replace("\n", " ").strip()
-        if text:
-            segments.append((ev.get("tStart", ev.get("t", 0)) / 1000.0, text))
+        body = r.read().decode("utf-8", "replace")
+    if not body.strip():
+        raise RuntimeError("empty timedtext body (pot-gated)")
+    segments = _parse_json3(json.loads(body))
     if not segments:
         raise RuntimeError("empty transcript")
     kind = "auto" if track.get("kind") == "asr" else "manual"
     return segments, kind
+
+
+def _ytdlp_json3(video_id, auto):
+    """Download one en json3 caption track via yt-dlp -> parsed json (or None).
+
+    auto=False fetches manual tracks; auto=True fetches auto-captions. The two
+    flags namespace-separate the tracks, which also lets us label kind reliably.
+    """
+    with tempfile.TemporaryDirectory() as td:
+        flag = "--write-auto-subs" if auto else "--write-subs"
+        cmd = [
+            sys.executable, "-m", "yt_dlp", "--skip-download", "--no-warnings",
+            "-q", flag, "--sub-langs", "en.*", "--sub-format", "json3",
+            "-o", os.path.join(td, "%(id)s.%(ext)s"),
+            f"https://www.youtube.com/watch?v={video_id}",
+        ]
+        subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                       timeout=180, check=False)
+        files = glob.glob(os.path.join(td, "*.json3"))
+        if not files:
+            return None
+        # Prefer a plain "en" track over en-orig / en-US variants.
+        files.sort(key=lambda p: (".en.json3" not in p, len(p)))
+        return json.loads(Path(files[0]).read_text())
+
+
+def fetch_transcript(video_id):
+    """-> (segments [(start_seconds, text)], track_kind) or raises.
+
+    Primary path is yt-dlp (uses the android client, works past the pot gate);
+    falls back to the legacy watch-page scrape if yt-dlp is unavailable.
+    """
+    try:
+        for auto in (False, True):  # prefer manual captions over auto
+            data = _ytdlp_json3(video_id, auto=auto)
+            if data:
+                segments = _parse_json3(data)
+                if segments:
+                    return segments, ("auto" if auto else "manual")
+        raise RuntimeError("no caption tracks (yt-dlp found none)")
+    except FileNotFoundError:
+        # yt-dlp module missing — fall back to the legacy scrape.
+        return _fetch_transcript_scrape(video_id)
 
 
 def transcript_markdown(video, segments, kind):
