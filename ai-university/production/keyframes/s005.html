@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, initial-scale=1">
+<title>S005 — Chatbot vs agent split-screen · Crash Test Agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  /* ===== S005 — CONTEXT split-screen (motion-graphic, rested state).
+     LEFT: one passive chatbot bubble saying a wrong thing (static, harmless).
+     RIGHT: an autonomous agent node spraying send/charge/delete action arrows
+     across a grid, unattended at night, "×200" tally climbing. ===== */
+  .split { display: grid; grid-template-columns: 1fr 1px 1fr; height: 100%; }
+
+  .panel { position: relative; padding: var(--s9) var(--s8) var(--s8); display: flex; flex-direction: column; }
+  .divider { background: var(--ct-line); }
+
+  .p-kicker { font-family: var(--ct-font-mono); text-transform: uppercase; letter-spacing: 0.14em;
+    font-size: var(--ct-kicker); color: var(--ct-text-muted); font-weight: 500; margin-bottom: var(--s6); }
+
+  /* ---------- LEFT: the calm, harmless chatbot ---------- */
+  .left .stagebody { flex: 1; display: grid; place-items: center; }
+  .bubble { position: relative; max-width: 560px; background: var(--ct-surface);
+    border: 1px solid var(--ct-line); border-radius: 22px; padding: 34px 40px;
+    box-shadow: var(--ct-shadow-2); }
+  .bubble::after { content: ""; position: absolute; left: 54px; bottom: -18px; width: 36px; height: 36px;
+    background: var(--ct-surface); border-right: 1px solid var(--ct-line); border-bottom: 1px solid var(--ct-line);
+    transform: rotate(45deg); }
+  .bubble .who { font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); color: var(--ct-text-muted);
+    text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 14px; }
+  .bubble .say { font-family: var(--ct-font-body); font-size: var(--ct-h3); line-height: 1.2; color: var(--ct-text); }
+  .bubble .say .wrong { color: var(--ct-text-muted); text-decoration: line-through wavy var(--ct-break); text-decoration-thickness: 2px; }
+  .harmless { margin-top: var(--s7); display: inline-flex; align-items: center; gap: 12px;
+    font-family: var(--ct-font-mono); font-size: var(--ct-ui-md); color: var(--ct-text-muted); }
+  .harmless .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--ct-text-muted); }
+
+  .p-label { margin-top: var(--s7); font-family: var(--ct-font-body); font-weight: 600;
+    font-size: var(--ct-caption); color: var(--ct-text); }
+  .p-label .em-red { color: var(--ct-break-glow); }
+
+  /* ---------- RIGHT: the autonomous agent, acting ×200 at night ---------- */
+  .right { background: radial-gradient(120% 90% at 82% 12%, rgba(255,59,48,0.10), transparent 60%); }
+  .moon { position: absolute; top: 40px; right: 46px; width: 74px; height: 74px; border-radius: 50%;
+    background: radial-gradient(circle at 36% 34%, #2b3446, #171d28);
+    box-shadow: 0 0 40px rgba(148,163,184,0.20), inset -10px -8px 0 rgba(11,14,20,0.55); }
+  .agent-node { display: inline-flex; align-items: center; gap: 16px; align-self: flex-start;
+    background: var(--ct-surface-raised); border: 1px solid var(--ct-break);
+    border-radius: var(--ct-r-md); padding: 16px 22px; box-shadow: 0 0 26px rgba(255,59,48,0.30); }
+  .agent-node .g { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 9px;
+    background: var(--ct-bg); border: 1px solid var(--ct-break); }
+  .agent-node .g svg { width: 26px; height: 26px; }
+  .agent-node .nm { font-family: var(--ct-font-display); font-stretch: 125%; font-weight: 800;
+    font-size: var(--ct-ui-2xl); color: var(--ct-text); }
+  .agent-node .st { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); color: var(--ct-break-glow);
+    text-transform: uppercase; letter-spacing: 0.08em; }
+
+  .tally { position: absolute; top: 128px; right: 46px; text-align: right; }
+  .tally .n { font-family: var(--ct-font-mono); font-weight: 700; font-size: 128px; line-height: 0.9;
+    color: var(--ct-break-glow); text-shadow: 0 0 30px rgba(255,59,48,0.45); }
+  .tally .l { font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); color: var(--ct-text-muted);
+    text-transform: uppercase; letter-spacing: 0.12em; }
+
+  .actions { margin-top: var(--s7); flex: 1; display: grid; grid-template-columns: repeat(6, 1fr);
+    grid-auto-rows: 92px; gap: 16px; align-content: start; }
+  .act { position: relative; border-radius: var(--ct-r-md);
+    background: color-mix(in srgb, var(--ct-break) 12%, var(--ct-surface));
+    border: 1px solid color-mix(in srgb, var(--ct-break) 45%, var(--ct-line));
+    display: grid; place-items: center; }
+  .act svg { width: 34px; height: 34px; }
+  .act svg [stroke] { stroke: var(--ct-break-glow); }
+  .act svg [fill].f { fill: var(--ct-break-glow); }
+  .act.faded { opacity: 0.55; }
+  .act.faded2 { opacity: 0.32; }
+  .act .tag { position: absolute; bottom: 6px; font-family: var(--ct-font-mono); font-size: 12px;
+    color: var(--ct-break-glow); text-transform: uppercase; letter-spacing: 0.06em; }
+
+  .disclaimer { position: absolute; left: 0; right: 0; bottom: 0; height: 44px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--ct-surface); border-top: 1px solid var(--ct-line);
+    color: var(--ct-text-muted); font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); letter-spacing: 0.03em; z-index: 20; }
+</style>
+</head>
+<body>
+  <div class="stage" role="img"
+       aria-label="Split screen: left a passive chatbot saying one wrong thing harmlessly, right an autonomous agent spraying send charge delete actions two hundred times at night">
+    <div class="grid-bg"></div>
+    <!-- Kill-Counter HUD (global overlay) — Option A: armed at 00/25 through the hook -->
+    <div class="ct-killcounter" data-state="armed" aria-label="Kill counter: 0 of 25 breaks">
+      <span class="kc-dot"></span>
+      <span class="kc-label">Breaks</span>
+      <span class="kc-tally"><span class="kc-n">00</span><span class="kc-of">/ 25</span></span>
+    </div>
+
+    <div class="split">
+      <!-- LEFT -->
+      <section class="panel left">
+        <p class="p-kicker">Chatbot · you watch it</p>
+        <div class="stagebody">
+          <div>
+            <div class="bubble">
+              <div class="who">Chatbot</div>
+              <div class="say">Your order <span class="wrong">shipped last Tuesday</span> — anything else?</div>
+            </div>
+            <div class="harmless"><span class="dot"></span> says it once · nothing happens</div>
+          </div>
+        </div>
+        <div class="p-label">chatbot: <span style="color:var(--ct-text-muted)">says a wrong thing</span></div>
+      </section>
+
+      <div class="divider" aria-hidden="true"></div>
+
+      <!-- RIGHT -->
+      <section class="panel right">
+        <span class="moon" aria-hidden="true"></span>
+        <p class="p-kicker">Agent · runs while you sleep</p>
+
+        <span class="agent-node">
+          <span class="g"><svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
+            <rect x="8" y="10" width="16" height="12" rx="3" stroke="var(--ct-break)" stroke-width="2.4"/>
+            <path d="M16 6v4M12 16h.01M20 16h.01" stroke="var(--ct-break)" stroke-width="2.4" stroke-linecap="round"/>
+            <path d="M6 15v4M26 15v4" stroke="var(--ct-break)" stroke-width="2.4" stroke-linecap="round"/>
+          </svg></span>
+          <span>
+            <span class="nm">autonomous agent</span><br>
+            <span class="st">acting · unattended</span>
+          </span>
+        </span>
+
+        <div class="tally">
+          <div class="n">&times;200</div>
+          <div class="l">actions fired</div>
+        </div>
+
+        <div class="actions" aria-hidden="true">
+          <!-- send / charge / delete, multiplying -->
+          <span class="act"><svg viewBox="0 0 24 24" fill="none"><path d="M3 12l17-8-6 17-3-6-8-3z" stroke-width="2" stroke-linejoin="round"/></svg><span class="tag">send</span></span>
+          <span class="act"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3v18M8 7h6a3 3 0 010 6H9a3 3 0 000 6h7" stroke-width="2" stroke-linecap="round"/></svg><span class="tag">charge</span></span>
+          <span class="act"><svg viewBox="0 0 24 24" fill="none"><path d="M5 7h14M9 7V5h6v2M7 7l1 13h8l1-13" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="tag">delete</span></span>
+          <span class="act"><svg viewBox="0 0 24 24" fill="none"><path d="M3 12l17-8-6 17-3-6-8-3z" stroke-width="2" stroke-linejoin="round"/></svg><span class="tag">send</span></span>
+          <span class="act"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3v18M8 7h6a3 3 0 010 6H9a3 3 0 000 6h7" stroke-width="2" stroke-linecap="round"/></svg><span class="tag">charge</span></span>
+          <span class="act"><svg viewBox="0 0 24 24" fill="none"><path d="M5 7h14M9 7V5h6v2M7 7l1 13h8l1-13" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="tag">delete</span></span>
+          <span class="act"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3v18M8 7h6a3 3 0 010 6H9a3 3 0 000 6h7" stroke-width="2" stroke-linecap="round"/></svg><span class="tag">charge</span></span>
+          <span class="act"><svg viewBox="0 0 24 24" fill="none"><path d="M3 12l17-8-6 17-3-6-8-3z" stroke-width="2" stroke-linejoin="round"/></svg><span class="tag">send</span></span>
+          <span class="act"><svg viewBox="0 0 24 24" fill="none"><path d="M5 7h14M9 7V5h6v2M7 7l1 13h8l1-13" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="tag">delete</span></span>
+          <span class="act"><svg viewBox="0 0 24 24" fill="none"><path d="M3 12l17-8-6 17-3-6-8-3z" stroke-width="2" stroke-linejoin="round"/></svg><span class="tag">send</span></span>
+          <span class="act"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3v18M8 7h6a3 3 0 010 6H9a3 3 0 000 6h7" stroke-width="2" stroke-linecap="round"/></svg><span class="tag">charge</span></span>
+          <span class="act"><svg viewBox="0 0 24 24" fill="none"><path d="M5 7h14M9 7V5h6v2M7 7l1 13h8l1-13" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="tag">delete</span></span>
+          <span class="act faded"><svg viewBox="0 0 24 24" fill="none"><path d="M3 12l17-8-6 17-3-6-8-3z" stroke-width="2" stroke-linejoin="round"/></svg><span class="tag">send</span></span>
+          <span class="act faded"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3v18M8 7h6a3 3 0 010 6H9a3 3 0 000 6h7" stroke-width="2" stroke-linecap="round"/></svg><span class="tag">charge</span></span>
+          <span class="act faded"><svg viewBox="0 0 24 24" fill="none"><path d="M5 7h14M9 7V5h6v2M7 7l1 13h8l1-13" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="tag">delete</span></span>
+          <span class="act faded"><svg viewBox="0 0 24 24" fill="none"><path d="M3 12l17-8-6 17-3-6-8-3z" stroke-width="2" stroke-linejoin="round"/></svg><span class="tag">send</span></span>
+          <span class="act faded2"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3v18M8 7h6a3 3 0 010 6H9a3 3 0 000 6h7" stroke-width="2" stroke-linecap="round"/></svg><span class="tag">charge</span></span>
+          <span class="act faded2"><svg viewBox="0 0 24 24" fill="none"><path d="M5 7h14M9 7V5h6v2M7 7l1 13h8l1-13" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="tag">delete</span></span>
+        </div>
+
+        <div class="p-label">agent: <span class="em-red">does a wrong thing &times;200</span></div>
+      </section>
+    </div>
+
+    <div class="disclaimer">FICTIONAL DEMO · Harbor Supply Co., Sift, Rolodash and all senders are invented for Crash Test Agents</div>
+  </div>
+</body>
+</html>

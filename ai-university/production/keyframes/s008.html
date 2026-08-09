@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, initial-scale=1">
+<title>S008 — Harbor Supply inbox at scale (fictional) · Crash Test Agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  /* ===== S008 — BUILD screen-sim. The fictional patient: Harbor Supply Co.
+     support inbox at scale (~200 unread), invented sender rows incl. spam,
+     company chip, "everything here is invented" watermark strip. ===== */
+  .app { display: grid; grid-template-rows: 96px 1fr 44px; height: 100%; }
+
+  .topbar { display: flex; align-items: center; gap: var(--s5);
+    padding: 0 var(--s7); border-bottom: 1px solid var(--ct-line); background: var(--ct-surface); }
+  .companychip { display: flex; align-items: center; gap: var(--s3);
+    background: var(--ct-surface-raised); border: 1px solid var(--ct-line);
+    border-radius: var(--ct-r-md); padding: 10px 18px; }
+  .companychip .glyph { width: 36px; height: 36px; border-radius: 8px; display: grid; place-items: center;
+    background: var(--ct-bg); border: 1px solid var(--ct-line); }
+  .companychip .nm { font-weight: 700; font-size: var(--ct-ui-xl); letter-spacing: -0.01em; }
+  .companychip .ad { font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); color: var(--ct-text-muted); }
+  .topbar .spacer { flex: 1; }
+  .unread { display: flex; align-items: baseline; gap: 12px; }
+  .unread .n { font-family: var(--ct-font-mono); font-weight: 700; font-size: var(--ct-ui-3xl); color: var(--ct-break-glow); }
+  .unread .l { font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); color: var(--ct-text-muted);
+    text-transform: uppercase; letter-spacing: 0.1em; }
+
+  .cols { display: grid; grid-template-columns: 300px 1fr; min-height: 0; }
+  .col { padding: var(--s6); overflow: hidden; }
+  .col.left { border-right: 1px solid var(--ct-line); background: var(--ct-bg); }
+  .col-title { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); text-transform: uppercase;
+    letter-spacing: 0.12em; color: var(--ct-text-muted); font-weight: 500; margin: 0 0 var(--s5); }
+  .navrow { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px;
+    border-radius: var(--ct-r-md); margin-bottom: 8px; color: var(--ct-text-muted); font-size: var(--ct-ui-md); }
+  .navrow.active { background: var(--ct-surface-raised); color: var(--ct-text); }
+  .navrow .count { font-family: var(--ct-font-mono); color: var(--ct-text); }
+  .navrow.spam .count { color: var(--ct-text-muted); }
+
+  .feed-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: var(--s5); }
+  .feed-head h2 { margin: 0; font-family: var(--ct-font-display); font-stretch: 125%; font-weight: 800;
+    font-size: var(--ct-ui-3xl); letter-spacing: 0.01em; }
+  .feed-head .sub { font-family: var(--ct-font-mono); color: var(--ct-text-muted); font-size: var(--ct-ui-sm); }
+
+  .row { display: grid; grid-template-columns: 44px 300px 1fr auto; align-items: center; gap: var(--s4);
+    background: var(--ct-surface); border: 1px solid var(--ct-line); border-radius: var(--ct-r-md);
+    padding: 15px 22px; margin-bottom: 10px; box-shadow: var(--ct-shadow-1); }
+  .row .avatar { width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center;
+    font-family: var(--ct-font-mono); font-weight: 700; font-size: var(--ct-ui-md); color: var(--ct-text);
+    background: var(--ct-surface-raised); border: 1px solid var(--ct-line); }
+  .row .from { font-weight: 600; font-size: var(--ct-ui-lg); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .row .from .addr { display: block; font-family: var(--ct-font-mono); font-weight: 400;
+    font-size: var(--ct-ui-xs); color: var(--ct-text-muted); margin-top: 3px; }
+  .row .subject { color: var(--ct-text-muted); font-size: var(--ct-ui-md); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .row .time { font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); color: var(--ct-text-muted); }
+  .row .newdot { width: 10px; height: 10px; border-radius: 50%; background: var(--ct-accent); box-shadow: 0 0 8px var(--ct-accent); }
+
+  /* spammy rows */
+  .row.spam { opacity: 0.72; }
+  .row.spam .avatar { color: var(--ct-warn); border-color: color-mix(in srgb, var(--ct-warn) 45%, var(--ct-line)); }
+  .row.spam .subject { color: var(--ct-text-muted); font-style: italic; }
+  .row.spam .flag { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); color: var(--ct-warn);
+    border: 1px solid var(--ct-warn); border-radius: var(--ct-r-pill); padding: 4px 12px; text-transform: uppercase; letter-spacing: 0.08em; }
+
+  .more { text-align: center; font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm);
+    color: var(--ct-text-muted); padding: 14px; }
+
+  .disclaimer { display: flex; align-items: center; justify-content: center; background: var(--ct-surface);
+    border-top: 1px solid var(--ct-line); color: var(--ct-text-muted); font-family: var(--ct-font-mono);
+    font-size: var(--ct-ui-xs); letter-spacing: 0.03em; }
+</style>
+</head>
+<body>
+  <div class="stage" role="img"
+       aria-label="Fictional Harbor Supply Co. support inbox with about 200 unread, invented sender rows including a spammy free-cruise-now address, everything invented footer">
+    <div class="grid-bg"></div>
+    <!-- Kill-Counter HUD (global overlay) — Option A: armed at 00/25 through the hook -->
+    <div class="ct-killcounter" data-state="armed" aria-label="Kill counter: 0 of 25 breaks">
+      <span class="kc-dot"></span>
+      <span class="kc-label">Breaks</span>
+      <span class="kc-tally"><span class="kc-n">00</span><span class="kc-of">/ 25</span></span>
+    </div>
+
+    <div class="app">
+      <header class="topbar">
+        <div class="companychip">
+          <span class="glyph">
+            <svg width="22" height="22" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+              <path d="M16 4l11 5v7c0 7-5 11-11 13-6-2-11-6-11-13V9l11-5z" stroke="var(--ct-accent)" stroke-width="2.4" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <span>
+            <span class="nm">Harbor Supply Co.</span><br>
+            <span class="ad">support@harborsupply.co</span>
+          </span>
+        </div>
+        <div class="spacer"></div>
+        <div class="unread"><span class="n">~200</span><span class="l">unread</span></div>
+      </header>
+
+      <div class="cols">
+        <aside class="col left">
+          <p class="col-title">Folders</p>
+          <div class="navrow active"><span>Inbox</span><span class="count">198</span></div>
+          <div class="navrow"><span>Sales</span><span class="count">38</span></div>
+          <div class="navrow"><span>Support</span><span class="count">64</span></div>
+          <div class="navrow"><span>Billing</span><span class="count">21</span></div>
+          <div class="navrow"><span>Urgent</span><span class="count">3</span></div>
+          <div class="navrow spam"><span>Spam</span><span class="count">74</span></div>
+        </aside>
+
+        <main class="col feed">
+          <div class="feed-head">
+            <h2 class="display">Support inbox — slammed daily</h2>
+            <span class="sub">newest first · unclassified</span>
+          </div>
+
+          <div class="row">
+            <span class="avatar">DO</span>
+            <span class="from">Dana Okafor<span class="addr">dana.okafor@example.com</span></span>
+            <span class="subject">Where's my order? — following up on #4471</span>
+            <span class="time"><span class="newdot" style="display:inline-block;vertical-align:middle;margin-right:10px"></span>2m</span>
+          </div>
+          <div class="row">
+            <span class="avatar">PV</span>
+            <span class="from">priya@vendorline.co<span class="addr">priya@vendorline.co</span></span>
+            <span class="subject">Wholesale pricing for 500 units — new account</span>
+            <span class="time">6m</span>
+          </div>
+          <div class="row spam">
+            <span class="avatar">!</span>
+            <span class="from">deals@free-cruise-now.biz<span class="addr">deals@free-cruise-now.biz</span></span>
+            <span class="subject">🚢 You've been SELECTED for a FREE luxury cruise!!!</span>
+            <span class="flag">spam</span>
+          </div>
+          <div class="row">
+            <span class="avatar">ML</span>
+            <span class="from">Marcus Lindqvist<span class="addr">marcus@northsea-catering.example</span></span>
+            <span class="subject">Missing lids on the mixing-bowls shipment</span>
+            <span class="time">18m</span>
+          </div>
+          <div class="row">
+            <span class="avatar">TA</span>
+            <span class="from">Tomiko Ashford<span class="addr">tomiko.ashford@example.com</span></span>
+            <span class="subject">Restock: 24 half-sheet pans + rack — quote please</span>
+            <span class="time">31m</span>
+          </div>
+          <div class="row spam">
+            <span class="avatar">!</span>
+            <span class="from">win@totally-legit-invoices.biz<span class="addr">win@totally-legit-invoices.biz</span></span>
+            <span class="subject">URGENT: your invoice is overdue — click to pay now</span>
+            <span class="flag">spam</span>
+          </div>
+          <div class="row">
+            <span class="avatar">CG</span>
+            <span class="from">billing@coastal-galley.example<span class="addr">billing@coastal-galley.example</span></span>
+            <span class="subject">Statement question — PO 5589 not applied</span>
+            <span class="time">52m</span>
+          </div>
+          <div class="more">…and 191 more unread</div>
+        </main>
+      </div>
+
+      <div class="disclaimer">FICTIONAL DEMO · everything here is invented — the company, the customers, the keys · Harbor Supply Co., Sift, Rolodash</div>
+    </div>
+  </div>
+</body>
+</html>
