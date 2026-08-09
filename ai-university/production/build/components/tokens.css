@@ -1,0 +1,201 @@
+/* ============================================================
+   CRASH TEST AGENTS — design tokens (v2, brand-bible-locked)
+   SoT = production/branding/crash-test-brand-bible.md §2.1 (commit b8bd4f3,
+   status: locked). Supersedes the draft brand-system.md (draft-for-ryan).
+   Palette = "Engineering Red-Alert": dark instrument base + semantic
+   break(red)/fixed(green)/verify(amber) + single electric-cyan accent.
+   NO hazard-yellow brand color (bible §2). Display font = Archivo Expanded.
+   Legacy --cta-* / --error / --success / --warning names are RETAINED and
+   remapped onto bible hexes so every existing component snaps to brand.
+   Bible tokens are also exposed under their canonical --ct-* names below.
+   Shared by every component in this folder. Default theme = DARK.
+   Change a brand hue here once → every component updates.
+   Fonts load from Google Fonts (OFL, free) in each HTML <head>;
+   var() families below carry system-font fallbacks.
+   ============================================================ */
+
+:root, [data-theme="dark"] {
+  /* --- Bible §2.1 canonical tokens (SoT: crash-test-brand-bible.md) --- */
+  --ct-bg:            #0B0E14;  --ct-surface:      #151A23;
+  --ct-surface-raised:#1C2330;  --ct-line:         #232A36;
+  --ct-text:          #E8EDF4;  --ct-text-muted:   #94A3B8;
+  --ct-break:         #FF3B30;  --ct-break-deep:   #B21F16;  --ct-break-glow: #FF6A5F;
+  --ct-fixed:         #2BD576;  --ct-fixed-deep:   #12924B;  --ct-fixed-glow: #5CF29B;
+  --ct-warn:          #FFB020;  --ct-warn-deep:    #B87400;
+  --ct-accent:        #38BDF8;  --ct-accent-glow:  #7DD3FC;
+
+  /* --- Brand (legacy names remapped to bible; NO yellow per bible §2) --- */
+  --cta-primary:            #E8EDF4;  /* identity = white lockup + red/green spine (bible §4); no yellow */
+  --cta-primary-ink:        #0B0E14;  /* text/icon ON light plate */
+  --cta-primary-dim:        #94A3B8;  /* muted secondary */
+  --cta-accent:             #38BDF8;  /* --ct-accent electric-cyan — AI / "needs AI" / active */
+  --cta-accent-strong:      #12A5EE;  /* accent on light fills / borders */
+  --cta-accent-ink:         #041017;  /* text ON cyan fill */
+  --cta-accent-glow:        color-mix(in srgb, var(--cta-accent) 55%, transparent);
+
+  /* --- Backgrounds & surfaces (dark) --- */
+  --bg:                     #0B0E14;  /* --ct-bg */
+  --bg-deep:                #070910;
+  --surface:                #151A23;  /* --ct-surface */
+  --surface-2:              #1C2330;  /* --ct-surface-raised */
+  --surface-3:              #232A38;
+  --border:                 #232A36;  /* --ct-line */
+  --border-strong:          #3A4354;
+  --overlay-scrim:          rgba(7,9,16,0.66);
+
+  /* --- Text (dark) --- */
+  --text:                   #E8EDF4;  /* --ct-text */
+  --text-muted:             #94A3B8;  /* --ct-text-muted */
+  --text-subtle:            #6B7480;
+  --text-inverse:           #0B0E14;
+
+  /* --- Semantic state (dark) --- */
+  --success:                #2BD576;  /* --ct-fixed */
+  --success-text:           #5CF29B;  /* --ct-fixed-glow */
+  --success-bg:             #0E2A15;
+  --error:                  #FF3B30;  /* --ct-break */
+  --error-text:             #FF6A5F;  /* --ct-break-glow */
+  --error-bg:               #2C0F0E;
+  --warning:                #FFB020;  /* --ct-warn */
+  --warning-text:           #FFCD6B;  /* amber glow, legible on dark */
+  --warning-bg:             #2A2109;
+  --ai:                     var(--cta-accent);
+  --ai-bg:                  #08222E;
+  --neutral:                var(--text-subtle);
+  --neutral-bg:             var(--surface-2);
+
+  /* --- Category label pills (Sift triage) --- */
+  --label-sales:            #7C9CFF;
+  --label-support:          #4FD1C5;
+  --label-billing:          #C792EA;
+  --label-spam:             #6B7480;
+  --label-urgent:           #FF7B72;
+
+  /* --- Data-viz / meters --- */
+  --meter-track:            #1A1F2B;
+  --meter-fill:             var(--cta-accent);
+  --meter-fill-spike:       var(--error);
+  --meter-fill-ok:          var(--success);
+  --cost-figure:            var(--warning-text);
+
+  /* --- Elevation --- */
+  --shadow-1:               0 1px 2px rgba(0,0,0,0.40);
+  --shadow-2:               0 4px 16px rgba(0,0,0,0.45);
+  --shadow-pop:             0 8px 40px rgba(0,0,0,0.55);
+  --focus-ring:             0 0 0 2px var(--bg), 0 0 0 4px var(--cta-accent);
+  --ai-glow:                0 0 0 1px var(--cta-accent), 0 0 24px var(--cta-accent-glow);
+
+  /* --- Radius --- */
+  --r-xs: 4px; --r-sm: 6px; --r-md: 10px; --r-lg: 14px; --r-xl: 20px; --r-pill: 999px;
+
+  /* --- Spacing (4px base) --- */
+  --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 24px;
+  --s-6: 32px; --s-7: 48px; --s-8: 64px; --s-9: 96px;
+
+  /* --- Hazard motif (chrome only) --- */
+  --hazard-a:               #FFD21E;
+  --hazard-b:               #0B0E14;
+  --hazard-stripes:         repeating-linear-gradient(45deg,
+                              var(--hazard-a) 0 18px, var(--hazard-b) 18px 36px);
+
+  /* --- Typography --- */
+  --font-display: "Space Grotesk", "Inter", system-ui, sans-serif;
+  --font-sans:    "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono:    "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --font-feature-mono: "calt" 0, "liga" 0, "tnum" 1;
+
+  /* App-UI scale (screencast) */
+  --ui-xs: 12px;  --ui-sm: 14px;  --ui-md: 16px;  --ui-lg: 20px;
+  --ui-xl: 24px;  --ui-2xl: 30px; --ui-3xl: 38px;
+  --lh-tight: 1.15; --lh-ui: 1.45; --lh-body: 1.6;
+  --tracking-tight: -0.02em; --tracking-caps: 0.08em;
+
+  /* Broadcast / motion-graphic scale (1920x1080) */
+  --bcast-kicker: 28px;
+  --bcast-lower3-sub: 34px;
+  --bcast-lower3-title: 52px;
+  --bcast-caption: 44px;
+  --bcast-h2: 84px;
+  --bcast-h1: 120px;
+  --bcast-hero: 168px;
+
+  /* --- Motion: durations --- */
+  --dur-instant: 80ms;
+  --dur-fast:    160ms;
+  --dur-base:    240ms;
+  --dur-slow:    400ms;
+  --dur-deliberate: 640ms;
+  --dur-scan:    1200ms;
+
+  /* --- Motion: easings --- */
+  --ease-standard:  cubic-bezier(0.2, 0, 0, 1);
+  --ease-out:       cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in:        cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-snap:      cubic-bezier(0.34, 1.35, 0.5, 1);
+  --ease-mech:      steps(6, end);
+  --ease-linear:    linear;
+}
+
+/* ---- LIGHT theme (checklist one-pager, light diagrams, print) ---- */
+[data-theme="light"] {
+  --cta-primary:            #F5C400;  --cta-primary-ink: #0B0E14;  --cta-primary-dim: #C79A00;
+  --cta-accent:             #0E86C7;  --cta-accent-strong: #0A6A9E; --cta-accent-ink: #FFFFFF;
+  --cta-accent-glow:        color-mix(in srgb, var(--cta-accent) 30%, transparent);
+
+  --bg:        #F6F7F9;  --bg-deep: #E9ECF1;  --surface: #FFFFFF;
+  --surface-2: #F1F3F6;  --surface-3: #E6E9EF;
+  --border:    #D8DCE3;  --border-strong: #B7BEC9;  --overlay-scrim: rgba(11,14,20,0.45);
+
+  --text:        #0B0E14;
+  --text-muted:  #55606E;
+  --text-subtle: #6B7480;
+  --text-inverse:#FFFFFF;
+
+  --success: #1A7F37;  --success-text: #116329;  --success-bg: #E6F4EA;
+  --error:   #CF222E;  --error-text:   #A40E26;  --error-bg:   #FBE9E9;
+  --warning: #9A6700;  --warning-text: #7A5200;  --warning-bg: #FFF6E0;
+  --ai: var(--cta-accent);  --ai-bg: #E3F2FB;  --neutral: var(--text-subtle);  --neutral-bg: var(--surface-2);
+
+  --label-sales:#3457D5; --label-support:#0E8A7D; --label-billing:#8E44C7; --label-spam:#6B7480; --label-urgent:#CF222E;
+  --meter-track:#E6E9EF;
+  --shadow-1: 0 1px 2px rgba(11,14,20,0.10);
+  --shadow-2: 0 4px 16px rgba(11,14,20,0.12);
+  --shadow-pop:0 8px 40px rgba(11,14,20,0.18);
+  --ai-glow: 0 0 0 1px var(--cta-accent), 0 0 18px var(--cta-accent-glow);
+}
+
+/* ============================================================
+   Shared base — every component uses a 1920x1080 .stage canvas
+   ============================================================ */
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg-deep);
+  color: var(--text);
+  font-family: var(--font-sans);
+}
+
+/* Fixed 1920x1080 render canvas. Centered so the file also previews
+   nicely in a normal browser window; a headless capture at 1920x1080
+   sees it edge-to-edge. */
+.stage {
+  position: relative;
+  width: 1920px;
+  height: 1080px;
+  margin: 0 auto;
+  background: var(--bg);
+  overflow: hidden;
+}
+
+.mono   { font-family: var(--font-mono); font-feature-settings: var(--font-feature-mono); }
+.display{ font-family: var(--font-display); letter-spacing: var(--tracking-tight); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

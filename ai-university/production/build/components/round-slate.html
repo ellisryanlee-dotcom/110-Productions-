@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, initial-scale=1">
+<title>Round slate · Crash Test Agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  /* ---- round-slate (S003/S012/S023/S030/S032/S035/S039/S047):
+       parameterizable via URL hash (#round=2&title=Dead+APIs) OR data attrs.
+       ?variant=concept renders a single-line concept slate (failure=data, etc.) ---- */
+  .stage { background: var(--bg-deep); display: grid; place-items: center; }
+
+  /* faint reticle watermark, centered */
+  .watermark-reticle {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+    width: 820px; height: 820px; opacity: .06; pointer-events: none;
+  }
+
+  /* hazard-stripe rules top & bottom, inside title-safe (96px inset) */
+  .hazard-rule {
+    position: absolute; left: 96px; right: 96px; height: 12px;
+    background: var(--hazard-stripes);
+    border-radius: var(--r-xs);
+  }
+  .hazard-rule.top { top: 96px; }
+  .hazard-rule.bot { bottom: 96px; }
+
+  /* kicker top-left at title-safe corner */
+  .kicker {
+    position: absolute; top: 150px; left: 96px;
+    font-family: var(--font-sans); font-weight: 600;
+    font-size: var(--bcast-kicker); text-transform: uppercase;
+    letter-spacing: var(--tracking-caps); color: var(--cta-accent);
+    opacity: 0; animation: kickin var(--dur-slow) var(--ease-out) .15s forwards;
+  }
+  @keyframes kickin { from { opacity:0; transform: translateY(-12px);} to { opacity:1; transform:none; } }
+
+  /* center block — slam-in recipe */
+  .center {
+    text-align: center; z-index: 2; max-width: 1600px; padding: 0 96px;
+    transform: scale(1.06); opacity: 0;
+    animation: slamin var(--dur-deliberate) var(--ease-snap) .1s forwards;
+  }
+  @keyframes slamin { to { transform: scale(1); opacity: 1; } }
+
+  .round-primary {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: var(--bcast-h1); line-height: var(--lh-tight);
+    color: var(--text); margin: 0; letter-spacing: var(--tracking-tight);
+  }
+  .round-sub {
+    font-family: var(--font-sans); font-weight: 500;
+    font-size: var(--bcast-h2); color: var(--text-muted);
+    margin: 24px 0 0;
+    opacity: 0; animation: subin var(--dur-slow) var(--ease-out) .5s forwards;
+  }
+  @keyframes subin { from { opacity:0; transform: translateY(16px);} to { opacity:1; transform:none; } }
+
+  /* concept-slate variant: one giant centered line, key noun accented */
+  .stage[data-variant="concept"] .center .round-primary {
+    font-size: var(--bcast-hero);
+  }
+  .accent { color: var(--cta-accent); }
+  .danger { color: var(--error); }
+
+  /* reticle mark bottom-right inside title-safe */
+  .mark-br { position: absolute; right: 120px; bottom: 130px; width: 72px; height: 72px; opacity: .85; }
+</style>
+</head>
+<body>
+  <div class="stage" id="slate" data-round="1" data-title="Bad inputs" data-sub="the empty brain">
+    <svg class="watermark-reticle" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+      <circle cx="32" cy="32" r="22" stroke="var(--cta-accent)" stroke-width="1.5"/>
+      <g stroke="var(--cta-accent)" stroke-width="1.5" stroke-linecap="round">
+        <line x1="32" y1="4" x2="32" y2="16"/><line x1="32" y1="48" x2="32" y2="60"/>
+        <line x1="4" y1="32" x2="16" y2="32"/><line x1="48" y1="32" x2="60" y2="32"/>
+      </g>
+      <circle cx="32" cy="32" r="3.5" fill="var(--cta-accent)"/>
+    </svg>
+
+    <div class="hazard-rule top"></div>
+    <div class="hazard-rule bot"></div>
+
+    <div class="kicker" id="kicker">ROUND 01</div>
+
+    <div class="center">
+      <h1 class="round-primary" id="primary">Bad inputs</h1>
+      <p class="round-sub" id="sub">the empty brain</p>
+    </div>
+
+    <svg class="mark-br" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+      <circle cx="32" cy="32" r="22" stroke="var(--cta-accent)" stroke-width="3"/>
+      <g stroke="var(--cta-accent)" stroke-width="3" stroke-linecap="round">
+        <line x1="32" y1="4" x2="32" y2="16"/><line x1="32" y1="48" x2="32" y2="60"/>
+        <line x1="4" y1="32" x2="16" y2="32"/><line x1="48" y1="32" x2="60" y2="32"/>
+      </g>
+      <circle cx="32" cy="32" r="3.5" fill="var(--cta-accent)"/>
+      <path d="M20 20 L34 33 L29 37 L44 46" stroke="var(--error)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+
+<script>
+  /* Params: URL hash (#round=2&title=Dead+APIs&sub=fragile+chains)
+     OR ?query OR data-* attrs on #slate. Precedence: hash > query > data attr.
+     variant=concept + accent=<word> renders a concept slate ("failure = data"). */
+  const slate = document.getElementById('slate');
+  const hash = new URLSearchParams(location.hash.slice(1));
+  const qs   = new URLSearchParams(location.search);
+  const pick = (k, d) => hash.get(k) ?? qs.get(k) ?? slate.dataset[k] ?? d;
+
+  const variant = pick('variant', 'round');
+  const round   = pick('round', '1');
+  const title   = pick('title', 'Bad inputs');
+  const sub     = pick('sub', '');
+  const accent  = pick('accent', '');   // word inside title to accent
+  const tone    = pick('tone', 'accent'); // accent | danger
+
+  const kicker  = document.getElementById('kicker');
+  const primary = document.getElementById('primary');
+  const subEl   = document.getElementById('sub');
+
+  slate.dataset.variant = variant;
+
+  if (variant === 'concept') {
+    kicker.style.display = 'none';
+  } else {
+    kicker.textContent = 'ROUND ' + String(round).padStart(2, '0');
+  }
+
+  // accent a specific word within the title if requested
+  let titleHtml = title;
+  if (accent) {
+    const cls = tone === 'danger' ? 'danger' : 'accent';
+    const re = new RegExp('(' + accent.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + ')', 'i');
+    titleHtml = title.replace(re, `<span class="${cls}">$1</span>`);
+  }
+  primary.innerHTML = titleHtml;
+
+  if (sub) { subEl.textContent = sub; } else { subEl.style.display = 'none'; }
+  document.title = (variant === 'concept' ? title : 'ROUND ' + round + ' — ' + title) + ' · Crash Test Agents';
+</script>
+</body>
+</html>
