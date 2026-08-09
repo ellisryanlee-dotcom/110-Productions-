@@ -3,7 +3,7 @@ title: "I Tried to Break This AI Agent 25 Ways (so yours won't die in production
 brief: production/briefs/brief-001.md
 cards_used: [kc-0226, kc-0114, kc-0115, kc-0105, kc-0118, kc-0306, kc-0213, kc-0325, kc-0323, kc-0206, kc-0215, kc-0117]
 target_length: 17:00
-status: draft
+status: approved
 ---
 
 ## HOOK (0:00)
@@ -62,7 +62,7 @@ VO: So let's give it a real prompt with the sections that matter. A background �
 VO: Notice what I did not do. I did not paste in a giant three-page prompt I generated somewhere and hope. I built it reactively — one fix at a time. [kc-0114]
 [SCREEN: prompt being assembled line by line, each line tied to a test run.]
 
-VO: Reactive prompting is like adjusting a bike seat while someone's riding. You don't guess the perfect height up front. You let them pedal, watch the wobble, make one change, watch again. Add one tool, test a real email, watch what Sift does, then add one line to correct the exact thing it got wrong. Change one thing at a time so you always know which line caused which behavior. [kc-0114]
+VO: Reactive prompting is like seasoning a pot of soup. You don't dump in every spice up front and hope. You taste it, add one pinch, taste again — because if you throw five things in at once and it comes out wrong, you have no idea which one to blame. Same here: add one tool, test a real email, watch what Sift does, then add one line to correct the exact thing it got wrong. Change one thing at a time so you always know which line caused which behavior. [kc-0114]
 [SCREEN: animation of one line added → one behavior fixed → retest.]
 
 VO: And when it does get something wrong, hard-prompt it. Paste the real email it fumbled, the wrong move it made, and the move you wanted. Show it the miss. Don't waste examples on emails it already handles fine — those are just tokens you're paying for. [kc-0114]
@@ -148,7 +148,7 @@ VO: That's a leak waiting to happen. A key in your prompt or code can ride along
 VO: Break number two: over-privilege. Sift was logged into my own account, with full access to everything — send, delete, admin, the works. [kc-0215]
 [SCREEN: permission list, everything toggled on.]
 
-VO: Treat an agent like a new hire on day one. You don't hand a brand-new intern your master password and the company credit card. You give them their own login with only what the job needs. So Sift gets its own dedicated account, scoped to the support inbox and read-only on the CRM, since it only needs to look people up, not edit them. And its own named key — so when I check the bill, I can see exactly what Sift spent and did, separate from everything else. Least privilege shrinks the damage any single agent can do, and makes its costs and actions traceable. [kc-0215]
+VO: Think of it like a valet key. You hand the parking attendant a key that starts the car and nothing else — it won't open the trunk or the glovebox where your things are. Sift gets the same treatment: its own dedicated account, scoped to the support inbox and read-only on the CRM, since it only needs to look people up, not edit them. And its own named key — so when I check the bill I can see exactly what Sift spent and did, separate from everything else. Least privilege shrinks the damage any single agent can do, and makes its costs and actions traceable. [kc-0215]
 [SCREEN: a scoped "sift-bot" account, read-only CRM, inbox-only mail, its own labeled key on the invoice.]
 
 ## FINAL SAFETY NET — human in the loop
@@ -159,7 +159,7 @@ VO: One net under all of it. Before Sift sends anything a customer will actually
 VO: The pattern is send-and-wait. Sift drafts the reply, pauses, and pushes it to me — in our case a quick Slack message — and does nothing until I respond. I can approve it, or just type back what I want changed in plain English: "warmer, and mention the reship." [kc-0117]
 [SCREEN: a Slack card with the draft and "Approve / Send feedback" — feedback channel is invented.]
 
-VO: Here's the clever part. A yes-or-no is easy, but free-text feedback isn't. So a small AI classifier reads my reply and decides: approval, or revision request? Rules alone couldn't tell those apart. If it's a revision, my feedback and the current draft go to a revision step that rewrites it, then loops right back to me. Revisions on top of revisions, until I approve — always working from the latest version, or the whole loop is pointless. [kc-0117]
+VO: Here's the clever part. A yes-or-no is easy, but free-text feedback isn't. So a small AI classifier reads my reply and decides: approval, or revision request? Rules alone couldn't tell those apart. If it's a revision, my feedback and the current draft go to a revision step that rewrites it, then loops right back to me. It can keep stacking edit on edit, round after round, until I sign off — and each pass has to build on the newest version, never the first draft, or the fixes just get lost. [kc-0117]
 [SCREEN: classifier splitting into "approve → send" vs "revise → rewrite → back to review"; a version tag incrementing each loop.]
 
 ## WHAT SURVIVED — the clean rerun
@@ -183,3 +183,27 @@ VO: And here's where you come in. Think your agent can survive this? Send it to 
 
 VO: Build the boring parts deterministic, reserve the model for real judgment, and put a net under everything that can hurt you. Do that, and your agent survives production. See you at the next crash test.
 [SCREEN: end card — next video thumbnail + checklist link. [VERIFY: confirm synthetic-media disclosure placement meets current YouTube policy]]
+
+## EDITOR VERDICT — 2026-08-09
+APPROVED (after Round 1 revision)
+
+Round 1 gate = KICKBACK on 3 items; all revised in place by the editor and re-gated clean. Similarity sweep run across all 6 source transcripts (Ey18PDiaAYI, bCljOfCH8Ms, saggDHHnmtQ, gb5TlGw6Uks, 9FuNtfsnRNo, 6MC1XqZSltw), one transcript per checker, covering every draft passage against the card(s) derived from it.
+
+Kickback items (fixed):
+1. Reactive-prompting analogy (kc-0114): draft used a bicycle analogy; source's own reactive-prompting analogy is also a bicycle (teaching a kid to ride) → replaced with an original "seasoning a pot of soup" analogy (soup/spice/pinch: 0 hits in any source).
+2. Least-privilege analogy (kc-0215): draft used "new hire / intern + credit card + day one," which is the source's signature framing → replaced with an original "valet key" analogy (valet/trunk/glovebox: 0 hits in any source). Note: a first replacement — hotel key card — was itself swapped out because the source's example universe includes a travel/booking assistant ("check-in and checkout date"), so "hotel/checkout" sat in an adjacent domain.
+3. Human-in-the-loop phrasing (kc-0117): draft carried the source's distinctive verbatim phrase "revisions on top of revisions" (leaked in via the card) → reworded to "keep stacking edit on edit, round after round," and dropped the echoing "the whole loop is pointless" beat.
+
+similarity_sweep: clean — 0 shared non-generic 8-grams across all six transcripts. The only sub-8-gram verbatim echo ("revisions on top of revisions", 5-gram) was item 3 above and is now removed. Re-gate of the three edited passages: new analogy vehicles confirmed absent from all sources.
+
+example_originality: clean (post-fix) — all invented proper nouns verified absent from every source transcript (Harbor Supply Co, Sift, Rolodash, Dana Okafor, GreyRoute/GR-88231, rd_live_8fQ2x). Both reused analogies replaced.
+
+provenance: clean — every card-cited claim traces to its card. Two minor unsourced details accepted as general-knowledge framing, not card claims: the one-line definition of "hallucination" (line ~111) and "a screenshot" as a secret-leak vector (kc-0206 lists repo + chat history). Neither is a factual claim requiring a card.
+
+facts_checked: HTTP status families 200/400/401/403/404/500 (correct as written), token definition, and the artifact's 28 checks in 6 groups (matches the CTA's "about twenty-five checks, grouped exactly like these rounds"). 0 facts corrected.
+
+voice: clean — no banned words; acronyms (tokens, CRM, HTTP, .env) explained on first use; first-person builder voice; failures/costs shown honestly; all house structure beats present; artifact real and named (production/artifacts/agent-prelaunch-checklist.md). Minor: hook VO ≈ 82 words (~33s) vs the ≤30s guideline — within tolerance given the interleaved on-screen agent-failure business; no change required.
+
+compliance: synthetic-media disclosure is planned and noted on-screen (title/end cards); exact placement carries a [VERIFY] for the production/upload step against current YouTube policy. Two [VERIFY] tags on illustrative token/dollar figures are correctly self-labeled as fabricated demo values, not measured claims.
+
+runtime estimate: ~2,530 VO-only words ≈ 16–17 min at normal narration pace — within the 15–17 min brief target.
