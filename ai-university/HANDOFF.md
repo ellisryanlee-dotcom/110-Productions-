@@ -27,7 +27,12 @@ script against sources before production. Full rules: `tools/librarian.md`.
 - **Librarian spec** (card schemas + originality gate) → `tools/librarian.md`
 - **Ripper CLI** (stdlib-only Python) → `tools/ripper.py` with subcommands
   `catalog` / `enrich` / `transcripts` / `top`
-- Last handoff commit on this branch: after `caf11fc`.
+- **Writing layer**: house voice guide draft (`library/voice-guide.md`, with
+  [ELLIS] slots awaiting his answers), writer spec (`tools/writer.md`), editor
+  gate (`tools/editor.md`), and a data-grounded first-video shortlist
+  (`library/first-videos.md`)
+- **More teachers enrolled** (catalog+enrich only, transcripts pending):
+  `channels/colemedin` (@ColeMedin), `channels/liamottley` (@LiamOttley)
 
 ## Environment facts (hard-won — trust these, don't re-derive)
 
@@ -76,10 +81,13 @@ inline, and anything the curriculum got wrong that extraction revealed.
 
 ## Backlog after that (don't start unless asked)
 
-1. More reference channels (catalog+enrich work in any environment).
-2. Ellis's own channel voice guide (needs his input on niche/audience/angle).
-3. First original script: writer works from cards only → editor gate
-   (`tools/librarian.md` §originality gate) → revision loop.
+1. Transcripts + librarian pass for the other enrolled teachers
+   (`channels/colemedin`, `channels/liamottley`) — same Phase A/B recipe.
+2. Ellis fills the [ELLIS] slots in `library/voice-guide.md`
+   (niche/audience/angle/name).
+3. First original script: pick candidate #1 from `library/first-videos.md`,
+   write its Brief per `tools/writer.md`, draft from cards only, then the
+   editor gate per `tools/editor.md`.
 4. Production (AI voiceover/video) and YouTube upload via Data API (needs
    Ellis's one-time OAuth setup).
 
