@@ -1,9 +1,26 @@
 # AI University — Curriculum Map v0
 
-Source: **Nate Herk | AI Automation** (`@nateherk`, channel `UC2ojq-nuP8ceeHqiroeKhBA`)
+Primary source: **Nate Herk | AI Automation** (`@nateherk`, channel `UC2ojq-nuP8ceeHqiroeKhBA`)
 Basis: full catalog of **302 long-form videos + 165 shorts** (Dec 10, 2024 → Aug 2026),
 metadata + 295 chapter lists. v0 is built from titles/chapters only; each track
 deepens into knowledge cards once transcripts are ripped (see `tools/librarian.md`).
+
+## Enrolled teachers (catalog + enrichment complete)
+
+| Teacher | Long-form | Shorts | Years | Chaptered | Signature strength |
+| --- | --- | --- | --- | --- | --- |
+| Nate Herk (`channels/nateherk`) | 302 | 165 | 2024–2026 | 295 | n8n agents, Claude Code, build-and-sell |
+| Cole Medin (`channels/colemedin`) | 203 | 57 | 2023–2026 | 170 | local AI, RAG/knowledge, context engineering |
+| Liam Ottley (`channels/liamottley`) | 251 | 1 | 2023–2026 | 205 | AI agency/business, monetization (3.6M-view tentpole) |
+
+Cross-teacher top performers to prioritize in extraction:
+- Cole: `V_0dNE-H2gw` Run ALL Your AI Locally (590K, 20:19) → Tracks 3/4;
+  `JWfNLF_g_V0` Turn ANY Website into LLM Knowledge (450K) → Tracks 3/7;
+  `Egeuql3Lrzg` Context Engineering (324K) → Track 9
+- Liam: `w0H1-b044KY` How to Build & Sell AI Agents: Ultimate Beginner's Guide
+  (3.6M, 3:50:40) → Tracks 2/10; `aXiOBAXYxCI` 8 AI Skills (1.6M) → Track 10
+- Tracks below reference Nate's catalog; re-cluster across all three teachers
+  after their transcripts land.
 
 A video can appear in more than one track. Views are a proxy for both demand and
 source quality — start extraction at the top of each track.
