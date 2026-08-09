@@ -114,7 +114,7 @@ for seg, plan in PLAN.items():
 
 # ---- concat video (filter graph — the static build's concat demuxer segfaults)
 video_all = W / "video_all.mp4"
-if not video_all.exists():
+if not video_all.exists() or video_all.stat().st_size < 1_000_000:
     ins = []
     for p, _, _ in pieces:
         ins += ["-i", str(p)]

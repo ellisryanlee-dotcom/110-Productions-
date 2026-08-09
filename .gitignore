@@ -12,3 +12,5 @@ ai-university/channels/*/cache/
 # generated media stays out of git (job ids in shots.json re-fetch everything)
 ai-university/production/episodes/*/assets/
 ai-university/production/episodes/*/build/
+ai-university/production/episodes/*/ep*.mp4
+ai-university/production/episodes/*/q[ac]*.png

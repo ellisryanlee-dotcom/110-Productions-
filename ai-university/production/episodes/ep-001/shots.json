@@ -1,7 +1,7 @@
 {
  "episode": "ep-001",
  "title": "Claude Code, Nearly Free: The Cartridge Trick",
- "status": "assembly-ready — render paused by user pending ADAM routing decision; S4 VO in temp voice",
+ "status": "v0.9 DELIVERED (720p cut to user; 1080p master in session) — S4 temp voice pending credit top-up",
  "script_ref": "script.md",
  "format": {
   "resolution": "1920x1080",
@@ -506,5 +506,10 @@
   "credits_end_measured": 2.01,
   "credits_spent_total": 134.84,
   "note": "actual spend far above preflight estimates (preflights appear to quote a partial rate); biggest items: seedance s01 (~32.5+), 5x kling turbo (~37.5+), keyframes, 13x TTS. Exact per-job billing needs the transactions API once credits/API access allows."
+ },
+ "deliverable": {
+  "master": "ep001.mp4 1080p24 5:38 113MB (session container, gitignored)",
+  "delivered": "ep001_720p.mp4 27MB via file handoff",
+  "vo_swap_command": "python3 assemble.py --vo-s4 assets/ra_s4.wav  (after generating Raina S4)"
  }
 }
