@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, initial-scale=1">
+<title>S015 — System prompt filled section by section, checklist all green · Crash Test Agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  /* ===== S015 — ROUND 1 (Break 01 "empty brain" → its fix). SCREEN-SIM.
+     Reuse of the system-prompt-builder component, adapted to the LOCKED
+     --ct-* keyframe tokens. RESTED FINAL STATE: the once-empty
+     system-prompt.md is now filled in section by section with the six
+     markdown headers (Role / Context / Tools / Rules / Examples / Final
+     notes), and every checklist box on the right has ticked GREEN
+     (--ct-fixed). This is the fix for break 01 — no new break lands here,
+     so the kill-counter holds at 01/25 (ticking). ===== */
+  .app { display: grid; grid-template-columns: 1fr 452px; grid-template-rows: 96px 1fr 44px; height: 100%; }
+
+  /* ---- top bar ---- */
+  .topbar { grid-column: 1 / -1; display: flex; align-items: center; gap: var(--s5);
+    padding: 0 var(--s7); border-bottom: 1px solid var(--ct-line); background: var(--ct-surface); }
+  .brandchip { display: flex; align-items: center; gap: var(--s3); }
+  .brandchip .glyph { width: 40px; height: 40px; border-radius: 9px; display: grid; place-items: center;
+    background: var(--ct-surface-raised); border: 1px solid var(--ct-line); }
+  .brandchip .name { font-weight: 700; font-size: var(--ct-ui-2xl); letter-spacing: -0.01em; }
+  .topbar .sub { color: var(--ct-text-muted); font-size: var(--ct-ui-lg); }
+  .topbar .file { display: inline-flex; align-items: center; gap: 10px; margin-left: 6px;
+    font-family: var(--ct-font-mono); font-size: var(--ct-ui-md); color: var(--ct-text); }
+  .topbar .file .path { color: var(--ct-text-muted); }
+  .topbar .spacer { flex: 1; }
+  .round-tag { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.14em; color: var(--ct-break-glow);
+    padding: 8px 16px; border: 1px solid color-mix(in srgb, var(--ct-break) 45%, var(--ct-line));
+    border-radius: var(--ct-r-pill); background: var(--ct-break-wash); }
+  .runchip { display: inline-flex; align-items: center; gap: 9px; padding: 8px 16px; border-radius: var(--ct-r-pill);
+    background: var(--ct-accent-wash); border: 1px solid color-mix(in srgb, var(--ct-accent) 45%, transparent);
+    color: var(--ct-accent-glow); font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); font-weight: 600; }
+  .runchip svg { width: 15px; height: 15px; }
+
+  /* ---- editor ---- */
+  .editor { position: relative; overflow: hidden; background: var(--ct-bg); padding: var(--s6) 0 0; }
+  .gutter-wrap { display: grid; grid-template-columns: 76px 1fr; height: 100%; }
+  .gutter { text-align: right; padding-right: 20px; color: var(--ct-text-muted); opacity: 0.55;
+    font-family: var(--ct-font-mono); font-size: var(--ct-ui-md); line-height: 1.92; user-select: none; }
+  .code { font-family: var(--ct-font-mono); font-size: var(--ct-ui-md); line-height: 1.92;
+    color: var(--ct-text); padding-right: var(--s6); white-space: pre; margin: 0; }
+  .code .h { color: var(--ct-accent); font-weight: 700; }          /* markdown headers */
+  .code .k { color: var(--ct-accent-glow); }                        /* tool / literal names */
+  .code .s { color: var(--ct-fixed-glow); }                         /* good values */
+  .code .c { color: var(--ct-text-muted); }                         /* comments */
+  .code .em { color: var(--ct-text); font-weight: 600; }
+  .caret { display: inline-block; width: 11px; height: 24px; background: var(--ct-accent);
+    vertical-align: -4px; margin-left: 3px; box-shadow: 0 0 10px var(--ct-accent);
+    animation: blink 1.05s steps(2, end) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* ---- checklist sidebar (all six ticked green) ---- */
+  .sidebar { grid-row: 2 / 3; border-left: 1px solid var(--ct-line); background: var(--ct-surface);
+    padding: var(--s6) var(--s6) 0; display: flex; flex-direction: column; }
+  .sidebar h3 { margin: 0 0 var(--s3); font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm);
+    text-transform: uppercase; letter-spacing: 0.12em; color: var(--ct-text-muted); font-weight: 500;
+    display: flex; align-items: center; gap: 12px; }
+  .sidebar h3 .cnt { margin-left: auto; color: var(--ct-fixed-glow); letter-spacing: 0.06em; }
+  .sidebar .lead { color: var(--ct-text-muted); font-family: var(--ct-font-body); font-size: var(--ct-ui-md);
+    line-height: 1.45; margin: 0 0 var(--s6); }
+
+  .checkrow { display: flex; align-items: center; gap: 16px; padding: 18px 18px;
+    border-radius: var(--ct-r-md); margin-bottom: 13px; font-family: var(--ct-font-body);
+    font-size: var(--ct-ui-lg); font-weight: 600;
+    /* rested = DONE (green) */
+    color: var(--ct-text); border: 1px solid color-mix(in srgb, var(--ct-fixed) 45%, var(--ct-line));
+    background: color-mix(in srgb, var(--ct-fixed-wash) 70%, var(--ct-surface-raised)); }
+  .checkrow .box { width: 30px; height: 30px; border-radius: var(--ct-r-sm); flex: none; display: grid; place-items: center;
+    border: 2px solid var(--ct-fixed); background: color-mix(in srgb, var(--ct-fixed) 16%, transparent);
+    box-shadow: 0 0 12px rgba(43,213,118,0.25); }
+  .checkrow .box svg { width: 19px; height: 19px; }
+  .checkrow .box path { stroke: var(--ct-fixed-glow); stroke-width: 3; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+  .checkrow .hh { font-family: var(--ct-font-mono); color: var(--ct-text-muted); font-weight: 500; font-size: var(--ct-ui-sm); }
+  .checkrow .nn { flex: 1; }
+  .sidebar .foot { margin-top: auto; padding: 18px 4px 20px; display: flex; align-items: center; gap: 12px;
+    font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); color: var(--ct-text-muted); }
+  .sidebar .foot .b { display: inline-flex; align-items: center; gap: 9px; color: var(--ct-fixed-glow);
+    border: 1px solid color-mix(in srgb, var(--ct-fixed) 45%, var(--ct-line)); border-radius: var(--ct-r-pill);
+    padding: 6px 14px; background: var(--ct-fixed-wash); }
+  .sidebar .foot .b .d { width: 8px; height: 8px; border-radius: 50%; background: var(--ct-fixed); box-shadow: 0 0 8px var(--ct-fixed); }
+
+  .disclaimer { grid-column: 1 / -1; display: flex; align-items: center; justify-content: center;
+    background: var(--ct-surface); border-top: 1px solid var(--ct-line);
+    color: var(--ct-text-muted); font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); letter-spacing: 0.03em; }
+</style>
+</head>
+<body>
+  <div class="stage" role="img"
+       aria-label="The Sift system-prompt.md file, once empty, now filled in section by section with six markdown headers — Role, Context, Tools, Rules, Examples and Final notes — including the line 'Look up in Rolodash before you draft.' On the right, a prompt-sections checklist with all six boxes ticked green. Round 1, break one of twenty-five.">
+    <div class="grid-bg"></div>
+
+    <div class="app">
+      <!-- top bar -->
+      <header class="topbar">
+        <div class="brandchip">
+          <span class="glyph">
+            <svg width="26" height="26" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+              <path d="M12 16h40M18 32h28M26 48h12" stroke="var(--ct-accent)" stroke-width="5" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <span class="name">Sift</span>
+        </div>
+        <span class="file"><span class="path">sift/</span>system-prompt.md</span>
+        <div class="spacer"></div>
+        <span class="runchip">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 5v14l11-7z" fill="var(--ct-accent)"/></svg>
+          test run on last edit
+        </span>
+        <span class="round-tag">Round 1 &middot; Break 1 &middot; give it a real prompt</span>
+      </header>
+
+      <!-- markdown editor, all six sections filled -->
+      <section class="editor">
+        <div class="gutter-wrap">
+          <div class="gutter">1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26</div>
+<pre class="code"><span class="c"># Sift — system prompt</span>
+
+<span class="h">## Role</span>
+You are <span class="s">Sift</span>, the inbox-triage agent for Harbor Supply Co.
+Goal: read each email, classify it, and draft a reply for a human.
+
+<span class="h">## Context</span>
+Each run you receive <span class="k">one email</span> + a short customer summary.
+The email changes every run; these instructions do not.
+
+<span class="h">## Tools</span>
+- <span class="k">rolodash.lookup(email)</span> — find the customer.
+  <span class="em">Look up in Rolodash before you draft.</span>
+- <span class="k">mail.draft(reply)</span> — draft only; a human sends.
+
+<span class="h">## Rules</span>
+- If the email mentions "refund" or "invoice" → tag <span class="s">billing</span>.
+- Never state a shipping status you cannot cite from the record.
+
+<span class="h">## Examples</span>
+<span class="c"># only for the cases it gets wrong — not the easy ones</span>
+Input: "where's order 4471?" → look up first, then answer.
+
+<span class="h">## Final notes</span>
+Today's date is 2026-08-09.
+If you don't know, <span class="s">say so</span> — do not guess.<span class="caret"></span></pre>
+        </div>
+      </section>
+
+      <!-- checklist: every section ticked green -->
+      <aside class="sidebar">
+        <h3>Prompt sections <span class="cnt">6 / 6 &#10003;</span></h3>
+        <p class="lead">Each section ticks green as it lands. Built reactively — one section at a time, not one giant dump.</p>
+
+        <div class="checkrow">
+          <span class="box"><svg viewBox="0 0 24 24"><path d="M5 13l4 4 10-11"/></svg></span>
+          <span class="nn">Role</span><span class="hh">## Role</span>
+        </div>
+        <div class="checkrow">
+          <span class="box"><svg viewBox="0 0 24 24"><path d="M5 13l4 4 10-11"/></svg></span>
+          <span class="nn">Context</span><span class="hh">## Context</span>
+        </div>
+        <div class="checkrow">
+          <span class="box"><svg viewBox="0 0 24 24"><path d="M5 13l4 4 10-11"/></svg></span>
+          <span class="nn">Tools</span><span class="hh">## Tools</span>
+        </div>
+        <div class="checkrow">
+          <span class="box"><svg viewBox="0 0 24 24"><path d="M5 13l4 4 10-11"/></svg></span>
+          <span class="nn">Rules</span><span class="hh">## Rules</span>
+        </div>
+        <div class="checkrow">
+          <span class="box"><svg viewBox="0 0 24 24"><path d="M5 13l4 4 10-11"/></svg></span>
+          <span class="nn">Examples</span><span class="hh">## Examples</span>
+        </div>
+        <div class="checkrow">
+          <span class="box"><svg viewBox="0 0 24 24"><path d="M5 13l4 4 10-11"/></svg></span>
+          <span class="nn">Final notes</span><span class="hh">## Final notes</span>
+        </div>
+
+        <div class="foot"><span class="b"><span class="d"></span>empty brain → prompted</span> the sections that matter</div>
+      </aside>
+
+      <div class="disclaimer">FICTIONAL DEMO &middot; Harbor Supply Co., Sift and Rolodash are invented for Crash Test Agents</div>
+    </div>
+
+    <!-- Kill-Counter HUD (global overlay) — Round 1, break 01 has landed; this is its fix, no new break → hold 01 / 25 -->
+    <div class="ct-killcounter" data-state="ticking" aria-label="Kill counter: 1 of 25 breaks">
+      <span class="kc-dot"></span>
+      <span class="kc-label">Breaks</span>
+      <span class="kc-tally"><span class="kc-n">01</span><span class="kc-of">/ 25</span></span>
+    </div>
+  </div>
+</body>
+</html>

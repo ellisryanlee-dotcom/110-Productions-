@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, initial-scale=1">
+<title>S050 — Agent Pre-Launch Checklist, free download · Crash Test Agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  /* ===== S050 — SCREEN-SIM (rested final frame). The one-page "Agent
+     Pre-Launch Checklist" artifact, fully populated: ~25 checks grouped
+     into the six rounds this episode just earned. Free-download banner
+     pulses toward the description. Counter stays LOCKED at 25/25. ===== */
+  .doc { display: grid; grid-template-rows: 148px 1fr 96px; height: 100%; }
+
+  .dochead { display: flex; align-items: center; gap: var(--s6); padding: 0 var(--s8);
+    border-bottom: 1px solid var(--ct-line); background: var(--ct-surface); }
+  .dochead .icon { width: 60px; height: 60px; border-radius: 14px; display: grid; place-items: center;
+    background: var(--ct-surface-raised); border: 1px solid var(--ct-line); flex: 0 0 60px; }
+  .dochead .icon svg { width: 32px; height: 32px; }
+  .dochead h1 { margin: 0; font-family: var(--ct-font-display); font-stretch: 125%; font-weight: 900;
+    font-size: 44px; letter-spacing: 0.005em; color: var(--ct-text); text-transform: uppercase; }
+  .dochead .sub { font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); color: var(--ct-text-muted); margin-top: 6px; }
+  .dochead .spacer { flex: 1; }
+  .progress { text-align: right; }
+  .progress .n { font-family: var(--ct-font-mono); font-weight: 700; font-size: var(--ct-ui-3xl); color: var(--ct-fixed-glow); }
+  .progress .l { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); color: var(--ct-text-muted);
+    text-transform: uppercase; letter-spacing: 0.1em; }
+
+  .groups { padding: var(--s6) var(--s8); display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s5) var(--s6); }
+  .group { background: var(--ct-surface); border: 1px solid var(--ct-line); border-top: 4px solid var(--ct-fixed);
+    border-radius: var(--ct-r-lg); padding: 22px 24px 20px; box-shadow: var(--ct-shadow-1); }
+  .group .gh { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .group .gname { font-family: var(--ct-font-body); font-weight: 700; font-size: var(--ct-ui-xl); color: var(--ct-text); }
+  .group .gtag { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); color: var(--ct-text-muted); }
+  .item { display: flex; align-items: flex-start; gap: 12px; padding: 8px 0; }
+  .item .ck { width: 22px; height: 22px; border-radius: 6px; flex: 0 0 22px; margin-top: 2px;
+    background: var(--ct-fixed-wash); border: 1px solid var(--ct-fixed); display: grid; place-items: center; }
+  .item .ck svg { width: 14px; height: 14px; }
+  .item .ck path { stroke: var(--ct-fixed-glow); stroke-width: 3.4; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+  .item .txt { font-family: var(--ct-font-body); font-size: var(--ct-ui-sm); line-height: 1.35; color: var(--ct-text); }
+
+  .banner { display: flex; align-items: center; justify-content: center; gap: 18px;
+    background: linear-gradient(180deg, color-mix(in srgb, var(--ct-fixed) 12%, var(--ct-surface)), var(--ct-surface));
+    border-top: 1px solid color-mix(in srgb, var(--ct-fixed) 40%, var(--ct-line)); }
+  .banner .txt { font-family: var(--ct-font-display); font-stretch: 125%; font-weight: 800; text-transform: uppercase;
+    letter-spacing: 0.03em; font-size: var(--ct-ui-2xl); color: var(--ct-fixed-glow); }
+  .banner .sub { font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); color: var(--ct-text-muted); }
+  .banner .arrow { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 50%;
+    background: var(--ct-fixed-wash); border: 1px solid var(--ct-fixed); }
+  .banner .arrow svg { width: 18px; height: 18px; }
+</style>
+</head>
+<body>
+  <div class="stage" role="img"
+       aria-label="The full one-page Agent Pre-Launch Checklist, twenty-five checks ticked across six groups matching the five rounds plus human gates, with a free download banner pointing to the description">
+    <div class="grid-bg"></div>
+
+    <!-- Kill-Counter HUD — Artifact/CTA section, stays LOCKED at 25/25 -->
+    <div class="ct-killcounter" data-state="locked" aria-label="Kill counter: 25 of 25 breaks, locked">
+      <span class="kc-dot"></span>
+      <span class="kc-label">Breaks</span>
+      <span class="kc-tally"><span class="kc-n">25</span><span class="kc-of">/ 25</span></span>
+    </div>
+
+    <div class="doc">
+      <header class="dochead">
+        <span class="icon"><svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
+          <rect x="6" y="4" width="20" height="24" rx="2.5" stroke="var(--ct-text-muted)" stroke-width="2.2"/>
+          <path d="M11 11h10M11 16h10M11 21h6" stroke="var(--ct-text-muted)" stroke-width="2.2" stroke-linecap="round"/>
+        </svg></span>
+        <div>
+          <h1>Agent Pre-Launch Checklist</h1>
+          <div class="sub">one page &middot; six rounds &middot; 25 checks &mdash; run it before any agent touches real work</div>
+        </div>
+        <div class="spacer"></div>
+        <div class="progress"><div class="n">25 / 25</div><div class="l">checked</div></div>
+      </header>
+
+      <div class="groups">
+        <div class="group">
+          <div class="gh"><span class="gname">Input &amp; scope</span><span class="gtag">round 1</span></div>
+          <div class="item"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4 10-11"/></svg></span><span class="txt">System prompt defines role &amp; scope — no empty brain</span></div>
+          <div class="item"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4 10-11"/></svg></span><span class="txt">AI reserved for judgment calls, not fixed rules</span></div>
+          <div class="item"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4 10-11"/></svg></span><span class="txt">Conditional logic drives step order, not a fixed sequence</span></div>
+          <div class="item"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4 10-11"/></svg></span><span class="txt">Prompt changes shipped one at a time, tested</span></div>
+          <div class="item"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4 10-11"/></svg></span><span class="txt">Examples pruned — no redundant bloat</span></div>
+          <div class="item"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4 10-11"/></svg></span><span class="txt">Inputs validated before they hit a tool or API</span></div>
+        </div>
+
+        <div class="group">
+          <div class="gh"><span class="gname">Errors &amp; retries</span><span class="gtag">round 2</span></div>
+          <div class="item"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4 10-11"/></svg></span><span class="txt">HTTP / tool status codes checked, never assumed</span></div>
+          <div class="item"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4 10-11"/></svg></span><span class="txt">Silent failures fail loud, not "green"</span></div>
+          <div class="item"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4 10-11"/></svg></span><span class="txt">One shared error handler catches every path</span></div>
+          <div class="item"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4 10-11"/></svg></span><span class="txt">Flaky tools retry with backoff</span></div>
+          <div class="item"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4 10-11"/></svg></span><span class="txt">Errors are actionable, with a next step</span></div>
+        </div>
+
+        <div class="group">
+          <div class="gh"><span class="gname">Verification</span><span class="gtag">round 3</span></div>
+          <div class="item"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4 10-11"/></svg></span><span class="txt">Claims verified against a real source, not asserted</span></div>
+          <div class="item"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4 10-11"/></svg></span><span class="txt">Failures logged as data, not dismissed as noise</span></div>
+          <div class="item"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4 10-11"/></svg></span><span class="txt">Fixes patch the rules, not just the reply</span></div>
+          <div class="item"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4 10-11"/></svg></span><span class="txt">Lessons persist past the session</span></div>
+        </div>
+
+        <div class="group">
+          <div class="gh"><span class="gname">Guardrails &amp; cost</span><span class="gtag">round 4</span></div>
+          <div class="item"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4 10-11"/></svg></span><span class="txt">Paper / dry-run mode before going live</span></div>
+          <div class="item"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4 10-11"/></svg></span><span class="txt">Explicit caps and prohibited actions</span></div>
+          <div class="item"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4 10-11"/></svg></span><span class="txt">Actions reviewed, never auto-accepted</span></div>
+          <div class="item"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4 10-11"/></svg></span><span class="txt">Context scoped to what's needed, not the whole archive</span></div>
+          <div class="item"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4 10-11"/></svg></span><span class="txt">Context budget capped to protect output quality</span></div>
+        </div>
+
+        <div class="group">
+          <div class="gh"><span class="gname">Secrets &amp; permissions</span><span class="gtag">round 5</span></div>
+          <div class="item"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4 10-11"/></svg></span><span class="txt">Keys live in .env, never in the prompt</span></div>
+          <div class="item"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4 10-11"/></svg></span><span class="txt">Secrets referenced by name, rotated on any leak</span></div>
+          <div class="item"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4 10-11"/></svg></span><span class="txt">Least-privilege, scoped account — never a personal login</span></div>
+        </div>
+
+        <div class="group">
+          <div class="gh"><span class="gname">Human gates</span><span class="gtag">final net</span></div>
+          <div class="item"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4 10-11"/></svg></span><span class="txt">Irreversible, customer-facing actions wait for a human</span></div>
+          <div class="item"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4 10-11"/></svg></span><span class="txt">Revisions always build on the newest draft, not the first</span></div>
+        </div>
+      </div>
+
+      <div class="banner">
+        <span class="txt">Free download</span>
+        <span class="arrow"><svg viewBox="0 0 24 24" fill="none"><path d="M12 4v14M6 13l6 6 6-6" stroke="var(--ct-fixed-glow)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <span class="sub">no email wall &middot; link in the description</span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

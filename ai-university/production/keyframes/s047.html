@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, initial-scale=1">
+<title>S047 — "Clean rerun" slate + queued round lineup · Crash Test Agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  /* ===== S047 — TITLE-CARD. "Clean rerun" slate over a hardened/armored Sift
+     dashboard ghost, with the five rounds queued as a lineup of cards ready to
+     replay. Confident, reinforced/shield motif. Green-forward (survived). ===== */
+
+  /* --- calm, hardened dashboard ghost behind (no red — this rig held) --- */
+  .ghost { position: absolute; inset: -60px; z-index: 0;
+    filter: blur(22px) saturate(0.5) brightness(0.6); transform: scale(1.06); }
+  .ghost .g-top { position: absolute; top: 0; left: 0; right: 0; height: 96px;
+    background: var(--ct-surface); border-bottom: 2px solid var(--ct-line); }
+  .ghost .g-col-l { position: absolute; top: 96px; bottom: 0; left: 0; width: 320px;
+    background: var(--ct-bg); border-right: 2px solid var(--ct-line); }
+  .ghost .g-col-r { position: absolute; top: 96px; bottom: 0; right: 0; width: 380px;
+    background: var(--ct-bg); border-left: 2px solid var(--ct-line); }
+  .ghost .g-card { position: absolute; left: 360px; height: 90px; border-radius: 12px;
+    background: var(--ct-surface); border-left: 6px solid var(--ct-fixed); width: 900px; }
+  .ghost .g-c1 { top: 300px; } .ghost .g-c2 { top: 410px; } .ghost .g-c3 { top: 520px; } .ghost .g-c4 { top: 630px; }
+  .ghost .g-ok { position: absolute; top: 200px; right: 60px; width: 300px; height: 150px; border-radius: 12px;
+    background: var(--ct-surface); border: 2px solid var(--ct-fixed); box-shadow: 0 0 60px rgba(43,213,118,0.35); }
+
+  /* faint safety-net motif beneath everything (the "floor" under the rig) */
+  .safetynet { position: absolute; inset: 0; z-index: 0; pointer-events: none; opacity: 0.10;
+    background-image:
+      repeating-linear-gradient(45deg,  var(--ct-fixed) 0 1px, transparent 1px 46px),
+      repeating-linear-gradient(-45deg, var(--ct-fixed) 0 1px, transparent 1px 46px);
+    mask-image: linear-gradient(to top, #000 0%, transparent 62%);
+    -webkit-mask-image: linear-gradient(to top, #000 0%, transparent 62%); }
+
+  .scrim { position: absolute; inset: 0; z-index: 1;
+    background: radial-gradient(120% 95% at 50% 42%, rgba(11,14,20,0.66) 0%, rgba(11,14,20,0.92) 62%, rgba(5,7,12,0.97) 100%); }
+
+  /* --- centered lockup --- */
+  .center { position: absolute; inset: 0; z-index: 2; display: grid; place-content: center; justify-items: center; }
+  .umb-row { display: flex; align-items: center; gap: 20px; width: 1600px; margin-bottom: 30px; }
+  .umb-row .rule { flex: 1; height: 1px; background: var(--ct-line); }
+
+  .slate-head { display: flex; align-items: center; gap: 34px; margin-bottom: 14px; }
+  .spine { width: 12px; height: 150px; border-radius: 2px; flex: 0 0 12px;
+    background: linear-gradient(to bottom, var(--ct-break) 0 50%, var(--ct-fixed) 50% 100%);
+    box-shadow: 0 0 26px rgba(255,59,48,0.30), 0 0 26px rgba(43,213,118,0.35); }
+  .shield { width: 96px; height: 96px; flex: 0 0 96px; }
+  .shield svg { width: 96px; height: 96px; }
+  .titlecol .k { font-family: var(--ct-font-mono); text-transform: uppercase; letter-spacing: 0.16em;
+    font-size: var(--ct-kicker); color: var(--ct-fixed-glow); }
+  .titlecol h1 { margin: 6px 0 0; font-family: var(--ct-font-display); font-stretch: 125%; font-weight: 900;
+    text-transform: uppercase; letter-spacing: 0.02em; line-height: 0.9; font-size: 150px; color: var(--ct-text); }
+  .sub { font-family: var(--ct-font-body); font-weight: 500; font-size: var(--ct-h3);
+    color: var(--ct-text-muted); margin: 6px 0 54px; text-align: center; }
+
+  /* --- five queued round cards --- */
+  .lineup { display: grid; grid-template-columns: repeat(5, 288px); gap: 24px; }
+  .rcard {
+    position: relative; display: flex; flex-direction: column; gap: 18px;
+    background: linear-gradient(180deg, var(--ct-surface-raised), color-mix(in srgb, var(--ct-fixed) 6%, var(--ct-surface)));
+    border: 1px solid color-mix(in srgb, var(--ct-fixed) 34%, var(--ct-line));
+    border-top: 4px solid var(--ct-fixed); border-radius: var(--ct-r-lg);
+    padding: 26px 26px 24px; box-shadow: var(--ct-shadow-2), 0 0 26px rgba(43,213,118,0.10); }
+  .rcard .top { display: flex; align-items: center; justify-content: space-between; }
+  .rcard .num { font-family: var(--ct-font-display); font-stretch: 125%; font-weight: 900;
+    font-size: 60px; line-height: 1; color: var(--ct-text); }
+  .rcard .badge-shield { width: 40px; height: 40px; display: grid; place-items: center;
+    border-radius: 50%; background: var(--ct-fixed-wash); border: 1px solid color-mix(in srgb, var(--ct-fixed) 55%, transparent); }
+  .rcard .badge-shield svg { width: 22px; height: 22px; }
+  .rcard .name { font-family: var(--ct-font-body); font-weight: 700; font-size: var(--ct-ui-2xl);
+    color: var(--ct-text); line-height: 1.05; }
+  .rcard .queued { margin-top: auto; display: inline-flex; align-items: center; gap: 10px;
+    font-family: var(--ct-font-mono); text-transform: uppercase; letter-spacing: 0.1em;
+    font-size: var(--ct-ui-xs); color: var(--ct-fixed-glow); }
+  .rcard .queued .qd { width: 9px; height: 9px; border-radius: 50%; background: var(--ct-fixed);
+    box-shadow: 0 0 10px var(--ct-fixed); }
+</style>
+</head>
+<body>
+  <div class="stage" role="img"
+       aria-label="Clean rerun title card: the hardened Sift dashboard behind a bold 'Clean rerun' slate, with the five failure rounds queued as armored cards ready to replay">
+    <div class="grid-bg"></div>
+    <div class="safetynet" aria-hidden="true"></div>
+
+    <!-- Kill-Counter HUD — clean rerun: flipped green, 25 broken → 25 fixed -->
+    <div class="ct-killcounter" data-state="fixed" aria-label="Kill counter: 25 of 25 breaks fixed">
+      <span class="kc-dot"></span>
+      <span class="kc-label">Fixed</span>
+      <span class="kc-tally"><span class="kc-n">25</span><span class="kc-of">/ 25</span></span>
+    </div>
+
+    <div class="ghost" aria-hidden="true">
+      <div class="g-top"></div>
+      <div class="g-col-l"></div>
+      <div class="g-col-r"></div>
+      <div class="g-card g-c1"></div>
+      <div class="g-card g-c2"></div>
+      <div class="g-card g-c3"></div>
+      <div class="g-card g-c4"></div>
+      <div class="g-ok"></div>
+    </div>
+
+    <div class="scrim"></div>
+
+    <div class="center">
+      <div class="umb-row">
+        <span class="umbrella">CRASH TEST #1 · WHAT SURVIVED</span>
+        <span class="rule"></span>
+      </div>
+
+      <div class="slate-head">
+        <span class="spine" aria-hidden="true"></span>
+        <span class="shield" aria-hidden="true">
+          <svg viewBox="0 0 96 96" fill="none">
+            <path d="M48 8l30 12v22c0 24-16 40-30 46-14-6-30-22-30-46V20z" stroke="var(--ct-fixed)" stroke-width="4" stroke-linejoin="round" fill="var(--ct-fixed-wash)"/>
+            <path d="M34 48l10 10 20-22" stroke="var(--ct-fixed-glow)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <div class="titlecol">
+          <div class="k">clean rerun</div>
+          <h1>Run it<br>again</h1>
+        </div>
+      </div>
+      <div class="sub">Same gauntlet, hardened Sift &mdash; see what's left standing.</div>
+
+      <div class="lineup">
+        <div class="rcard">
+          <div class="top"><span class="num">1</span>
+            <span class="badge-shield"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3l7 3v5c0 5-4 8-7 9-3-1-7-4-7-9V6z" stroke="var(--ct-fixed)" stroke-width="2" stroke-linejoin="round"/></svg></span></div>
+          <div class="name">Bad inputs</div>
+          <div class="queued"><span class="qd"></span> queued</div>
+        </div>
+        <div class="rcard">
+          <div class="top"><span class="num">2</span>
+            <span class="badge-shield"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3l7 3v5c0 5-4 8-7 9-3-1-7-4-7-9V6z" stroke="var(--ct-fixed)" stroke-width="2" stroke-linejoin="round"/></svg></span></div>
+          <div class="name">Dead APIs</div>
+          <div class="queued"><span class="qd"></span> queued</div>
+        </div>
+        <div class="rcard">
+          <div class="top"><span class="num">3</span>
+            <span class="badge-shield"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3l7 3v5c0 5-4 8-7 9-3-1-7-4-7-9V6z" stroke="var(--ct-fixed)" stroke-width="2" stroke-linejoin="round"/></svg></span></div>
+          <div class="name">Lying model</div>
+          <div class="queued"><span class="qd"></span> queued</div>
+        </div>
+        <div class="rcard">
+          <div class="top"><span class="num">4</span>
+            <span class="badge-shield"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3l7 3v5c0 5-4 8-7 9-3-1-7-4-7-9V6z" stroke="var(--ct-fixed)" stroke-width="2" stroke-linejoin="round"/></svg></span></div>
+          <div class="name">Runaway loop</div>
+          <div class="queued"><span class="qd"></span> queued</div>
+        </div>
+        <div class="rcard">
+          <div class="top"><span class="num">5</span>
+            <span class="badge-shield"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3l7 3v5c0 5-4 8-7 9-3-1-7-4-7-9V6z" stroke="var(--ct-fixed)" stroke-width="2" stroke-linejoin="round"/></svg></span></div>
+          <div class="name">Leaky secrets</div>
+          <div class="queued"><span class="qd"></span> queued</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

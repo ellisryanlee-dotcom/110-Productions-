@@ -25,7 +25,7 @@
   .companychip .ad { font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); color: var(--ct-text-muted); }
   .topbar .spacer { flex: 1; }
   .unread { display: flex; align-items: baseline; gap: 12px; }
-  .unread .n { font-family: var(--ct-font-mono); font-weight: 700; font-size: var(--ct-ui-3xl); color: var(--ct-break-glow); }
+  .unread .n { font-family: var(--ct-font-mono); font-weight: 700; font-size: var(--ct-ui-3xl); color: var(--ct-text); }
   .unread .l { font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); color: var(--ct-text-muted);
     text-transform: uppercase; letter-spacing: 0.1em; }
 
@@ -56,14 +56,14 @@
     font-size: var(--ct-ui-xs); color: var(--ct-text-muted); margin-top: 3px; }
   .row .subject { color: var(--ct-text-muted); font-size: var(--ct-ui-md); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .row .time { font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); color: var(--ct-text-muted); }
-  .row .newdot { width: 10px; height: 10px; border-radius: 50%; background: var(--ct-accent); box-shadow: 0 0 8px var(--ct-accent); }
+  .row .newdot { width: 10px; height: 10px; border-radius: 50%; background: var(--ct-text); box-shadow: 0 0 8px rgba(232,237,244,0.4); }
 
   /* spammy rows */
   .row.spam { opacity: 0.72; }
-  .row.spam .avatar { color: var(--ct-warn); border-color: color-mix(in srgb, var(--ct-warn) 45%, var(--ct-line)); }
+  .row.spam .avatar { color: var(--ct-text-muted); border-color: var(--ct-line); }
   .row.spam .subject { color: var(--ct-text-muted); font-style: italic; }
-  .row.spam .flag { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); color: var(--ct-warn);
-    border: 1px solid var(--ct-warn); border-radius: var(--ct-r-pill); padding: 4px 12px; text-transform: uppercase; letter-spacing: 0.08em; }
+  .row.spam .flag { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); color: var(--ct-text-muted);
+    border: 1px solid var(--ct-line); background: var(--ct-surface); border-radius: var(--ct-r-pill); padding: 4px 12px; text-transform: uppercase; letter-spacing: 0.08em; }
 
   .more { text-align: center; font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm);
     color: var(--ct-text-muted); padding: 14px; }
@@ -89,7 +89,7 @@
         <div class="companychip">
           <span class="glyph">
             <svg width="22" height="22" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-              <path d="M16 4l11 5v7c0 7-5 11-11 13-6-2-11-6-11-13V9l11-5z" stroke="var(--ct-accent)" stroke-width="2.4" stroke-linejoin="round"/>
+              <path d="M16 4l11 5v7c0 7-5 11-11 13-6-2-11-6-11-13V9l11-5z" stroke="var(--ct-text-muted)" stroke-width="2.4" stroke-linejoin="round"/>
             </svg>
           </span>
           <span>

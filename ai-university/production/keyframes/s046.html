@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, initial-scale=1">
+<title>S046 — Classifier branch: approve vs revise loop, v1→v3 · Crash Test Agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  /* ===== S046 — MOTION-GRAPHIC (rested). A small classifier reads the
+     human's free-text reply and branches: approve→send (green, terminal)
+     or revise→rewrite→back to review (cyan, LOOPS back into the classifier).
+     A version tag along the loop shows it always builds on the newest pass:
+     v1 → v2 → v3. Locked at 25/25 — this closes the final-safety-net beat. ===== */
+  .wrap { position: absolute; inset: 0; z-index: 2; display: flex; flex-direction: column;
+    align-items: center; padding: 60px 0 40px; gap: 26px; }
+
+  .head { width: 1680px; }
+  .head .umb-row { display: flex; align-items: center; gap: 18px; margin-bottom: 16px; }
+  .head .umb-row .rule { flex: 1; height: 1px; background: var(--ct-line); }
+  .head h1 { margin: 0; font-family: var(--ct-font-display); font-stretch: 125%; font-weight: 900;
+    text-transform: uppercase; letter-spacing: 0.02em; font-size: var(--ct-h2); color: var(--ct-text); line-height: 0.98; }
+
+  .diagram { position: relative; width: 1760px; height: 620px; }
+  .dsvg { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+  .node { position: absolute; border-radius: var(--ct-r-lg); background: var(--ct-surface);
+    border: 1px solid var(--ct-line); box-shadow: var(--ct-shadow-2);
+    display: flex; align-items: center; gap: 18px; padding: 0 28px; }
+  .node .ic { width: 52px; height: 52px; flex: 0 0 52px; border-radius: 11px; display: grid; place-items: center;
+    background: var(--ct-surface-raised); border: 1px solid var(--ct-line); }
+  .node .ic svg { width: 30px; height: 30px; }
+  .node .t { font-family: var(--ct-font-body); font-weight: 700; font-size: var(--ct-ui-xl); color: var(--ct-text); line-height: 1.15; }
+  .node .t span { display: block; font-family: var(--ct-font-mono); font-weight: 400; font-size: var(--ct-ui-xs);
+    color: var(--ct-text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 4px; }
+
+  .human   { left: 20px;   top: 250px; width: 300px; height: 150px; }
+
+  /* classifier diamond */
+  .classifier { left: 430px; top: 210px; width: 230px; height: 230px; padding: 0; border-radius: 22px;
+    transform: rotate(45deg); background: var(--ct-surface-raised);
+    border: 2px solid color-mix(in srgb, var(--ct-accent) 55%, var(--ct-line));
+    box-shadow: var(--ct-shadow-2), 0 0 30px rgba(56,189,248,0.20); display: grid; place-items: center; }
+  .classifier .inner { transform: rotate(-45deg); text-align: center; width: 180px; }
+  .classifier .k { font-family: var(--ct-font-mono); text-transform: uppercase; letter-spacing: 0.1em;
+    font-size: var(--ct-ui-xs); color: var(--ct-accent-glow); }
+  .classifier .q { margin-top: 8px; font-family: var(--ct-font-body); font-weight: 700; font-size: var(--ct-ui-lg); color: var(--ct-text); }
+
+  .approve { left: 900px; top: 40px; width: 480px; height: 160px;
+    border-color: color-mix(in srgb, var(--ct-fixed) 45%, var(--ct-line)); box-shadow: var(--ct-shadow-2), 0 0 26px rgba(43,213,118,0.18); }
+  .approve .ic { background: var(--ct-fixed-wash); border-color: color-mix(in srgb, var(--ct-fixed) 55%, transparent); }
+  .approve .ic svg [stroke] { stroke: var(--ct-fixed-glow); }
+
+  .rewrite { left: 900px; top: 420px; width: 480px; height: 160px;
+    border-color: color-mix(in srgb, var(--ct-accent) 45%, var(--ct-line)); box-shadow: var(--ct-shadow-2), 0 0 26px rgba(56,189,248,0.16); }
+  .rewrite .ic { background: var(--ct-accent-wash); border-color: color-mix(in srgb, var(--ct-accent) 55%, transparent); }
+  .rewrite .ic svg [stroke] { stroke: var(--ct-accent); }
+
+  .pathlbl { position: absolute; display: inline-flex; align-items: center; gap: 9px; padding: 9px 18px;
+    border-radius: var(--ct-r-pill); font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); font-weight: 600;
+    white-space: nowrap; box-shadow: var(--ct-shadow-1); }
+  .pathlbl.green { color: var(--ct-fixed-glow); background: var(--ct-fixed-wash); border: 1px solid color-mix(in srgb, var(--ct-fixed) 50%, transparent); }
+  .pathlbl.cyan  { color: var(--ct-accent-glow); background: var(--ct-accent-wash); border: 1px solid color-mix(in srgb, var(--ct-accent) 50%, transparent); }
+  .lbl-approve { left: 660px; top: 108px; }
+  .lbl-revise  { left: 580px; top: 566px; }
+
+  /* version stepper along the loop-back */
+  .verstep { position: absolute; left: 900px; top: 322px; width: 480px;
+    display: flex; align-items: center; justify-content: center; gap: 12px; }
+  .vchip { display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: var(--ct-r-pill);
+    font-family: var(--ct-font-mono); font-weight: 700; font-size: var(--ct-ui-sm); color: var(--ct-text-muted);
+    background: var(--ct-surface); border: 1px solid var(--ct-line); }
+  .vchip.now { color: var(--ct-accent-glow); background: var(--ct-accent-wash);
+    border: 1px solid color-mix(in srgb, var(--ct-accent) 55%, transparent); box-shadow: 0 0 16px rgba(56,189,248,0.3); }
+  .varr { color: var(--ct-text-muted); font-size: var(--ct-ui-md); }
+  .vercap { position: absolute; left: 900px; top: 366px; width: 480px; text-align: center;
+    font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); color: var(--ct-text-muted); text-transform: uppercase; letter-spacing: 0.08em; }
+</style>
+</head>
+<body>
+  <div class="stage" role="img"
+       aria-label="A classifier node reads the human reply and asks approval or revision, branching to a green approve then send terminal node, or a cyan revise rewrite back to review loop that curves back into the classifier, with a version stepper reading v1 to v2 to v3 always the newest">
+    <div class="grid-bg"></div>
+
+    <!-- Kill-Counter HUD — locked at 25/25, the full teardown -->
+    <div class="ct-killcounter" data-state="locked" aria-label="Kill counter: 25 of 25 breaks, locked">
+      <span class="kc-dot"></span>
+      <span class="kc-label">Breaks</span>
+      <span class="kc-tally"><span class="kc-n">25</span><span class="kc-of">/ 25</span></span>
+    </div>
+
+    <div class="wrap">
+      <div class="head">
+        <div class="umb-row"><span class="umbrella">FINAL SAFETY NET &middot; THE CLASSIFIER</span><span class="rule"></span></div>
+        <h1>Approval or revision? A tiny classifier decides.</h1>
+      </div>
+
+      <div class="diagram">
+        <svg class="dsvg" viewBox="0 0 1760 620" fill="none" aria-hidden="true" preserveAspectRatio="none">
+          <defs>
+            <marker id="ahg" markerWidth="10" markerHeight="10" refX="7" refY="5" orient="auto">
+              <path d="M1 1l7 4-7 4z" fill="var(--ct-fixed)"/>
+            </marker>
+            <marker id="ahc" markerWidth="10" markerHeight="10" refX="7" refY="5" orient="auto">
+              <path d="M1 1l7 4-7 4z" fill="var(--ct-accent)"/>
+            </marker>
+          </defs>
+          <!-- human -> classifier -->
+          <path d="M320 325 L 430 325" stroke="var(--ct-text-muted)" stroke-width="3" marker-end="url(#ahc)" opacity="0.7"/>
+          <!-- classifier -> approve (top branch, green) -->
+          <path d="M640 285 C 760 200, 800 150, 898 120" stroke="var(--ct-fixed)" stroke-width="3.5" marker-end="url(#ahg)"/>
+          <!-- classifier -> rewrite (bottom branch, cyan) -->
+          <path d="M640 370 C 760 450, 800 480, 898 498" stroke="var(--ct-accent)" stroke-width="3.5" marker-end="url(#ahc)"/>
+          <!-- rewrite -> classifier (loop back, dashed cyan) -->
+          <path d="M898 540 C 700 610, 520 560, 545 445" stroke="var(--ct-accent)" stroke-width="3" stroke-dasharray="9 8" marker-end="url(#ahc)" opacity="0.85"/>
+        </svg>
+
+        <div class="node human">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none"><path d="M4 5h16v11H9l-5 4z" stroke="var(--ct-text-muted)" stroke-width="2" stroke-linejoin="round"/><path d="M8 10h8M8 13h5" stroke="var(--ct-text-muted)" stroke-width="2" stroke-linecap="round"/></svg></span>
+          <span class="t">Human reply<span>free text</span></span>
+        </div>
+
+        <div class="node classifier">
+          <div class="inner">
+            <div class="k">classifier</div>
+            <div class="q">approval or revision?</div>
+          </div>
+        </div>
+
+        <div class="node approve">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4 10-11" stroke="var(--ct-fixed-glow)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <span class="t">Approve &rarr; send<span>terminal &middot; ships</span></span>
+        </div>
+
+        <div class="node rewrite">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none"><path d="M4 13a8 8 0 0114-5.3M20 11a8 8 0 01-14 5.3" stroke="var(--ct-accent)" stroke-width="2.4" stroke-linecap="round"/><path d="M14 4l4 3.7-4 1.6M10 20l-4-3.7 4-1.6" stroke="var(--ct-accent)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <span class="t">Revise &rarr; rewrite<span>loops back</span></span>
+        </div>
+
+        <span class="pathlbl green lbl-approve">approve &rarr; send</span>
+        <span class="pathlbl cyan lbl-revise">revise &rarr; rewrite &rarr; back to review</span>
+
+        <div class="verstep" aria-hidden="true">
+          <span class="vchip">v1</span><span class="varr">&rarr;</span>
+          <span class="vchip">v2</span><span class="varr">&rarr;</span>
+          <span class="vchip now">v3</span>
+        </div>
+        <div class="vercap">v1 &rarr; v2 &rarr; v3 (always the newest)</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, initial-scale=1">
+<title>S036 — Guardrails: paper mode, hard caps, read the history · Crash Test Agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  /* ===== S036 — ROUND 4, break 18 (mid-round fix). Left: a guardrails config
+     panel — "Paper mode: ON" (now safe = fixed/green) above hard-rule rows
+     (the mechanism = cyan/accent). Right: a human reviewing the full run-history
+     transcript, not auto-approving. Rested = every rule already landed,
+     toggle already on, cursor mid-scroll on the transcript. ===== */
+  .app { display: grid; grid-template-rows: 96px 60px 1fr 44px; height: 100%; }
+
+  .topbar { display: flex; align-items: center; gap: var(--s5);
+    padding: 0 var(--s7); border-bottom: 1px solid var(--ct-line); background: var(--ct-surface); }
+  .brandchip { display: flex; align-items: center; gap: var(--s3); }
+  .brandchip .glyph { width: 40px; height: 40px; border-radius: 9px; display: grid; place-items: center;
+    background: var(--ct-surface-raised); border: 1px solid var(--ct-line); }
+  .brandchip .name { font-weight: 700; font-size: var(--ct-ui-2xl); letter-spacing: -0.01em; }
+  .topbar .sub { color: var(--ct-text-muted); font-size: var(--ct-ui-lg); }
+  .topbar .spacer { flex: 1; }
+  .status-pill { display: inline-flex; align-items: center; gap: 10px; padding: 9px 18px;
+    border-radius: var(--ct-r-pill); background: var(--ct-fixed-wash); color: var(--ct-fixed-glow);
+    font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); font-weight: 500;
+    border: 1px solid color-mix(in srgb, var(--ct-fixed) 45%, transparent); }
+  .status-pill .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--ct-fixed); box-shadow: 0 0 10px var(--ct-fixed); }
+
+  .roundbar { display: flex; align-items: center; gap: 20px; padding: 0 var(--s7);
+    background: var(--ct-bg); border-bottom: 1px solid var(--ct-line); }
+  .roundbar .tag { font-family: var(--ct-font-mono); font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.14em; font-size: var(--ct-ui-sm); color: var(--ct-text-muted);
+    padding: 6px 16px; border: 1px solid var(--ct-line); border-radius: var(--ct-r-pill); background: var(--ct-surface); }
+  .roundbar .tag b { color: var(--ct-text); }
+  .roundbar .cap { font-family: var(--ct-font-body); color: var(--ct-text-muted); font-size: var(--ct-ui-md); }
+  .roundbar .rule { flex: 1; height: 1px; background: var(--ct-line); }
+
+  .body { padding: var(--s7) var(--s8); display: grid; grid-template-columns: 780px 1fr; gap: var(--s8); min-height: 0; }
+  .col-title { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); text-transform: uppercase;
+    letter-spacing: 0.12em; color: var(--ct-text-muted); font-weight: 500; margin: 0 0 var(--s5); }
+
+  /* ---- LEFT: guardrails config panel ---- */
+  .panel { background: var(--ct-surface); border: 1px solid var(--ct-line); border-radius: var(--ct-r-lg);
+    box-shadow: var(--ct-shadow-2); overflow: hidden; }
+  .panel .phead { display: flex; align-items: center; gap: 14px; padding: 22px 26px;
+    background: var(--ct-surface-raised); border-bottom: 1px solid var(--ct-line); }
+  .panel .phead .g { width: 38px; height: 38px; border-radius: 9px; display: grid; place-items: center;
+    background: var(--ct-bg); border: 1px solid var(--ct-line); }
+  .panel .phead .t { font-family: var(--ct-font-body); font-weight: 700; font-size: var(--ct-ui-xl); color: var(--ct-text); }
+  .panel .phead .sub { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); color: var(--ct-text-muted); margin-top: 3px; }
+  .panel .pbody { padding: 28px 26px; }
+
+  /* paper-mode toggle — now safe = green */
+  .toggle-row { display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    padding: 20px 22px; border-radius: var(--ct-r-md); background: var(--ct-fixed-wash);
+    border: 1px solid color-mix(in srgb, var(--ct-fixed) 45%, transparent); margin-bottom: var(--s6); }
+  .toggle-row .tn { font-family: var(--ct-font-mono); font-size: var(--ct-ui-lg); font-weight: 700; color: var(--ct-text); }
+  .toggle-row .tn .sub2 { display: block; font-family: var(--ct-font-body); font-weight: 400; font-size: var(--ct-ui-sm);
+    color: var(--ct-text-muted); margin-top: 4px; }
+  .switch { display: inline-flex; align-items: center; gap: 10px; }
+  .switch .track { width: 58px; height: 30px; border-radius: var(--ct-r-pill); background: var(--ct-fixed-deep);
+    border: 1px solid var(--ct-fixed); position: relative; box-shadow: 0 0 16px rgba(43,213,118,0.35); }
+  .switch .track .knob { position: absolute; top: 3px; right: 3px; width: 22px; height: 22px; border-radius: 50%;
+    background: var(--ct-text); box-shadow: 0 1px 3px rgba(0,0,0,0.4); }
+  .switch .lbl { font-family: var(--ct-font-mono); font-weight: 700; font-size: var(--ct-ui-sm);
+    text-transform: uppercase; letter-spacing: 0.08em; color: var(--ct-fixed-glow); }
+
+  .section-lbl { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); text-transform: uppercase;
+    letter-spacing: 0.12em; color: var(--ct-text-muted); margin: var(--s5) 0 var(--s3); }
+
+  /* hard-rule rows — the mechanism = cyan/accent */
+  .rule-row { display: flex; align-items: center; gap: 16px; padding: 16px 20px; margin-bottom: 10px;
+    background: var(--ct-bg); border: 1px solid var(--ct-line); border-left: 3px solid var(--ct-accent);
+    border-radius: var(--ct-r-md); }
+  .rule-row .n { width: 30px; height: 30px; flex: 0 0 30px; border-radius: 50%; display: grid; place-items: center;
+    background: var(--ct-accent-wash); border: 1px solid color-mix(in srgb, var(--ct-accent) 50%, transparent);
+    color: var(--ct-accent-glow); font-family: var(--ct-font-mono); font-weight: 700; font-size: var(--ct-ui-sm); }
+  .rule-row .txt { font-family: var(--ct-font-mono); font-size: var(--ct-ui-md); color: var(--ct-text); }
+  .rule-row .txt b { color: var(--ct-accent-glow); }
+
+  /* ---- RIGHT: full run-history transcript, human reviewing ---- */
+  .right-panel { background: var(--ct-surface); border: 1px solid var(--ct-line); border-radius: var(--ct-r-lg);
+    box-shadow: var(--ct-shadow-1); padding: 26px 28px; height: 100%; display: flex; flex-direction: column; }
+  .right-panel .rhead { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: var(--s5); }
+  .right-panel .rhead h2 { margin: 0; font-family: var(--ct-font-display); font-stretch: 125%; font-weight: 800;
+    font-size: var(--ct-ui-2xl); color: var(--ct-text); }
+  .right-panel .rhead .live { display: inline-flex; align-items: center; gap: 8px; font-family: var(--ct-font-mono);
+    font-size: var(--ct-ui-xs); color: var(--ct-text-muted); text-transform: uppercase; letter-spacing: 0.08em; }
+  .right-panel .rhead .live .eye { width: 16px; height: 16px; }
+
+  .transcript { display: flex; flex-direction: column; gap: 9px; flex: 1; overflow: hidden; position: relative; }
+  .run-row { display: grid; grid-template-columns: 130px 1fr auto; align-items: center; gap: 16px;
+    background: var(--ct-bg); border: 1px solid var(--ct-line); border-radius: var(--ct-r-md);
+    padding: 14px 20px; }
+  .run-row .ts { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); color: var(--ct-text-muted); }
+  .run-row .desc { font-family: var(--ct-font-body); font-size: var(--ct-ui-md); color: var(--ct-text); }
+  .run-row .desc .who { color: var(--ct-text-muted); }
+  .run-row .out { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); text-transform: uppercase;
+    letter-spacing: 0.06em; padding: 5px 12px; border-radius: var(--ct-r-pill); }
+  .run-row .out.ok { color: var(--ct-fixed-glow); background: var(--ct-fixed-wash); border: 1px solid color-mix(in srgb, var(--ct-fixed) 45%, transparent); }
+  .run-row .out.flag { color: var(--ct-break-glow); background: var(--ct-break-wash); border: 1px solid color-mix(in srgb, var(--ct-break) 45%, transparent); }
+
+  /* the row currently under review, human cursor parked here */
+  .run-row.reviewing { border-color: color-mix(in srgb, var(--ct-accent) 55%, var(--ct-line));
+    box-shadow: 0 0 22px rgba(56,189,248,0.16); position: relative; }
+  .cursor { position: absolute; right: -8px; top: 50%; transform: translateY(-50%); width: 34px; height: 34px; }
+
+  .oblivious { margin-top: var(--s5); display: flex; align-items: center; gap: 10px;
+    font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); color: var(--ct-text-muted); }
+  .oblivious svg { width: 18px; height: 18px; flex: 0 0 18px; }
+
+  .disclaimer { display: flex; align-items: center; justify-content: center; background: var(--ct-surface);
+    border-top: 1px solid var(--ct-line); color: var(--ct-text-muted);
+    font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); letter-spacing: 0.03em; }
+</style>
+</head>
+<body>
+  <div class="stage" role="img"
+       aria-label="Guardrails config panel: paper mode is on, meaning nothing is sent for real, above three hard rules — one reply per customer per run, a cap per hour, and inbox-only. On the right a human cursor is parked on one row of a full run-history transcript, reviewing it rather than auto-approving">
+    <div class="grid-bg"></div>
+    <!-- Kill-Counter HUD (global overlay) — ticks to 18 -->
+    <div class="ct-killcounter" data-state="ticking" aria-label="Kill counter: 18 of 25 breaks">
+      <span class="kc-dot"></span>
+      <span class="kc-label">Breaks</span>
+      <span class="kc-tally"><span class="kc-n">18</span><span class="kc-of">/ 25</span></span>
+    </div>
+
+    <div class="app">
+      <header class="topbar">
+        <div class="brandchip">
+          <span class="glyph">
+            <svg width="26" height="26" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+              <path d="M12 16h40M18 32h28M26 48h12" stroke="var(--ct-fixed)" stroke-width="5" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <span class="name">Sift</span>
+        </div>
+        <span class="sub">guardrails &middot; Harbor Supply Co.</span>
+        <div class="spacer"></div>
+        <span class="status-pill"><span class="dot"></span> Paper mode &middot; nothing sent for real</span>
+      </header>
+
+      <div class="roundbar">
+        <span class="tag">ROUND <b>4</b></span>
+        <span class="cap">The runaway agent — give it no limits and it will act, a lot.</span>
+        <span class="rule"></span>
+      </div>
+
+      <div class="body">
+        <!-- LEFT: guardrails config -->
+        <section>
+          <p class="col-title">Sift &middot; guardrails</p>
+          <div class="panel">
+            <div class="phead">
+              <span class="g"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3l8 4v5c0 5-3.4 8.7-8 9-4.6-.3-8-4-8-9V7l8-4z" stroke="var(--ct-fixed-glow)" stroke-width="2" stroke-linejoin="round"/></svg></span>
+              <span>
+                <span class="t">Safe by default</span>
+                <span class="sub">simulate first, then earn real sends</span>
+              </span>
+            </div>
+            <div class="pbody">
+              <div class="toggle-row">
+                <span class="tn">Paper mode: <span style="color:var(--ct-fixed-glow)">ON</span><span class="sub2">simulation — drafts and logs what it would send, sends nothing real</span></span>
+                <span class="switch"><span class="track"><span class="knob"></span></span><span class="lbl">on</span></span>
+              </div>
+
+              <p class="section-lbl">Hard rules &middot; written into Sift's config</p>
+              <div class="rule-row"><span class="n">1</span><span class="txt"><b>max 1 reply</b> / customer / run</span></div>
+              <div class="rule-row"><span class="n">2</span><span class="txt"><b>max N</b> / hour, hard limit</span></div>
+              <div class="rule-row"><span class="n">3</span><span class="txt"><b>inbox-only</b> — never touch anything outside the support inbox</span></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- RIGHT: human reviewing full run history -->
+        <section style="min-height:0;">
+          <p class="col-title">Human in the loop</p>
+          <div class="right-panel">
+            <div class="rhead">
+              <h2 class="display">Run history &middot; full transcript</h2>
+              <span class="live">
+                <svg class="eye" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z" stroke="var(--ct-text-muted)" stroke-width="1.8"/><circle cx="12" cy="12" r="3" stroke="var(--ct-text-muted)" stroke-width="1.8"/></svg>
+                reading the full run history
+              </span>
+            </div>
+
+            <div class="transcript">
+              <div class="run-row"><span class="ts">09:41:02</span><span class="desc">reply drafted &middot; <span class="who">Dana Okafor</span></span><span class="out ok">logged</span></div>
+              <div class="run-row"><span class="ts">09:41:19</span><span class="desc">reply drafted &middot; <span class="who">Dana Okafor</span></span><span class="out flag">duplicate</span></div>
+              <div class="run-row reviewing">
+                <span class="ts">09:41:37</span><span class="desc">reply drafted &middot; <span class="who">Dana Okafor</span></span><span class="out flag">duplicate</span>
+                <svg class="cursor" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 3l14 8-6 2-2 6-6-16z" fill="var(--ct-text)" stroke="var(--ct-bg)" stroke-width="1"/></svg>
+              </div>
+              <div class="run-row"><span class="ts">09:41:55</span><span class="desc">reply drafted &middot; <span class="who">Marcus Liu</span></span><span class="out ok">logged</span></div>
+              <div class="run-row"><span class="ts">09:42:11</span><span class="desc">reply drafted &middot; <span class="who">Tara Ahn</span></span><span class="out ok">logged</span></div>
+            </div>
+
+            <p class="oblivious">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3l10 18H2L12 3z" stroke="var(--ct-text-muted)" stroke-width="1.8" stroke-linejoin="round"/><path d="M12 9.5v5M12 17.2h.01" stroke="var(--ct-text-muted)" stroke-width="1.8" stroke-linecap="round"/></svg>
+              reviewing runs, not auto-accepting whatever the agent wants to do
+            </p>
+          </div>
+        </section>
+      </div>
+
+      <div class="disclaimer">FICTIONAL DEMO &middot; Harbor Supply Co., Sift and all run-history rows are invented for Crash Test Agents</div>
+    </div>
+  </div>
+</body>
+</html>

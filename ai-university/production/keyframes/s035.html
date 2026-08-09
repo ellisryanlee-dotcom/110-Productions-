@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, initial-scale=1">
+<title>S035 — "guardrails" slate (Tier-0 base; AI-GEN overlay gated) · Crash Test Agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  /* ===== S035 — Tier-0 BASE ONLY. Screenplay calls for a puppy-in-warehouse
+     b-roll illustration (AI-GEN, paid, gated on Ryan spend-approval) that
+     transitions into a "guardrails" slate. We build the slate alone — the
+     Tier-0 fallback/base layer — and leave a comment marker where the gated
+     b-roll overlay would composite in. No image generated. ===== */
+
+  /* soft cyan-accented atmosphere — the boundary/system-control tone,
+     distinct from the round's break-red so "guardrails" reads as the fix
+     concept, not another failure */
+  .atmos { position: absolute; inset: 0; z-index: 0; }
+  .atmos .vig { position: absolute; inset: 0;
+    background: radial-gradient(120% 100% at 50% 46%, rgba(11,14,20,0) 0%, rgba(5,7,12,0.55) 62%, rgba(3,4,8,0.95) 100%); }
+  .atmos .bloom { position: absolute; left: 50%; top: -220px; transform: translateX(-50%);
+    width: 1400px; height: 620px; border-radius: 50%;
+    background: radial-gradient(closest-side, rgba(56,189,248,0.16), rgba(56,189,248,0) 72%);
+    filter: blur(6px); }
+
+  /* faint boundary/ring motif behind the wordmark — stands in for the
+     "bounded blast radius" idea without depicting the gated illustration */
+  .ring { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+    width: 900px; height: 900px; border-radius: 50%; z-index: 1;
+    border: 1px dashed color-mix(in srgb, var(--ct-accent) 24%, transparent); }
+  .ring.r2 { width: 1180px; height: 1180px; border-color: color-mix(in srgb, var(--ct-accent) 14%, transparent); }
+
+  .slate { position: absolute; inset: 0; z-index: 2; display: grid; place-items: center; }
+  .slate-inner { text-align: center; }
+
+  .kicker { font-family: var(--ct-font-mono); text-transform: uppercase; letter-spacing: 0.18em;
+    font-size: var(--ct-lower); color: var(--ct-text-muted); display: inline-flex; align-items: center; gap: 16px; }
+  .kicker .tick { width: 8px; height: 8px; border-radius: 50%; background: var(--ct-break); box-shadow: 0 0 12px var(--ct-break); }
+
+  /* lock/boundary emblem above the wordmark */
+  .emblem { display: flex; align-items: center; justify-content: center; margin: 38px 0 26px; }
+  .emblem .ic { width: 104px; height: 104px; border-radius: var(--ct-r-lg); display: grid; place-items: center;
+    background: var(--ct-surface); border: 1px solid color-mix(in srgb, var(--ct-accent) 42%, var(--ct-line));
+    box-shadow: var(--ct-shadow-2), inset 0 0 40px rgba(56,189,248,0.08); }
+  .emblem .ic svg { width: 58px; height: 58px; }
+  .emblem .ic svg [stroke] { stroke: var(--ct-accent-glow); }
+
+  .wordmark { font-family: var(--ct-font-display); font-stretch: 125%; font-weight: 900;
+    text-transform: uppercase; letter-spacing: 0.03em; line-height: 0.92; font-size: 176px; color: var(--ct-text);
+    text-shadow: 0 0 60px rgba(56,189,248,0.16); }
+
+  .caption { font-family: var(--ct-font-body); font-weight: 500; font-size: var(--ct-caption);
+    color: var(--ct-text-muted); margin-top: 22px; }
+  .rulebar { width: 680px; height: 1px; margin: 40px auto 0;
+    background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--ct-accent) 40%, var(--ct-line)), transparent); }
+</style>
+</head>
+<body>
+  <div class="stage" role="img"
+       aria-label="Tier-0 base slate reading guardrails, a cyan boundary ring and lock emblem, resting frame before the gated AI-generated puppy-in-warehouse b-roll would composite in">
+    <div class="grid-bg"></div>
+
+    <div class="atmos" aria-hidden="true">
+      <div class="bloom"></div>
+      <div class="vig"></div>
+    </div>
+
+    <!-- AI-GEN b-roll overlay (puppy-in-warehouse) GATED: needs Ryan spend-approval -->
+
+    <div class="ring" aria-hidden="true"></div>
+    <div class="ring r2" aria-hidden="true"></div>
+
+    <div class="slate">
+      <div class="slate-inner">
+        <div class="kicker"><span class="tick"></span> Round 4 &middot; runaway agents <span class="tick"></span></div>
+
+        <div class="emblem" aria-hidden="true">
+          <span class="ic">
+            <!-- bounded lock -->
+            <svg viewBox="0 0 64 64" fill="none"><path d="M32 8l20 7v13c0 13-8.5 22-20 28-11.5-6-20-15-20-28V15l20-7z" stroke-width="4" stroke-linejoin="round"/><rect x="24" y="29" width="16" height="13" rx="2" stroke-width="3.5"/><path d="M27 29v-4a5 5 0 0110 0v4" stroke-width="3.5" stroke-linecap="round"/></svg>
+          </span>
+        </div>
+
+        <div class="wordmark">Guardrails</div>
+        <div class="caption">hard limits, before the agent runs</div>
+        <div class="rulebar" aria-hidden="true"></div>
+      </div>
+    </div>
+
+    <!-- Kill-Counter HUD (global overlay) — Round 4 continues, ticking at 17/25 -->
+    <div class="ct-killcounter" data-state="ticking" aria-label="Kill counter: 17 of 25 breaks">
+      <span class="kc-dot"></span>
+      <span class="kc-label">Breaks</span>
+      <span class="kc-tally"><span class="kc-n">17</span><span class="kc-of">/ 25</span></span>
+    </div>
+  </div>
+</body>
+</html>

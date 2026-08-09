@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, initial-scale=1">
+<title>S038 — Budget context like money · Crash Test Agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  /* ===== S038 — Round 4 fix: the bloated archive collapses to a lean context
+     bundle. LEFT (break, red): "whole archive" — token meter high, cost on fire.
+     RIGHT (fixed, green): instructions + current email + short customer summary
+     (last 3 messages) — token meter low, cost low, quality up. ===== */
+  .wrap { display: grid; grid-template-rows: auto 1fr auto; height: 100%;
+    padding: var(--s8) var(--s8) var(--s7); }
+
+  .head { display: flex; align-items: center; gap: var(--s5); }
+  .head .kick { font-family: var(--ct-font-mono); text-transform: uppercase;
+    letter-spacing: 0.14em; font-size: var(--ct-kicker); color: var(--ct-text-muted); font-weight: 500; }
+  .head .rule { flex: 1; height: 1px; background: var(--ct-line); }
+  .head .round { font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm);
+    color: var(--ct-text-muted); text-transform: uppercase; letter-spacing: 0.12em; }
+
+  .board { display: grid; grid-template-columns: 1fr 132px 1fr; align-items: center; gap: var(--s5); }
+
+  /* ---- shared panel ---- */
+  .panel { position: relative; border-radius: var(--ct-r-lg); padding: var(--s6);
+    background: var(--ct-surface); border: 1px solid var(--ct-line); height: 640px;
+    display: flex; flex-direction: column; }
+  .panel .p-tag { display: inline-flex; align-items: center; gap: 10px; align-self: flex-start;
+    font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.08em; padding: 7px 16px; border-radius: var(--ct-r-pill);
+    margin-bottom: var(--s5); }
+
+  /* LEFT — break */
+  .left { border-color: color-mix(in srgb, var(--ct-break) 40%, var(--ct-line));
+    box-shadow: inset 0 0 0 1px rgba(255,59,48,0.10); background:
+      linear-gradient(180deg, var(--ct-break-wash), transparent 40%), var(--ct-surface); }
+  .left .p-tag { color: var(--ct-break-glow);
+    border: 1px solid color-mix(in srgb, var(--ct-break) 55%, var(--ct-line)); }
+  .archive { position: relative; flex: 1; overflow: hidden; }
+  .stack { position: absolute; left: 0; right: 0; }
+  .thread { background: color-mix(in srgb, var(--ct-break) 8%, var(--ct-bg));
+    border: 1px solid color-mix(in srgb, var(--ct-break) 30%, var(--ct-line));
+    border-radius: var(--ct-r-sm); height: 30px; margin-bottom: 8px; display: flex; align-items: center;
+    padding: 0 14px; gap: 10px; }
+  .thread .bar { height: 7px; border-radius: 4px; background: color-mix(in srgb, var(--ct-break) 34%, var(--ct-line)); }
+  .thread .dot { width: 8px; height: 8px; border-radius: 50%; flex: 0 0 8px;
+    background: color-mix(in srgb, var(--ct-break) 60%, var(--ct-line)); }
+  .archive .fade { position: absolute; left: 0; right: 0; bottom: 0; height: 130px;
+    background: linear-gradient(transparent, var(--ct-surface)); pointer-events: none; }
+  .archive-lbl { position: absolute; left: 0; right: 0; bottom: 14px; z-index: 2; text-align: center;
+    font-family: var(--ct-font-mono); font-size: var(--ct-ui-md); color: var(--ct-break-glow); }
+
+  /* RIGHT — fixed */
+  .right { border-color: color-mix(in srgb, var(--ct-fixed) 40%, var(--ct-line));
+    box-shadow: inset 0 0 0 1px rgba(43,213,118,0.10); background:
+      linear-gradient(180deg, var(--ct-fixed-wash), transparent 40%), var(--ct-surface); }
+  .right .p-tag { color: var(--ct-fixed-glow);
+    border: 1px solid color-mix(in srgb, var(--ct-fixed) 55%, var(--ct-line)); }
+  .bundle { flex: 1; display: flex; flex-direction: column; gap: 14px; justify-content: center; }
+  .item { display: flex; align-items: center; gap: 16px; padding: 20px 22px; border-radius: var(--ct-r-md);
+    background: color-mix(in srgb, var(--ct-fixed) 7%, var(--ct-bg));
+    border: 1px solid color-mix(in srgb, var(--ct-fixed) 32%, var(--ct-line)); }
+  .item .ic { width: 40px; height: 40px; flex: 0 0 40px; border-radius: 9px; display: grid; place-items: center;
+    background: var(--ct-bg); border: 1px solid color-mix(in srgb, var(--ct-fixed) 40%, var(--ct-line)); }
+  .item .ic svg { width: 24px; height: 24px; stroke: var(--ct-fixed-glow); fill: none; stroke-width: 2; }
+  .item .t { font-family: var(--ct-font-body); font-weight: 600; font-size: var(--ct-ui-xl); color: var(--ct-text); }
+  .item .t small { display: block; font-family: var(--ct-font-mono); font-weight: 400;
+    font-size: var(--ct-ui-xs); color: var(--ct-text-muted); margin-top: 3px; letter-spacing: 0.02em; }
+
+  /* center collapse arrow + transform label */
+  .mid { display: flex; flex-direction: column; align-items: center; gap: var(--s4); }
+  .mid .arrow { font-family: var(--ct-font-mono); font-size: 88px; line-height: 1; color: var(--ct-text-muted); }
+  .mid .xf { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--ct-text-muted); text-align: center; line-height: 1.5; }
+
+  /* meters row inside each panel footer */
+  .meters { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s4); margin-top: var(--s5); }
+  .meter .ml { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--ct-text-muted); margin-bottom: 8px; display: flex; justify-content: space-between; }
+  .track { height: 12px; border-radius: 999px; background: var(--ct-bg);
+    border: 1px solid var(--ct-line); overflow: hidden; }
+  .fill { height: 100%; border-radius: 999px; }
+  .fill.red { background: linear-gradient(90deg, var(--ct-break-deep), var(--ct-break)); box-shadow: 0 0 14px rgba(255,59,48,0.5); }
+  .fill.green { background: linear-gradient(90deg, var(--ct-fixed-deep), var(--ct-fixed)); box-shadow: 0 0 14px rgba(43,213,118,0.45); }
+  .meter .mv { font-family: var(--ct-font-mono); font-weight: 700; }
+  .mv.red { color: var(--ct-break-glow); } .mv.green { color: var(--ct-fixed-glow); }
+
+  .caption { display: flex; align-items: center; justify-content: center; gap: 18px; margin-top: var(--s6); }
+  .caption .big { font-family: var(--ct-font-display); font-stretch: 125%; font-weight: 900;
+    font-size: var(--ct-h3); color: var(--ct-text); letter-spacing: 0.01em; }
+  .caption .coin { color: var(--ct-fixed-glow); }
+</style>
+</head>
+<body>
+  <div class="stage" role="img"
+       aria-label="A bloated whole-archive context on the left collapses into a lean bundle of instructions, current email, and a short customer summary of the last three messages on the right; token meter and cost drop while quality rises; caption budget context like money">
+    <div class="grid-bg"></div>
+
+    <div class="wrap">
+      <div class="head">
+        <span class="kick">Round 4 · Runaway cost &amp; context</span>
+        <span class="rule"></span>
+        <span class="round">budget the context window</span>
+      </div>
+
+      <div class="board">
+        <!-- LEFT: bloated archive (break) -->
+        <section class="panel left">
+          <span class="p-tag">whole archive</span>
+          <div class="archive" aria-hidden="true">
+            <div class="stack">
+              <div class="thread"><span class="dot"></span><span class="bar" style="width:62%"></span></div>
+              <div class="thread"><span class="dot"></span><span class="bar" style="width:80%"></span></div>
+              <div class="thread"><span class="dot"></span><span class="bar" style="width:47%"></span></div>
+              <div class="thread"><span class="dot"></span><span class="bar" style="width:73%"></span></div>
+              <div class="thread"><span class="dot"></span><span class="bar" style="width:55%"></span></div>
+              <div class="thread"><span class="dot"></span><span class="bar" style="width:88%"></span></div>
+              <div class="thread"><span class="dot"></span><span class="bar" style="width:41%"></span></div>
+              <div class="thread"><span class="dot"></span><span class="bar" style="width:69%"></span></div>
+              <div class="thread"><span class="dot"></span><span class="bar" style="width:77%"></span></div>
+              <div class="thread"><span class="dot"></span><span class="bar" style="width:50%"></span></div>
+              <div class="thread"><span class="dot"></span><span class="bar" style="width:84%"></span></div>
+              <div class="thread"><span class="dot"></span><span class="bar" style="width:58%"></span></div>
+            </div>
+            <div class="fade"></div>
+            <div class="archive-lbl">…every message, every run</div>
+          </div>
+          <div class="meters">
+            <div class="meter">
+              <div class="ml"><span>token load</span><span class="mv red">94%</span></div>
+              <div class="track"><div class="fill red" style="width:94%"></div></div>
+            </div>
+            <div class="meter">
+              <div class="ml"><span>cost / run</span><span class="mv red">$0.42</span></div>
+              <div class="track"><div class="fill red" style="width:90%"></div></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- CENTER collapse -->
+        <div class="mid" aria-hidden="true">
+          <span class="arrow">&rarr;</span>
+          <span class="xf">whole archive<br>&darr;<br>last 3 messages<br>+ customer summary</span>
+        </div>
+
+        <!-- RIGHT: lean bundle (fixed) -->
+        <section class="panel right">
+          <span class="p-tag">&#10003; lean context bundle</span>
+          <div class="bundle">
+            <div class="item">
+              <span class="ic"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5z"/><path d="M8 9h8M8 13h8M8 17h5" stroke-linecap="round"/></svg></span>
+              <span class="t">instructions<small>the system prompt · what the job is</small></span>
+            </div>
+            <div class="item">
+              <span class="ic"><svg viewBox="0 0 24 24"><path d="M4 6h16v12H4z"/><path d="M4 7l8 6 8-6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <span class="t">current email<small>the one message being answered now</small></span>
+            </div>
+            <div class="item">
+              <span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.2"/><path d="M5 20c0-3.5 3.1-6 7-6s7 2.5 7 6" stroke-linecap="round"/></svg></span>
+              <span class="t">short customer summary<small>last 3 messages — not the whole thread</small></span>
+            </div>
+          </div>
+          <div class="meters">
+            <div class="meter">
+              <div class="ml"><span>token load</span><span class="mv green">21%</span></div>
+              <div class="track"><div class="fill green" style="width:21%"></div></div>
+            </div>
+            <div class="meter">
+              <div class="ml"><span>quality</span><span class="mv green">&uarr; up</span></div>
+              <div class="track"><div class="fill green" style="width:86%"></div></div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="caption">
+        <span class="badge badge--fixed">[ &#10003; LEAN ]</span>
+        <span class="big">budget context like <span class="coin">money</span></span>
+      </div>
+    </div>
+
+    <!-- Kill-Counter HUD (global overlay) — Round 4 ends on Break 20 -->
+    <div class="ct-killcounter" data-state="ticking" aria-label="Kill counter: 20 of 25 breaks">
+      <span class="kc-dot"></span>
+      <span class="kc-label">Breaks</span>
+      <span class="kc-tally"><span class="kc-n">20</span><span class="kc-of">/ 25</span></span>
+    </div>
+  </div>
+</body>
+</html>

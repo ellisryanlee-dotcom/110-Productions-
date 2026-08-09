@@ -129,6 +129,7 @@ Per-shot **ASSET TYPE** + **GEN APPROACH** + duration. Cross-reference with each
 - **Visual:** A clean, calm inbox-triage dashboard on a dark UI. A live feed of incoming emails streams down the center column; each card animates a colored label snapping onto it — "Sales", "Support", "Billing" — followed by a small green check. Header reads the product name. Everything looks effortless and trustworthy.
 - **On-screen text:** Header: "Sift — inbox triage for Harbor Supply Co." · Labels: "Sales" / "Support" / "Billing" · green ✓ per row.
 - **Motion/Transition:** Slow push-in on the dashboard as three emails auto-label in sequence; hard cut to S002.
+- **Kill-Counter HUD:** Breaks 00 / 25 — armed, docked top-right (the persistent instrument appears here and holds at zero; it does not tick until Round 1).
 - **Keyframe prompt seed:** Faceless dark-mode SaaS inbox dashboard, live email cards being auto-tagged Sales/Support/Billing with green checkmarks, calm confident UI, [BRAND palette] accents, 16:9.
 
 ### S002
@@ -137,22 +138,25 @@ Per-shot **ASSET TYPE** + **GEN APPROACH** + duration. Cross-reference with each
 - **Visual:** A single malformed email card drops into the feed — its body is visibly broken (garbled characters, a collapsed form). The agent's status pill freezes mid-spin. Then the same outbound reply fires four times at one customer: four identical "sent" cards stack up fast. A run counter spins upward and a red API error banner stacks in the corner.
 - **On-screen text:** Malformed email card (glitched body) · outbound counter incrementing 1→2→3→4 · red banner: "API error".
 - **Motion/Transition:** Quick zoom to the frozen status pill, then whip to the stacking duplicate-send cards; glitch cut to S003.
+- **Kill-Counter HUD:** Breaks 00 / 25 — armed (still zero; the in-world "run counter spins" here is the diegetic cold-open gag, NOT the HUD — the HUD starts counting at Round 1).
 - **Keyframe prompt seed:** Same inbox dashboard glitching, one corrupted email card, four identical duplicate "sent" replies stacking, red API error banner, spinning counter, tension, [BRAND palette], 16:9.
 
 ### S003
 - **Timecode:** 0:22–0:36
 - **VO:** "There it is. The demo you'd post, and the thing you'd never show. Everyone shows the win. We break the agent on camera, then make it bulletproof."
 - **Visual:** The chaotic dashboard freezes and desaturates behind a bold title card that slams on. Below the title, a subtitle line resolves into the channel promise. Clean, high-contrast motion-graphics title treatment.
-- **On-screen text:** Title card: "Crash Test Agents. We break AI agents so yours don't." → then: "25 ways to kill an agent → 25 fixes."
+- **On-screen text:** Title card: "Crash Test Agents. We break AI agents so yours don't." → then: "25 ways to kill an agent → 25 fixes → one 25-line checklist."
 - **Motion/Transition:** Frozen dashboard blurs back; title card scales in with a snap; wipe to S004.
+- **Kill-Counter HUD:** Breaks 00 / 25 — armed (holds at zero behind the title card).
 - **Keyframe prompt seed:** Bold full-frame title card "Crash Test Agents / We break AI agents so yours don't", blurred glitched dashboard behind, high-contrast motion-graphic type, [BRAND palette] and [BRAND accent], 16:9.
 
 ### S004
 - **Timecode:** 0:36–0:51
-- **VO:** "I'll attack this email assistant twenty-five ways — bad inputs, dead connections, a lying model, a runaway loop, leaked keys. Every break gets a fix and a rule, and the whole rulebook is a free download."
+- **VO:** "I'll attack this email assistant twenty-five ways — bad inputs, dead connections, a lying model, a runaway loop, leaked keys. Every break gets a number, a fix, and a rule, and all twenty-five rules are the free checklist at the end. Keep score with me — the counter in the corner ticks once per break."
 - **Visual:** An agenda list assembles on a dark panel — five round titles animate in as stacked rows, each with a small icon (broken input, unplugged cable, masked/lying face, looping arrow, leaking key). Below them a "Final safety net" row and a highlighted free-download row.
 - **On-screen text:** Agenda: "1 Bad inputs · 2 Dead APIs · 3 The lying model · 4 Runaway loop · 5 Leaky secrets" · "Final safety net" · "Free: Agent Pre-Launch Checklist".
 - **Motion/Transition:** Rows cascade in one by one; the download row pulses; cut to S005.
+- **Kill-Counter HUD:** Breaks 00 / 25 — armed (the VO calls out this instrument — "the counter in the corner ticks once per break"; it still reads 00/25 and stays armed through Context and Build).
 - **Keyframe prompt seed:** Dark agenda panel listing five agent-failure rounds with minimal icons plus "Final safety net" and a highlighted "Free download" row, clean motion-graphic list, [BRAND palette], 16:9.
 
 ---
@@ -178,7 +182,7 @@ Per-shot **ASSET TYPE** + **GEN APPROACH** + duration. Cross-reference with each
 
 ### S007
 - **Timecode:** 1:24–1:38
-- **VO:** "So here's the honest version of building agents. It's not the demo. It's what happens on day two, when a real inbox throws garbage at it. Let's build the victim, then go break it."
+- **VO:** "So here's the honest version of building agents. It's not the demo. It's what happens on day two, when a real inbox throws garbage at it. Let's build the victim, then go break it — all twenty-five ways."
 - **Visual:** Transition from the polished dashboard into a working code/workflow canvas — a node-graph editor with an empty-ish flow ready to be built. A small "Day 2" tab or sticky sits in the corner. The mood shifts from marketing-clean to workshop-real.
 - **On-screen text:** Corner sticky: "Day 2" · canvas title: "Build the victim".
 - **Motion/Transition:** Dashboard peels away to reveal the workflow canvas underneath; cut to S008.
@@ -222,9 +226,9 @@ Per-shot **ASSET TYPE** + **GEN APPROACH** + duration. Cross-reference with each
 
 ### S012
 - **Timecode:** 2:55–3:13
-- **VO:** "That one reasoning chunk needs a system prompt — the standing instructions that tell the model who it is and how to behave. We'll build that in a second. First, let's give Sift no help at all and watch it fail. That's Round One."
+- **VO:** "That one reasoning chunk needs a system prompt — the standing instructions that tell the model who it is and how to behave. We'll build that in a second. First, let's give Sift no help at all and watch it fail. That's Round One — breaks one through six."
 - **Visual:** The glowing "needs AI" chunk zooms forward and reveals an empty document labeled "System prompt" with blank placeholder lines. Then a bold round slate wipes across the frame.
-- **On-screen text:** Doc header: "System prompt" (empty) · then slate: "ROUND 1".
+- **On-screen text:** Doc header: "System prompt" (empty) · then slate: "ROUND 1 — Breaks 1–6".
 - **Motion/Transition:** Zoom into the AI chunk → empty prompt doc; slate wipe into S013.
 - **Keyframe prompt seed:** Empty "System prompt" document with blank lines emerging from a glowing AI node, transitioning to a bold "ROUND 1" slate, [BRAND palette], 16:9.
 

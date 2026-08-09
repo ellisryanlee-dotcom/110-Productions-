@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, initial-scale=1">
+<title>S022 — Clean &amp; validate node, 400 flips to 200, checklist lands · Crash Test Agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  /* ===== S022 — SCREEN-SIM. The fix for the S019 garbage-input break: a new
+     "Clean & validate" node slots into the wire just before the Rolodash
+     node. Rested/final state: garbage has been scrubbed (broken bits struck
+     out, required fields checked), clean data continues, the earlier red
+     400 has flipped to a green 200, and a new checklist row has landed. ===== */
+  .app { display: grid; grid-template-rows: 96px 1fr 44px; height: 100%; }
+
+  .topbar { display: flex; align-items: center; gap: var(--s5);
+    padding: 0 var(--s7); border-bottom: 1px solid var(--ct-line); background: var(--ct-surface); }
+  .brandchip { display: flex; align-items: center; gap: var(--s3); }
+  .brandchip .glyph { width: 40px; height: 40px; border-radius: 9px; display: grid; place-items: center;
+    background: var(--ct-surface-raised); border: 1px solid var(--ct-line); }
+  .brandchip .name { font-weight: 700; font-size: var(--ct-ui-2xl); letter-spacing: -0.01em; }
+  .topbar .sub { color: var(--ct-text-muted); font-size: var(--ct-ui-lg); }
+  .topbar .spacer { flex: 1; }
+  .status-pill { display: inline-flex; align-items: center; gap: 10px; padding: 9px 18px; border-radius: var(--ct-r-pill);
+    background: var(--ct-fixed-deep); color: var(--ct-text); font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm);
+    font-weight: 700; border: 1px solid var(--ct-fixed); box-shadow: 0 0 20px rgba(43,213,118,0.4); }
+  .status-pill .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--ct-fixed-glow); box-shadow: 0 0 10px var(--ct-fixed); }
+
+  .stagebody { position: relative; display: grid; grid-template-columns: 500px 1fr 640px 1fr 460px;
+    align-items: center; gap: 0; padding: 0 var(--s7); }
+
+  .col-title { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); text-transform: uppercase;
+    letter-spacing: 0.12em; color: var(--ct-text-muted); font-weight: 500; margin: 0 0 16px; }
+
+  /* ---- LEFT: the same malformed email, now dimmed — it's just data now ---- */
+  .mail { background: var(--ct-surface); border: 1px solid var(--ct-line); border-radius: var(--ct-r-lg);
+    box-shadow: var(--ct-shadow-1); overflow: hidden; opacity: 0.75; }
+  .mail .mh { padding: 16px 20px; border-bottom: 1px solid var(--ct-line); background: var(--ct-surface-raised); }
+  .mail .mh .from { font-family: var(--ct-font-mono); font-weight: 700; font-size: var(--ct-ui-md); color: var(--ct-text-muted); }
+  .mail .mb { padding: 18px 20px; }
+  .mail .mb .blab { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--ct-text-muted); margin-bottom: 10px; }
+  .garble { font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); line-height: 1.7; color: var(--ct-text-muted);
+    word-break: break-all; }
+  .garble .glyphs { color: color-mix(in srgb, var(--ct-break-glow) 70%, var(--ct-text-muted)); }
+
+  /* ---- wire segments ---- */
+  .wire { position: relative; height: 100%; display: grid; place-items: center; }
+  .wire .track { position: relative; width: 100%; height: 4px; }
+  .wire .track::after { content: ""; position: absolute; right: -4px; top: 50%; transform: translateY(-50%);
+    border: 11px solid transparent; filter: drop-shadow(0 0 8px rgba(0,0,0,0.2)); }
+  .wire.raw .track { background: repeating-linear-gradient(90deg, var(--ct-break) 0 16px, transparent 16px 28px); opacity: 0.8; }
+  .wire.raw .track::after { border-left-color: var(--ct-break); }
+  .wire.clean .track { background: repeating-linear-gradient(90deg, var(--ct-fixed) 0 16px, transparent 16px 28px); opacity: 0.9; }
+  .wire.clean .track::after { border-left-color: var(--ct-fixed); }
+  .wire .verb { position: absolute; top: calc(50% - 46px); left: 50%; transform: translateX(-50%);
+    font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); color: var(--ct-text-muted); letter-spacing: 0.05em; white-space: nowrap; }
+  .wire.clean .verb { color: var(--ct-fixed-glow); }
+
+  /* ---- MIDDLE: the new Clean & validate node ---- */
+  .cvnode { position: relative; background: var(--ct-surface); border: 1px solid var(--ct-accent);
+    border-radius: var(--ct-r-lg); padding: 26px 26px 22px; box-shadow: 0 0 34px rgba(56,189,248,0.24), var(--ct-shadow-2); }
+  .cvnode .newtag { position: absolute; top: -16px; left: 24px; font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs);
+    text-transform: uppercase; letter-spacing: 0.1em; color: var(--ct-accent-glow); background: var(--ct-bg);
+    border: 1px solid var(--ct-accent); border-radius: var(--ct-r-pill); padding: 5px 14px; }
+  .cvnode .nt { font-family: var(--ct-font-body); font-weight: 700; font-size: var(--ct-ui-xl); color: var(--ct-text);
+    display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+  .cvnode .nt .ic { width: 34px; height: 34px; border-radius: 8px; background: var(--ct-accent-wash);
+    border: 1px solid var(--ct-accent); display: grid; place-items: center; flex: 0 0 34px; }
+  .cvnode .nt .ic svg { width: 20px; height: 20px; }
+
+  .scrub-row { display: flex; align-items: center; gap: 12px; padding: 8px 0; font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); }
+  .scrub-row .strike { color: var(--ct-text-muted); text-decoration: line-through; text-decoration-color: var(--ct-break); opacity: 0.6; }
+  .scrub-row .arrow { color: var(--ct-text-muted); }
+  .scrub-row .clean-val { color: var(--ct-fixed-glow); }
+  .scrub-row .x { width: 18px; height: 18px; flex: 0 0 18px; border-radius: 50%; background: var(--ct-break-deep);
+    display: grid; place-items: center; color: var(--ct-text); font-size: 11px; font-weight: 800; }
+  .scrub-row .ok { width: 18px; height: 18px; flex: 0 0 18px; border-radius: 50%; background: var(--ct-fixed-deep);
+    border: 1px solid var(--ct-fixed); display: grid; place-items: center; }
+  .scrub-row .ok svg { width: 11px; height: 11px; }
+
+  .req-fields { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--ct-line); }
+  .req-fields .rh { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--ct-text-muted); margin-bottom: 10px; }
+  .req-chip { display: inline-flex; align-items: center; gap: 8px; margin: 0 8px 8px 0; padding: 6px 12px;
+    border-radius: var(--ct-r-pill); background: var(--ct-fixed-wash); border: 1px solid color-mix(in srgb, var(--ct-fixed) 45%, transparent);
+    font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); color: var(--ct-fixed-glow); }
+  .req-chip svg { width: 12px; height: 12px; }
+
+  /* ---- RIGHT: Rolodash node, now GREEN + 200 ---- */
+  .rightcol { position: relative; }
+  .node { position: relative; background: var(--ct-surface); border: 1px solid var(--ct-fixed);
+    border-radius: var(--ct-r-lg); padding: 34px 26px 26px; box-shadow: 0 0 42px rgba(43,213,118,0.30), var(--ct-shadow-2);
+    display: flex; flex-direction: column; align-items: center; gap: 16px; }
+  .node .ico { width: 84px; height: 84px; display: grid; place-items: center; border-radius: 18px;
+    background: var(--ct-bg); border: 1px solid var(--ct-fixed); box-shadow: inset 0 0 18px rgba(43,213,118,0.2); }
+  .node .ico svg { width: 46px; height: 46px; }
+  .node .nt { font-family: var(--ct-font-body); font-weight: 700; font-size: var(--ct-ui-xl); color: var(--ct-text); text-align: center; }
+  .node .nt .brand { color: var(--ct-fixed-glow); }
+  .node .state { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--ct-fixed-glow); display: inline-flex; align-items: center; gap: 8px; }
+  .node .state .d { width: 9px; height: 9px; border-radius: 50%; background: var(--ct-fixed); box-shadow: 0 0 10px var(--ct-fixed); }
+
+  .flip-badge { position: absolute; top: -34px; right: -10px; z-index: 4;
+    background: var(--ct-surface-raised); border: 1px solid var(--ct-line); border-radius: var(--ct-r-md);
+    box-shadow: var(--ct-shadow-2); display: flex; align-items: center; gap: 12px; padding: 12px 18px; }
+  .flip-badge .was { font-family: var(--ct-font-mono); font-weight: 700; font-size: var(--ct-ui-xl);
+    color: var(--ct-text-muted); text-decoration: line-through; text-decoration-color: var(--ct-break); }
+  .flip-badge .arrow { color: var(--ct-text-muted); }
+  .flip-badge .now { font-family: var(--ct-font-mono); font-weight: 700; font-size: var(--ct-ui-2xl); color: var(--ct-fixed-glow); }
+
+  .checklist-bar { position: absolute; left: var(--s7); right: var(--s7); bottom: 22px;
+    display: flex; align-items: center; gap: 16px; background: var(--ct-surface); border: 1px solid color-mix(in srgb, var(--ct-fixed) 40%, var(--ct-line));
+    border-radius: var(--ct-r-md); padding: 16px 24px; box-shadow: var(--ct-shadow-2); }
+  .checklist-bar .tick { width: 30px; height: 30px; flex: 0 0 30px; border-radius: 7px; background: var(--ct-fixed-deep);
+    border: 1px solid var(--ct-fixed); display: grid; place-items: center; }
+  .checklist-bar .tick svg { width: 18px; height: 18px; }
+  .checklist-bar .txt { font-family: var(--ct-font-body); font-weight: 600; font-size: var(--ct-caption); color: var(--ct-text); }
+  .checklist-bar .txt .n { font-family: var(--ct-font-mono); color: var(--ct-text-muted); font-size: var(--ct-ui-md); margin-right: 14px; }
+
+  .disclaimer { display: flex; align-items: center; justify-content: center; background: var(--ct-surface);
+    border-top: 1px solid var(--ct-line); color: var(--ct-text-muted); font-family: var(--ct-font-mono);
+    font-size: var(--ct-ui-xs); letter-spacing: 0.03em; }
+</style>
+</head>
+<body>
+  <div class="stage" role="img"
+       aria-label="Pipeline with a new Clean and validate node inserted before the Rolodash lookup: the malformed email's raw garbage is scrubbed, broken fields struck through, required fields checked off, clean data flows onward, the Rolodash node is now green with a 400 crossed out flipping to 200, and a checklist bar has landed reading check inputs before the agent acts">
+    <div class="grid-bg"></div>
+    <!-- Kill-Counter HUD (global overlay) — Round 1, ticking at 06/25 (closes out Round 1: fix for Break 06) -->
+    <div class="ct-killcounter" data-state="ticking" aria-label="Kill counter: 6 of 25 breaks">
+      <span class="kc-dot"></span>
+      <span class="kc-label">Breaks</span>
+      <span class="kc-tally"><span class="kc-n">06</span><span class="kc-of">/ 25</span></span>
+    </div>
+
+    <div class="app">
+      <header class="topbar">
+        <div class="brandchip">
+          <span class="glyph">
+            <svg width="26" height="26" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+              <path d="M12 16h40M18 32h28M26 48h12" stroke="var(--ct-fixed)" stroke-width="5" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <span class="name">Sift</span>
+        </div>
+        <span class="sub">live triage · pipeline</span>
+        <div class="spacer"></div>
+        <span class="status-pill"><span class="dot"></span> lookup passed · 200</span>
+      </header>
+
+      <div class="stagebody">
+        <!-- 1: malformed email, now just input data -->
+        <section>
+          <p class="col-title">Inbound email — same malformed input</p>
+          <div class="mail">
+            <div class="mh"><div class="from">&#9608;&#9608;form-intake@&#9608;&#9608;&#9608;.example</div></div>
+            <div class="mb">
+              <div class="blab">raw body</div>
+              <div class="garble"><span class="glyphs">&lt;&lt;{{</span>name%3D<span class="glyphs">}}&gt;&gt;</span> order_id=<span class="glyphs">%00%00</span> addr:&#9608;&#9608;</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2: raw wire into Clean & validate -->
+        <div class="wire raw" aria-hidden="true">
+          <span class="verb">raw &rarr;</span>
+          <span class="track"></span>
+        </div>
+
+        <!-- 3: MIDDLE — new Clean & validate node -->
+        <section class="rightcol">
+          <p class="col-title">New step — inserted before the call</p>
+          <div class="cvnode">
+            <span class="newtag">new node</span>
+            <div class="nt"><span class="ic"><svg viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h10M4 18h13" stroke="var(--ct-accent)" stroke-width="2.2" stroke-linecap="round"/><path d="M17 15l2 2 4-4" stroke="var(--ct-fixed-glow)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Clean &amp; validate</div>
+
+            <div class="scrub-row"><span class="x">&times;</span><span class="strike">{{name%3D}}</span><span class="arrow">&rarr;</span><span class="clean-val">name: "Dana Okafor"</span></div>
+            <div class="scrub-row"><span class="x">&times;</span><span class="strike">order_id=%00%00</span><span class="arrow">&rarr;</span><span class="clean-val">order_id: "4471"</span></div>
+            <div class="scrub-row"><span class="ok"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4 10-11" stroke="var(--ct-text)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="clean-val">stray brackets &amp; nulls stripped</span></div>
+
+            <div class="req-fields">
+              <div class="rh">required fields — confirmed present</div>
+              <span class="req-chip"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4 10-11" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>order_id</span>
+              <span class="req-chip"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4 10-11" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>name</span>
+              <span class="req-chip"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4 10-11" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>email</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4: clean wire into Rolodash -->
+        <div class="wire clean" aria-hidden="true">
+          <span class="verb">clean &rarr;</span>
+          <span class="track"></span>
+        </div>
+
+        <!-- 5: Rolodash node, now green, 400 flipped to 200 -->
+        <div class="rightcol">
+          <p class="col-title">CRM call — Rolodash lookup</p>
+          <div class="node">
+            <div class="flip-badge"><span class="was">400</span><span class="arrow">&rarr;</span><span class="now">200</span></div>
+            <span class="ico"><svg viewBox="0 0 48 48" fill="none"><circle cx="21" cy="21" r="12" stroke="var(--ct-fixed-glow)" stroke-width="3"/><path d="M30 30l10 10" stroke="var(--ct-fixed-glow)" stroke-width="3" stroke-linecap="round"/><path d="M16 21l3.5 3.5L27 17" stroke="var(--ct-fixed-glow)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="nt">Look up in <span class="brand">Rolodash</span></span>
+            <span class="state"><span class="d"></span> succeeded · order found</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="checklist-bar">
+        <span class="tick"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4 10-11" stroke="var(--ct-text)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <span class="txt"><span class="n">checklist ·</span>Check inputs before the agent acts</span>
+      </div>
+
+      <div class="disclaimer">FICTIONAL DEMO · Harbor Supply Co., Sift, Rolodash and all senders are invented for Crash Test Agents</div>
+    </div>
+  </div>
+</body>
+</html>

@@ -46,7 +46,7 @@ VO: Sift's job sounds simple. Read each new email, figure out what it is — sal
 VO: Here's the first honest call, and it's a big one. Most of that job does not need artificial intelligence. [kc-0226]
 [SCREEN: the flow lights up chunk by chunk.]
 
-VO: Break the job into chunks and ask, for each one, does this need judgment? "Does this email contain the word invoice?" — that's not judgment, that's a rule. "Is this the fourth email from this person today?" — a counter, not a genius. The only chunk that truly needs a model is reading a messy, human-written email and deciding what it's about. So we hard-code the boring chunks and reserve the model for the one that needs it. Boring is reliable. [kc-0226]
+VO: Break the job into chunks and ask, for each one, does this need judgment? "Does this email contain the word invoice?" — that's a rule, not judgment. "Is this the fourth email from this person today?" — a counter, not a genius. The only chunk that truly needs a model is reading a messy, human-written email and deciding what it's about. So we hard-code the boring chunks and reserve the model for the one that needs it. Boring is reliable. [kc-0226]
 [SCREEN: chunks tagged "rule" in gray, one chunk tagged "needs AI" in the brand color.]
 
 VO: That one reasoning chunk needs a system prompt — the standing instructions that tell the model who it is and how to behave. We'll build that in a second. First, let's give Sift no help at all and watch it fail. That's Round One — breaks one through six.
@@ -61,10 +61,10 @@ VO: Break number one: the empty brain. I wired Sift up with tools but almost no 
 VO: Generic mush. That's the classic signature of a missing system prompt. When an agent has no role, it writes like nobody. No defined context, it gets confused about what it's even looking at. No rules, it starts making things up. [kc-0115]
 [SCREEN: checklist of prompt sections, all unchecked.]
 
-VO: So let's give it a real prompt with the sections that matter. A background — who Sift is and its goal. A context section — what it receives each run, since the email changes but the instructions don't. A tools section — each tool, when to use it, and the order, like "look the customer up in Rolodash before you draft." Rules as conditions — if the email mentions a refund, tag it billing. Examples, but only for stuff it gets wrong. And final notes — today's date, and a plain "if you don't know, say so." [kc-0115]
+VO: So let's give it a real prompt with the sections that matter. A background — who Sift is and its goal. A context section — what it receives each run, since the email changes but the instructions don't. A tools section — each tool, when to use it, and in what order, like "look the customer up in Rolodash before you draft." Rules as conditions — if the email mentions a refund, tag it billing. Examples, but only for what it gets wrong. And final notes — today's date, and "if you don't know, say so." [kc-0115]
 [SCREEN: the system prompt filling in, section by section with markdown headers: Role, Context, Tools, Rules, Examples, Final notes.]
 
-VO: While we're here — break number two is the trap I nearly fell into with this whole agent: reaching for AI on chunks that were never judgment calls. Every "does it contain the word invoice," every "is this the fourth email today" belongs in a hard-coded rule, not a model. Use AI there and you pay tokens to be less reliable. Hard-code the boring, reserve the model for the messy. [kc-0226]
+VO: While we're here — break number two is the trap I nearly fell into: reaching for AI on chunks that were never judgment calls. Anything you can settle with a rule — a keyword, a counter — belongs in a hard-coded rule, not a model. Use AI there and you pay tokens to be less reliable. [kc-0226]
 [SCREEN: two chunks flip from "needs AI" back to gray "rule"; token meter ticks down.]
 [COUNTER: Break 02 / 25 — "AI for a job that was just rules". Tally → 2.]
 

@@ -52,11 +52,13 @@
   .cost { text-align: center; }
   .cost .k { font-family: var(--ct-font-mono); text-transform: uppercase; letter-spacing: 0.12em;
     font-size: var(--ct-ui-sm); color: var(--ct-text-muted); }
-  .cost .v { font-family: var(--ct-font-mono); font-weight: 700; font-size: 92px; line-height: 1; color: var(--ct-warn);
+  /* cost figure stays NEUTRAL — amber is reserved for the VERIFY caveat only,
+     never decorative; the money is a plain running number, not a warning state */
+  .cost .v { font-family: var(--ct-font-mono); font-weight: 700; font-size: 92px; line-height: 1; color: var(--ct-text);
     margin-top: 8px; }
   .cost .sub { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); color: var(--ct-text-muted); margin-top: 10px; }
   .outflow { display: flex; align-items: center; justify-content: center; gap: 12px;
-    font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); color: var(--ct-warn); }
+    font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); color: var(--ct-text-muted); }
   .outflow .arrow { font-size: var(--ct-ui-xl); }
 
   /* persistent ⚠️VERIFY amber-outline pill (bible §6.1) */
@@ -102,10 +104,10 @@
         <div class="wallet-card">
           <span class="wallet-ico">
             <svg viewBox="0 0 64 64" fill="none" aria-hidden="true">
-              <rect x="8" y="16" width="48" height="34" rx="7" stroke="var(--ct-warn)" stroke-width="3"/>
-              <path d="M8 24h48" stroke="var(--ct-warn)" stroke-width="3"/>
-              <circle cx="45" cy="37" r="4" fill="var(--ct-warn)"/>
-              <path d="M14 16c0-4 3-6 7-6l20 3" stroke="var(--ct-warn)" stroke-width="3" stroke-linecap="round"/>
+              <rect x="8" y="16" width="48" height="34" rx="7" stroke="var(--ct-text)" stroke-width="3"/>
+              <path d="M8 24h48" stroke="var(--ct-text)" stroke-width="3"/>
+              <circle cx="45" cy="37" r="4" fill="var(--ct-text)"/>
+              <path d="M14 16c0-4 3-6 7-6l20 3" stroke="var(--ct-text)" stroke-width="3" stroke-linecap="round"/>
             </svg>
           </span>
           <div class="cost">

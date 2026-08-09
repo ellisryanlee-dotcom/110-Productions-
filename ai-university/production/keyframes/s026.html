@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, initial-scale=1">
+<title>S026 — Proof: forced failure → logged → alert · Crash Test Agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  /* ===== S026 — ROUND 2, break 10. Three-beat
+     proof sequence, left to right: (1) a test node deliberately fails red,
+     (2) a new row lands in the log sheet, (3) a phone buzzes with the
+     alert. An honest caveat note fades in last: green != success — also
+     verify the action happened. ===== */
+  .wrap { position: relative; height: 100%; padding: var(--s7) var(--s8) var(--s8); display: flex; flex-direction: column; }
+  .kicker { font-family: var(--ct-font-mono); text-transform: uppercase; letter-spacing: 0.14em;
+    font-size: var(--ct-kicker); color: var(--ct-text-muted); font-weight: 500; }
+  .headline { margin: 10px 0 0; font-family: var(--ct-font-display); font-stretch: 125%; font-weight: 800;
+    font-size: var(--ct-h2); color: var(--ct-text); letter-spacing: 0.005em; }
+  .headline .em { color: var(--ct-fixed-glow); }
+
+  .stagebody { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: var(--s7); margin-top: var(--s5); }
+
+  /* ---- three-beat proof strip ---- */
+  .beats { display: grid; grid-template-columns: 1fr 96px 1fr 96px 1fr; align-items: center; }
+  .beat { display: flex; flex-direction: column; align-items: center; gap: var(--s5); }
+  .beat .stepno { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); text-transform: uppercase;
+    letter-spacing: 0.14em; color: var(--ct-text-muted); }
+  .arrow-mid { display: flex; align-items: center; justify-content: center; }
+  .arrow-mid svg { width: 56px; height: 30px; stroke: var(--ct-text-muted); fill: none; }
+
+  /* beat 1: forced test failure */
+  .test-node { width: 340px; background: var(--ct-surface); border: 1px solid var(--ct-break);
+    border-radius: var(--ct-r-lg); box-shadow: 0 0 32px rgba(255,59,48,0.30), var(--ct-shadow-2);
+    padding: 26px 28px; text-align: center; }
+  .test-node .glyph { width: 64px; height: 64px; margin: 0 auto 16px; border-radius: 50%; display: grid; place-items: center;
+    background: var(--ct-break-deep); border: 1px solid var(--ct-break); box-shadow: 0 0 20px rgba(255,59,48,0.4); }
+  .test-node .glyph svg { width: 32px; height: 32px; stroke: var(--ct-text); }
+  .test-node .name { font-family: var(--ct-font-body); font-weight: 700; font-size: var(--ct-ui-xl); color: var(--ct-text); }
+  .test-node .sub { margin-top: 8px; font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); color: var(--ct-break-glow);
+    text-transform: uppercase; letter-spacing: 0.08em; }
+  .test-node .note { margin-top: 14px; font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); color: var(--ct-text-muted); }
+
+  /* beat 2: new log row lands */
+  .log-card { width: 340px; background: var(--ct-surface); border: 1px solid var(--ct-line);
+    border-radius: var(--ct-r-lg); box-shadow: var(--ct-shadow-2); overflow: hidden; }
+  .log-card .lh { padding: 16px 22px; background: var(--ct-surface-raised); border-bottom: 1px solid var(--ct-line);
+    font-family: var(--ct-font-body); font-weight: 700; font-size: var(--ct-ui-lg); color: var(--ct-text); }
+  .log-card .cols { display: grid; grid-template-columns: 1fr 1fr 1fr 1.3fr; gap: 6px;
+    padding: 12px 22px 4px; font-family: var(--ct-font-mono); font-size: 12px; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--ct-text-muted); }
+  .log-card .rows { padding: 4px 14px 18px; display: flex; flex-direction: column; gap: 8px; }
+  .log-card .lrow { display: grid; grid-template-columns: 1fr 1fr 1fr 1.3fr; gap: 6px; align-items: center;
+    padding: 10px 8px; border-radius: 8px; font-family: var(--ct-font-mono); font-size: 12px; color: var(--ct-text-muted); }
+  .log-card .lrow.old { opacity: 0.55; }
+  .log-card .lrow.new { background: var(--ct-fixed-wash); border: 1px solid color-mix(in srgb, var(--ct-fixed) 50%, transparent);
+    color: var(--ct-text); box-shadow: 0 0 18px rgba(43,213,118,0.18); position: relative; }
+  .log-card .lrow.new::before { content: "NEW"; position: absolute; left: -6px; top: -10px;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.08em; color: var(--ct-bg); background: var(--ct-fixed);
+    padding: 3px 8px; border-radius: var(--ct-r-pill); box-shadow: 0 0 10px rgba(43,213,118,0.5); }
+
+  /* beat 3: phone buzzes */
+  .phone { width: 210px; height: 420px; margin: 0 auto; background: var(--ct-surface-raised);
+    border: 2px solid var(--ct-line); border-radius: 32px; box-shadow: var(--ct-shadow-2); padding: 18px 14px;
+    display: flex; flex-direction: column; position: relative; }
+  .phone .notch { width: 70px; height: 8px; border-radius: 6px; background: var(--ct-bg); margin: 0 auto 14px; }
+  .phone .alert-card { background: var(--ct-surface); border: 1px solid var(--ct-break); border-radius: 14px;
+    padding: 14px 16px; box-shadow: 0 0 24px rgba(255,59,48,0.35); }
+  .phone .alert-card .app-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .phone .alert-card .app-dot { width: 16px; height: 16px; border-radius: 5px; background: var(--ct-break); flex: 0 0 16px; }
+  .phone .alert-card .app-nm { font-family: var(--ct-font-mono); font-size: 11px; color: var(--ct-text-muted);
+    text-transform: uppercase; letter-spacing: 0.06em; }
+  .phone .alert-card .msg { font-family: var(--ct-font-body); font-weight: 700; font-size: var(--ct-ui-sm); color: var(--ct-text); line-height: 1.35; }
+  .phone .alert-card .link { margin-top: 8px; font-family: var(--ct-font-mono); font-size: 12px; color: var(--ct-accent-glow); text-decoration: underline; }
+  .phone .buzz-lines { position: absolute; right: -22px; top: 60px; display: flex; flex-direction: column; gap: 8px; }
+  .phone .buzz-lines span { width: 18px; height: 3px; border-radius: 2px; background: var(--ct-break); opacity: 0.6; }
+  .phone .buzz-lines span:nth-child(2) { width: 26px; opacity: 0.85; }
+  .phone .buzz-lines span:nth-child(3) { width: 14px; opacity: 0.4; }
+  .phone .rest { flex: 1; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 6px; }
+  .phone .rest .l { font-family: var(--ct-font-mono); font-size: 11px; color: var(--ct-text-muted); text-transform: uppercase; letter-spacing: 0.08em; }
+
+  /* caveat note, fades in last */
+  .caveat { align-self: center; display: inline-flex; align-items: center; gap: 16px; padding: 20px 34px;
+    border-radius: var(--ct-r-pill); background: transparent; border: 1px solid var(--ct-warn); }
+  .caveat .ic { width: 30px; height: 30px; flex: 0 0 30px; border-radius: 50%; display: grid; place-items: center;
+    background: transparent; border: 1px solid var(--ct-warn); color: var(--ct-warn); font-family: var(--ct-font-mono); font-weight: 700; }
+  .caveat .txt { font-family: var(--ct-font-body); font-weight: 600; font-size: var(--ct-caption); color: var(--ct-warn); }
+  .caveat .txt b { font-family: var(--ct-font-mono); }
+
+  .disclaimer { position: absolute; left: 0; right: 0; bottom: 0; height: 44px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--ct-surface); border-top: 1px solid var(--ct-line);
+    color: var(--ct-text-muted); font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); letter-spacing: 0.03em; z-index: 20; }
+</style>
+</head>
+<body>
+  <div class="stage" role="img"
+       aria-label="Three-beat proof sequence left to right: a test node deliberately fails red, a new row lands in the error log sheet, and a phone buzzes with a failure alert and view-run link. Below, an amber caveat note reads green does not equal success, also verify the action happened.">
+    <div class="grid-bg"></div>
+    <!-- Kill-Counter HUD (global overlay) — Round 2 ticking, break 10 -->
+    <div class="ct-killcounter" data-state="ticking" aria-label="Kill counter: 10 of 25 breaks">
+      <span class="kc-dot"></span>
+      <span class="kc-label">Breaks</span>
+      <span class="kc-tally"><span class="kc-n">10</span><span class="kc-of">/ 25</span></span>
+    </div>
+
+    <div class="wrap">
+      <p class="kicker">Proof &middot; break 10 of 25</p>
+      <h1 class="headline">Forced the failure. <span class="em">Watched the alert land.</span></h1>
+
+      <div class="stagebody">
+        <div class="beats">
+          <!-- BEAT 1: test node deliberately fails -->
+          <div class="beat">
+            <span class="stepno">01 &middot; force it</span>
+            <div class="test-node">
+              <span class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></span>
+              <div class="name">Test run</div>
+              <div class="sub">deliberately failed</div>
+              <div class="note">Rolodash lookup &middot; forced error</div>
+            </div>
+          </div>
+
+          <div class="arrow-mid"><svg viewBox="0 0 24 12" fill="none"><path d="M0 6h20M14 1l6 5-6 5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+
+          <!-- BEAT 2: new row lands in the log sheet -->
+          <div class="beat">
+            <span class="stepno">02 &middot; row logged</span>
+            <div class="log-card">
+              <div class="lh">Error log &middot; sheet</div>
+              <div class="cols"><span>RUN</span><span>WORKFLOW</span><span>STEP</span><span>ERROR</span></div>
+              <div class="rows">
+                <div class="lrow old"><span>#8901</span><span>CRM sync</span><span>lookup</span><span>timeout 8s</span></div>
+                <div class="lrow old"><span>#8887</span><span>Triage</span><span>classify</span><span>rate limit</span></div>
+                <div class="lrow new"><span>#8905</span><span>Test</span><span>lookup</span><span>forced fail</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="arrow-mid"><svg viewBox="0 0 24 12" fill="none"><path d="M0 6h20M14 1l6 5-6 5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+
+          <!-- BEAT 3: phone buzzes with the alert -->
+          <div class="beat">
+            <span class="stepno">03 &middot; alert lands</span>
+            <div class="phone">
+              <div class="buzz-lines" aria-hidden="true"><span></span><span></span><span></span></div>
+              <div class="notch"></div>
+              <div class="alert-card">
+                <div class="app-row"><span class="app-dot"></span><span class="app-nm">Sift &middot; alerts</span></div>
+                <div class="msg">&#9888;&#65039; failure &mdash; run #8905</div>
+                <div class="link">[view run]</div>
+              </div>
+              <div class="rest"><span class="l">now</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- caveat note, fades in last -->
+        <div class="caveat">
+          <span class="ic">!</span>
+          <span class="txt">Green &ne; success &mdash; <b>also verify the action happened.</b></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="disclaimer">FICTIONAL DEMO &middot; Harbor Supply Co., Sift, Rolodash and run IDs are invented for Crash Test Agents</div>
+  </div>
+</body>
+</html>

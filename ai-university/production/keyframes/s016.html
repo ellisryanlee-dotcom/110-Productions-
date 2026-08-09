@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, initial-scale=1">
+<title>S016 — Rejected 3-page prompt dump vs lean line-by-line build · Crash Test Agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  /* ===== S016 — ROUND 1 / Break 4 "guess-and-dump prompting".
+     Side-by-side contrast: LEFT a comically long "3-page" wall-of-text
+     prompt (fanned page stack), stamped red "✗ dump & hope" (broke).
+     RIGHT a lean prompt assembled line by line, each line tethered to
+     a small green test-run tile — "✓ built reactively, one line at a
+     time" (fixed/accent). ===== */
+  .app { display: grid; grid-template-rows: 96px 1fr 44px; height: 100%; }
+
+  .topbar { display: flex; align-items: center; gap: var(--s5);
+    padding: 0 var(--s7); border-bottom: 1px solid var(--ct-line); background: var(--ct-surface); }
+  .brandchip { display: flex; align-items: center; gap: var(--s3); }
+  .brandchip .glyph { width: 40px; height: 40px; border-radius: 9px; display: grid; place-items: center;
+    background: var(--ct-surface-raised); border: 1px solid var(--ct-line); }
+  .brandchip .name { font-weight: 700; font-size: var(--ct-ui-2xl); letter-spacing: -0.01em; }
+  .topbar .sub { color: var(--ct-text-muted); font-size: var(--ct-ui-lg); }
+  .topbar .spacer { flex: 1; }
+  .round-tag { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.14em; color: var(--ct-break-glow);
+    padding: 8px 16px; border: 1px solid color-mix(in srgb, var(--ct-break) 45%, var(--ct-line));
+    border-radius: var(--ct-r-pill); background: var(--ct-break-wash); }
+
+  .split { display: grid; grid-template-columns: 1fr 1fr; min-height: 0; }
+  .pane { padding: var(--s7); overflow: hidden; position: relative; display: flex; flex-direction: column; }
+  .pane.left { border-right: 1px solid var(--ct-line); background: var(--ct-bg); box-shadow: inset 0 0 220px rgba(255,59,48,0.07); }
+  .pane.right { background: var(--ct-bg); box-shadow: inset 0 0 220px rgba(43,213,118,0.05); }
+  .pane-title { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs);
+    text-transform: uppercase; letter-spacing: 0.12em; color: var(--ct-text-muted);
+    font-weight: 500; margin: 0 0 var(--s5); display: flex; align-items: center; gap: 12px; }
+  .pane-title .dotmark { width: 9px; height: 9px; border-radius: 50%; }
+
+  /* ---- LEFT: fanned 3-page wall-of-text dump ---- */
+  .stack { position: relative; flex: 1; margin: 6px 30px 0; }
+  .pagecard { position: absolute; width: 100%; max-width: 560px; background: var(--ct-surface);
+    border: 1px solid var(--ct-line); border-radius: var(--ct-r-lg); box-shadow: var(--ct-shadow-2);
+    padding: 26px 30px; }
+  .pagecard .pbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .pagecard .pbar .pg { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); color: var(--ct-text-muted);
+    text-transform: uppercase; letter-spacing: 0.1em; }
+  .pageline { height: 12px; border-radius: 4px; background: var(--ct-surface-raised); margin-bottom: 12px; }
+  .pageline.w1 { width: 92%; } .pageline.w2 { width: 68%; } .pageline.w3 { width: 84%; }
+  .pageline.w4 { width: 55%; } .pageline.w5 { width: 78%; } .pageline.w6 { width: 40%; }
+  .pagecard.p3 { top: 0; left: 0; z-index: 1; opacity: 0.55; transform: rotate(-2.2deg); }
+  .pagecard.p2 { top: 12px; left: 22px; z-index: 2; opacity: 0.78; transform: rotate(-1.1deg); }
+  .pagecard.p1 { top: 24px; left: 44px; z-index: 3; opacity: 1; }
+
+  .stamp-big { position: absolute; z-index: 4; top: 132px; right: 6px; transform: rotate(-9deg);
+    font-family: var(--ct-font-mono); font-weight: 700; font-size: 30px; color: var(--ct-break-glow);
+    padding: 12px 24px; border: 3px solid var(--ct-break); border-radius: 10px;
+    background: color-mix(in srgb, var(--ct-break-deep) 32%, var(--ct-bg));
+    box-shadow: 0 0 30px rgba(255,59,48,0.4); text-transform: uppercase; letter-spacing: 0.03em;
+    white-space: nowrap; }
+
+  .stat-row { display: flex; gap: 14px; margin-top: 18px; }
+  .stat-chip { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); color: var(--ct-break-glow);
+    padding: 8px 16px; border-radius: var(--ct-r-pill); background: var(--ct-break-wash);
+    border: 1px solid color-mix(in srgb, var(--ct-break) 45%, transparent); }
+
+  .verdict-line { margin-top: auto; padding-top: 20px; font-family: var(--ct-font-display); font-stretch: 125%;
+    font-weight: 800; font-size: var(--ct-ui-2xl); color: var(--ct-break-glow); letter-spacing: 0.01em; }
+  .verdict-line span { display: block; margin-top: 8px; font-family: var(--ct-font-body); font-weight: 500;
+    font-size: var(--ct-ui-lg); color: var(--ct-text-muted); letter-spacing: 0; }
+
+  /* ---- RIGHT: lean line-by-line build, each tethered to a test tile ---- */
+  .ladder { display: flex; flex-direction: column; gap: 14px; margin-top: 6px; }
+  .rung { display: grid; grid-template-columns: 1fr 46px 200px; align-items: center; gap: 0; }
+  .rung .codeline { font-family: var(--ct-font-mono); font-size: var(--ct-ui-md); color: var(--ct-text);
+    background: var(--ct-surface); border: 1px solid color-mix(in srgb, var(--ct-fixed) 35%, var(--ct-line));
+    border-radius: var(--ct-r-md); padding: 16px 20px; box-shadow: var(--ct-shadow-1); }
+  .rung .codeline .n { color: var(--ct-text-muted); margin-right: 10px; }
+  .rung .codeline .key { color: var(--ct-accent-glow); }
+  .rung .tether { position: relative; height: 2px; background: repeating-linear-gradient(90deg, var(--ct-fixed) 0 6px, transparent 6px 11px); }
+  .rung .tether::after { content: ""; position: absolute; right: -2px; top: 50%; transform: translateY(-50%);
+    width: 7px; height: 7px; border-radius: 50%; background: var(--ct-fixed); box-shadow: 0 0 8px var(--ct-fixed); }
+  .rung .testtile { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-radius: var(--ct-r-md);
+    background: linear-gradient(180deg, var(--ct-surface), color-mix(in srgb, var(--ct-fixed) 8%, var(--ct-surface)));
+    border: 1px solid color-mix(in srgb, var(--ct-fixed) 45%, var(--ct-line)); }
+  .rung .testtile .tick { width: 24px; height: 24px; flex: 0 0 24px; border-radius: 50%; display: grid; place-items: center;
+    background: var(--ct-fixed-wash); border: 1px solid var(--ct-fixed); }
+  .rung .testtile .tick svg { width: 14px; height: 14px; }
+  .rung .testtile .tick path { stroke: var(--ct-fixed-glow); stroke-width: 3; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+  .rung .testtile .lab { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); color: var(--ct-fixed-glow);
+    text-transform: uppercase; letter-spacing: 0.06em; }
+
+  .loop-caption { margin-top: 20px; font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm);
+    color: var(--ct-text-muted); text-align: center; letter-spacing: 0.02em; }
+  .loop-caption b { color: var(--ct-fixed-glow); font-weight: 600; }
+
+  .badge-fix { align-self: flex-start; margin-top: 22px; display: inline-flex; align-items: center; gap: 10px;
+    padding: 10px 20px; border-radius: var(--ct-r-pill); font-family: var(--ct-font-mono); font-weight: 700;
+    font-size: var(--ct-ui-md); text-transform: uppercase; letter-spacing: 0.05em; color: var(--ct-text);
+    background: var(--ct-fixed-deep); border: 1px solid var(--ct-fixed); box-shadow: 0 0 22px rgba(43,213,118,0.35); }
+
+  .disclaimer { display: flex; align-items: center; justify-content: center;
+    background: var(--ct-surface); border-top: 1px solid var(--ct-line);
+    color: var(--ct-text-muted); font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); letter-spacing: 0.03em; }
+</style>
+</head>
+<body>
+  <div class="stage" role="img"
+       aria-label="Side-by-side contrast. Left, a comically long fanned three-page wall-of-text prompt stamped in red, dump and hope. Right, a lean prompt assembled line by line, each line tethered by a dashed wire to a small green passing test tile, labeled built reactively, one line at a time. Breaks one through four of twenty-five.">
+    <div class="grid-bg"></div>
+
+    <div class="app">
+      <header class="topbar">
+        <div class="brandchip">
+          <span class="glyph">
+            <svg width="26" height="26" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+              <path d="M12 16h40M18 32h28M26 48h12" stroke="var(--ct-accent)" stroke-width="5" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <span class="name">Sift</span>
+        </div>
+        <span class="sub">how the prompt actually got built &middot; Harbor Supply Co.</span>
+        <div class="spacer"></div>
+        <span class="round-tag">Round 1 &middot; Break 4 &middot; guess-and-dump prompting</span>
+      </header>
+
+      <div class="split">
+        <!-- LEFT — rejected: giant 3-page dump -->
+        <section class="pane left">
+          <p class="pane-title"><span class="dotmark" style="background:var(--ct-break)"></span>What I did NOT do</p>
+
+          <div class="stack">
+            <div class="pagecard p3">
+              <div class="pbar"><span class="pg">page 3 / 3</span></div>
+              <div class="pageline w1"></div><div class="pageline w2"></div><div class="pageline w3"></div>
+              <div class="pageline w4"></div><div class="pageline w1"></div><div class="pageline w2"></div>
+            </div>
+            <div class="pagecard p2">
+              <div class="pbar"><span class="pg">page 2 / 3</span></div>
+              <div class="pageline w3"></div><div class="pageline w1"></div><div class="pageline w5"></div>
+              <div class="pageline w2"></div><div class="pageline w6"></div><div class="pageline w4"></div>
+            </div>
+            <div class="pagecard p1">
+              <div class="pbar"><span class="pg">page 1 / 3 &middot; generated-somewhere.prompt.md</span></div>
+              <div class="pageline w2"></div><div class="pageline w1"></div><div class="pageline w4"></div>
+              <div class="pageline w3"></div><div class="pageline w5"></div><div class="pageline w2"></div>
+            </div>
+            <div class="stamp-big">&#10007; dump &amp; hope</div>
+          </div>
+
+          <div class="stat-row">
+            <span class="stat-chip">3 pages &middot; ~1,400 words</span>
+            <span class="stat-chip">10 changes pasted at once</span>
+          </div>
+
+          <div class="verdict-line">Paste it all. Hope it works.<span>When it blows up, you have no idea which line did it.</span></div>
+        </section>
+
+        <!-- RIGHT — lean, line-by-line, tested each step -->
+        <section class="pane right">
+          <p class="pane-title"><span class="dotmark" style="background:var(--ct-fixed)"></span>What I did instead</p>
+
+          <div class="ladder">
+            <div class="rung">
+              <div class="codeline"><span class="n">1</span><span class="key">## Role</span> &mdash; who Sift is</div>
+              <div class="tether"></div>
+              <div class="testtile"><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 13l4 4 10-11"/></svg></span><span class="lab">test &middot; pass</span></div>
+            </div>
+            <div class="rung">
+              <div class="codeline"><span class="n">2</span><span class="key">## Tools</span> &mdash; Rolodash before draft</div>
+              <div class="tether"></div>
+              <div class="testtile"><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 13l4 4 10-11"/></svg></span><span class="lab">test &middot; pass</span></div>
+            </div>
+            <div class="rung">
+              <div class="codeline"><span class="n">3</span><span class="key">## Rules</span> &mdash; if refund &rarr; tag billing</div>
+              <div class="tether"></div>
+              <div class="testtile"><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 13l4 4 10-11"/></svg></span><span class="lab">test &middot; pass</span></div>
+            </div>
+            <div class="rung">
+              <div class="codeline"><span class="n">4</span><span class="key">## Final notes</span> &mdash; if unsure, say so</div>
+              <div class="tether"></div>
+              <div class="testtile"><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 13l4 4 10-11"/></svg></span><span class="lab">test &middot; pass</span></div>
+            </div>
+          </div>
+
+          <div class="loop-caption">one line &rarr; <b>test a real email</b> &rarr; adjust &rarr; next line</div>
+
+          <span class="badge-fix">&#10003; built reactively, one line at a time</span>
+        </section>
+      </div>
+
+      <div class="disclaimer">FICTIONAL DEMO &middot; Harbor Supply Co., Sift and Rolodash are invented for Crash Test Agents</div>
+    </div>
+
+    <!-- Kill-Counter HUD (global overlay) — Round 1 ticking, break 04 / 25 -->
+    <div class="ct-killcounter" data-state="ticking" aria-label="Kill counter: 4 of 25 breaks">
+      <span class="kc-dot"></span>
+      <span class="kc-label">Breaks</span>
+      <span class="kc-tally"><span class="kc-n">04</span><span class="kc-of">/ 25</span></span>
+    </div>
+  </div>
+</body>
+</html>

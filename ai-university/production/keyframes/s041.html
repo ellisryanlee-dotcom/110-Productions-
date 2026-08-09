@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, initial-scale=1">
+<title>S041 — Key leak risk → .env fix · Crash Test Agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  /* ===== S041 — two-part graphic. LEFT (risk): the plaintext key leaks via
+     arrows to repo / screenshot / chat-history → model-provider cloud. RIGHT
+     (fix): the key drops into a gitignored ".env" as a placeholder, code
+     references it by name, plus a "rotate key" chip. Code-editor aesthetic.
+     Red = leak/danger, green = the fix, amber = the exposed plaintext key. ===== */
+  .wrap { position: absolute; inset: 0; display: grid; grid-template-rows: 118px 1fr 44px; }
+
+  .head { display: flex; align-items: flex-end; gap: 22px; padding: 30px var(--s8) 0; }
+  .head .umb { font-family: var(--ct-font-mono); text-transform: uppercase; letter-spacing: 0.14em;
+    font-size: var(--ct-kicker); color: var(--ct-text-muted); }
+  .head h1 { margin: 0; font-family: var(--ct-font-display); font-stretch: 125%; font-weight: 900;
+    text-transform: uppercase; letter-spacing: 0.02em; font-size: var(--ct-h3); color: var(--ct-text); line-height: 1; }
+  .head h1 .em { color: var(--ct-fixed-glow); }
+  .head .spacer { flex: 1; }
+
+  .cols { display: grid; grid-template-columns: 1fr 8px 1fr; min-height: 0; padding: 0 var(--s7) var(--s6); gap: var(--s6); }
+  .divider { align-self: center; width: 2px; height: 78%; justify-self: center;
+    background: linear-gradient(180deg, transparent, var(--ct-line), transparent); }
+
+  .panel { position: relative; border-radius: var(--ct-r-lg); padding: 26px 30px; overflow: hidden;
+    background: var(--ct-surface); border: 1px solid var(--ct-line); box-shadow: var(--ct-shadow-1); }
+  .panel .ptag { display: inline-flex; align-items: center; gap: 12px; font-family: var(--ct-font-mono);
+    font-size: var(--ct-ui-sm); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; }
+  .panel .ptag .n { width: 30px; height: 30px; border-radius: 8px; display: grid; place-items: center;
+    font-size: var(--ct-ui-md); }
+
+  /* ---------- LEFT: risk / leak ---------- */
+  .risk { border-color: color-mix(in srgb, var(--ct-break) 34%, var(--ct-line));
+    background: linear-gradient(180deg, var(--ct-surface), color-mix(in srgb, var(--ct-break) 6%, var(--ct-surface))); }
+  .risk .ptag { color: var(--ct-break-glow); }
+  .risk .ptag .n { background: var(--ct-break-deep); color: var(--ct-text); border: 1px solid var(--ct-break); }
+
+  .leakstage { position: absolute; inset: 88px 0 0 0; }
+  .leaksvg { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+  /* the exposed key chip (amber = plaintext key) */
+  .keychip { position: absolute; left: 40px; top: 150px; z-index: 2;
+    display: inline-flex; align-items: center; gap: 12px; padding: 14px 20px;
+    border-radius: var(--ct-r-md); background: color-mix(in srgb, var(--ct-warn) 14%, var(--ct-surface-raised));
+    border: 2px solid var(--ct-warn); box-shadow: 0 0 26px rgba(255,176,32,0.30);
+    font-family: var(--ct-font-mono); font-size: var(--ct-ui-md); color: var(--ct-warn); font-weight: 700; }
+  .keychip svg { width: 24px; height: 24px; }
+
+  /* leak destinations */
+  .dest { position: absolute; z-index: 2; display: flex; align-items: center; gap: 14px;
+    padding: 14px 18px; border-radius: var(--ct-r-md); width: 300px;
+    background: var(--ct-surface-raised); border: 1px solid color-mix(in srgb, var(--ct-break) 40%, var(--ct-line));
+    box-shadow: var(--ct-shadow-1); }
+  .dest .di { width: 40px; height: 40px; flex: 0 0 40px; border-radius: 9px; display: grid; place-items: center;
+    background: var(--ct-break-wash); border: 1px solid color-mix(in srgb, var(--ct-break) 45%, var(--ct-line)); }
+  .dest .di svg { width: 24px; height: 24px; }
+  .dest .di svg [stroke] { stroke: var(--ct-break-glow); }
+  .dest .dt { font-family: var(--ct-font-body); font-weight: 600; font-size: var(--ct-ui-md); color: var(--ct-text); }
+  .dest .dt span { display: block; font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); color: var(--ct-text-muted); font-weight: 400; margin-top: 3px; }
+  .d-repo   { right: 34px; top: 26px; }
+  .d-shot   { right: 34px; top: 132px; }
+  .d-chat   { right: 34px; top: 238px; }
+
+  /* model-provider cloud that chat-history drifts to */
+  .cloud { position: absolute; right: 40px; bottom: 22px; z-index: 2; width: 300px;
+    display: flex; align-items: center; gap: 14px; padding: 16px 18px; border-radius: var(--ct-r-lg);
+    background: color-mix(in srgb, var(--ct-break) 12%, var(--ct-surface));
+    border: 1px dashed var(--ct-break); box-shadow: 0 0 26px rgba(255,59,48,0.22); }
+  .cloud .ci { width: 42px; height: 42px; flex: 0 0 42px; display: grid; place-items: center; }
+  .cloud .ci svg { width: 40px; height: 40px; }
+  .cloud .ci svg [stroke] { stroke: var(--ct-break-glow); }
+  .cloud .ct { font-family: var(--ct-font-body); font-weight: 700; font-size: var(--ct-ui-md); color: var(--ct-text); }
+  .cloud .ct span { display: block; font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); color: var(--ct-break-glow); font-weight: 400; margin-top: 3px; }
+
+  /* ---------- RIGHT: fix / .env ---------- */
+  .fix { border-color: color-mix(in srgb, var(--ct-fixed) 32%, var(--ct-line));
+    background: linear-gradient(180deg, var(--ct-surface), color-mix(in srgb, var(--ct-fixed) 5%, var(--ct-surface))); }
+  .fix .ptag { color: var(--ct-fixed-glow); }
+  .fix .ptag .n { background: var(--ct-fixed-deep); color: var(--ct-text); border: 1px solid var(--ct-fixed); }
+
+  .fstack { margin-top: 20px; display: flex; flex-direction: column; gap: 16px; }
+  .filecard { border-radius: var(--ct-r-md); background: var(--ct-bg); border: 1px solid var(--ct-line); overflow: hidden; }
+  .filecard .fbar { display: flex; align-items: center; gap: 12px; padding: 11px 18px;
+    background: var(--ct-surface-raised); border-bottom: 1px solid var(--ct-line); }
+  .filecard .fbar svg { width: 18px; height: 18px; }
+  .filecard .fname { font-family: var(--ct-font-mono); font-size: var(--ct-ui-md); color: var(--ct-text); font-weight: 500; }
+  .filecard .gitignored { margin-left: auto; display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--ct-fixed-glow); padding: 4px 12px; border-radius: var(--ct-r-pill);
+    background: var(--ct-fixed-wash); border: 1px solid color-mix(in srgb, var(--ct-fixed) 45%, transparent); }
+  .filecard pre { margin: 0; padding: 16px 20px; font-family: var(--ct-font-mono);
+    font-size: var(--ct-ui-md); line-height: 1.7; color: var(--ct-text); }
+  .filecard .c { color: var(--ct-text-muted); }
+  .filecard .k { color: var(--ct-accent); }
+  .filecard .ph { color: var(--ct-fixed-glow); }
+  .filecard .fn { color: var(--ct-warn); }
+  .filecard .add { color: var(--ct-fixed-glow); }
+  .filecard .plus { color: var(--ct-fixed); }
+
+  /* rotate-key chip */
+  .rotate { margin-top: 18px; display: flex; align-items: center; gap: 16px; padding: 16px 22px;
+    border-radius: var(--ct-r-md); background: var(--ct-surface-raised);
+    border: 1px solid color-mix(in srgb, var(--ct-fixed) 40%, var(--ct-line)); box-shadow: var(--ct-shadow-1); }
+  .rotate .ri { width: 40px; height: 40px; flex: 0 0 40px; display: grid; place-items: center; }
+  .rotate .ri svg { width: 34px; height: 34px; }
+  .rotate .ri svg [stroke] { stroke: var(--ct-fixed-glow); }
+  .rotate .rlbl { font-family: var(--ct-font-body); font-weight: 700; font-size: var(--ct-ui-md); color: var(--ct-text); }
+  .rotate .rlbl span { display: block; font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); color: var(--ct-text-muted); font-weight: 400; margin-top: 3px; }
+  .rotate .keys { margin-left: auto; display: flex; align-items: center; gap: 12px; font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); }
+  .rotate .old { color: var(--ct-break-glow); text-decoration: line-through; }
+  .rotate .arr { color: var(--ct-text-muted); }
+  .rotate .new { color: var(--ct-fixed-glow); }
+
+  .disclaimer { display: flex; align-items: center; justify-content: center;
+    background: var(--ct-surface); border-top: 1px solid var(--ct-line);
+    color: var(--ct-text-muted); font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); letter-spacing: 0.03em; }
+</style>
+</head>
+<body>
+  <div class="stage" role="img"
+       aria-label="Two-part graphic: on the left the plaintext key leaks via red arrows to repo, screenshot, and chat history which drifts to a model-provider cloud; on the right the key is moved into a gitignored .env file as a placeholder, code references it by name, with a rotate-key chip">
+    <div class="grid-bg"></div>
+
+    <div class="wrap">
+      <div class="head">
+        <div>
+          <div class="umb">ROUND 5 · BREAK #1 &mdash; THE FIX</div>
+          <h1>A key in your prompt is a leak &mdash; <span class="em">move it into .env</span></h1>
+        </div>
+      </div>
+
+      <div class="cols">
+        <!-- LEFT: risk -->
+        <section class="panel risk">
+          <span class="ptag"><span class="n">1</span> the risk &mdash; where a pasted key travels</span>
+          <div class="leakstage">
+            <svg class="leaksvg" viewBox="0 0 820 470" fill="none" aria-hidden="true" preserveAspectRatio="none">
+              <defs>
+                <marker id="ah" markerWidth="9" markerHeight="9" refX="6" refY="4.5" orient="auto">
+                  <path d="M1 1l6 3.5L1 8z" fill="var(--ct-break)"/>
+                </marker>
+              </defs>
+              <g stroke="var(--ct-break)" stroke-width="3" stroke-dasharray="8 7" marker-end="url(#ah)" opacity="0.85">
+                <path d="M150 205 C 330 120, 400 70, 470 62"/>
+                <path d="M150 220 C 340 210, 400 178, 470 172"/>
+                <path d="M150 235 C 330 300, 400 282, 470 282"/>
+              </g>
+              <!-- chat-history drifts down to the provider cloud -->
+              <path d="M620 328 C 640 380, 650 400, 660 418" stroke="var(--ct-break)" stroke-width="3"
+                    stroke-dasharray="8 7" marker-end="url(#ah)" opacity="0.85"/>
+            </svg>
+
+            <div class="keychip">
+              <svg viewBox="0 0 24 24" fill="none"><circle cx="8" cy="9" r="4" stroke="var(--ct-warn)" stroke-width="2.2"/><path d="M11 12l9 9m-3 0h3v-3m-5 0l2 2" stroke="var(--ct-warn)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              rd_live_8fQ2x&hellip;
+            </div>
+
+            <div class="dest d-repo">
+              <span class="di"><svg viewBox="0 0 24 24" fill="none"><path d="M6 3h9l3 3v15H6z" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" stroke-width="2"/><path d="M12 15v4" stroke-width="2" stroke-linecap="round"/></svg></span>
+              <span class="dt">Repository<span>committed &amp; pushed</span></span>
+            </div>
+            <div class="dest d-shot">
+              <span class="di"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" stroke-width="2"/><circle cx="12" cy="12" r="3.4" stroke-width="2"/><path d="M8 5l1.5-2h5L16 5" stroke-width="2" stroke-linejoin="round"/></svg></span>
+              <span class="dt">Screenshot<span>shared in a ticket</span></span>
+            </div>
+            <div class="dest d-chat">
+              <span class="di"><svg viewBox="0 0 24 24" fill="none"><path d="M4 5h16v11H9l-5 4z" stroke-width="2" stroke-linejoin="round"/><path d="M8 10h8M8 13h5" stroke-width="2" stroke-linecap="round"/></svg></span>
+              <span class="dt">Chat history<span>logged transcript</span></span>
+            </div>
+
+            <div class="cloud">
+              <span class="ci"><svg viewBox="0 0 24 24" fill="none"><path d="M7 18a4 4 0 01-.5-8 6 6 0 0111.5 1.5A3.5 3.5 0 0117 18H7z" stroke-width="2" stroke-linejoin="round"/></svg></span>
+              <span class="ct">Model provider<span>your key rides along</span></span>
+            </div>
+          </div>
+        </section>
+
+        <div class="divider" aria-hidden="true"></div>
+
+        <!-- RIGHT: fix -->
+        <section class="panel fix">
+          <span class="ptag"><span class="n">2</span> the fix &mdash; keep it out of the prompt</span>
+
+          <div class="fstack">
+            <div class="filecard">
+              <div class="fbar">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M6 3h8l4 4v14H6z" stroke="var(--ct-warn)" stroke-width="2" stroke-linejoin="round"/><path d="M14 3v4h4" stroke="var(--ct-warn)" stroke-width="2" stroke-linejoin="round"/></svg>
+                <span class="fname">.env</span>
+                <span class="gitignored">
+                  <svg viewBox="0 0 24 24" fill="none" width="14" height="14"><path d="M5 12l4 4 10-11" stroke="var(--ct-fixed-glow)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  git-ignored
+                </span>
+              </div>
+              <pre><span class="c"># pasted once, locally — never handed to the agent</span>
+<span class="ph">ROLODASH_API_KEY</span>=<span class="c">•••••••••••••••••</span></pre>
+            </div>
+
+            <div class="filecard">
+              <div class="fbar">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M6 3h8l4 4v14H6z" stroke="var(--ct-text-muted)" stroke-width="2" stroke-linejoin="round"/><path d="M14 3v4h4" stroke="var(--ct-text-muted)" stroke-width="2" stroke-linejoin="round"/></svg>
+                <span class="fname">.gitignore</span>
+              </div>
+              <pre><span class="c"># keep secrets out of version control</span>
+node_modules/
+<span class="plus">+ </span><span class="add">.env</span></pre>
+            </div>
+
+            <div class="filecard">
+              <div class="fbar">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M9 8l-4 4 4 4M15 8l4 4-4 4" stroke="var(--ct-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span class="fname">sift/tools.py</span>
+              </div>
+              <pre><span class="c"># reference the key by NAME, never its value</span>
+<span class="k">key</span> = env(<span class="ph">'ROLODASH_API_KEY'</span>)</pre>
+            </div>
+          </div>
+
+          <div class="rotate">
+            <span class="ri"><svg viewBox="0 0 24 24" fill="none"><path d="M20 11a8 8 0 10-1 5" stroke-width="2.2" stroke-linecap="round"/><path d="M20 5v6h-6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="rlbl">leak? rotate the key<span>cancel the old one, issue a new one</span></span>
+            <span class="keys"><span class="old">rd_live_8fQ2x&hellip;</span><span class="arr">&rarr;</span><span class="new">rd_live_3kP9v&hellip;</span></span>
+          </div>
+        </section>
+      </div>
+
+      <div class="disclaimer">FICTIONAL DEMO · Harbor Supply Co., Sift, Rolodash and all keys are invented for Crash Test Agents</div>
+    </div>
+
+    <!-- Kill-Counter HUD (global overlay) — break #2 "reference by name, rotate on leak", ticking at 22/25 -->
+    <div class="ct-killcounter" data-state="ticking" aria-label="Kill counter: 22 of 25 breaks">
+      <span class="kc-dot"></span>
+      <span class="kc-label">Breaks</span>
+      <span class="kc-tally"><span class="kc-n">22</span><span class="kc-of">/ 25</span></span>
+    </div>
+  </div>
+</body>
+</html>

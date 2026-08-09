@@ -62,9 +62,11 @@
   .ghostnode .plus { font-size: var(--ct-ui-2xl); line-height: 0.6; }
 
   /* Day 2 sticky */
+  /* neutral paper sticky — amber is reserved for VERIFY/caveat, never a decorative
+     note color; keep the workshop feel with surface-raised + a faint accent edge */
   .sticky { position: absolute; bottom: 60px; right: 56px; width: 210px; padding: 22px 20px 26px;
-    background: color-mix(in srgb, var(--ct-warn) 16%, var(--ct-surface-raised));
-    border: 1px solid color-mix(in srgb, var(--ct-warn) 45%, var(--ct-line));
+    background: var(--ct-surface-raised);
+    border: 1px solid var(--ct-line); border-top: 3px solid color-mix(in srgb, var(--ct-accent) 60%, var(--ct-line));
     border-radius: 4px; box-shadow: var(--ct-shadow-pop); transform: rotate(-3deg); }
   .sticky .d { font-family: var(--ct-font-display); font-stretch: 125%; font-weight: 800; font-size: var(--ct-ui-3xl); color: var(--ct-text); }
   .sticky .m { font-family: var(--ct-font-body); font-size: var(--ct-ui-sm); color: var(--ct-text-muted); margin-top: 6px; }
@@ -77,8 +79,10 @@
   .code .ln { display: block; }
   .code .c { color: var(--ct-text-muted); }
   .code .key { color: var(--ct-accent); }
-  .code .str { color: var(--ct-fixed-glow); }
-  .code .todo { color: var(--ct-warn); }
+  /* string + TODO syntax stay off the reserved semantics: green = fixed/200 only,
+     amber = VERIFY only. Strings read neutral, pending work reads as muted comment. */
+  .code .str { color: var(--ct-text); }
+  .code .todo { color: var(--ct-text-muted); }
   .code .caret { display: inline-block; width: 10px; height: 22px; background: var(--ct-accent);
     vertical-align: -4px; margin-left: 2px; }
 </style>

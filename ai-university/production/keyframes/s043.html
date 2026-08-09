@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, initial-scale=1">
+<title>S043 — Scoped sift-bot account + invoice line-item · Crash Test Agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  /* ===== S043 — SCREEN-SIM. Tier-0 BASE only (screenplay "applied setup"
+     half): a dedicated, scoped "sift-bot" account — inbox-only mail,
+     read-only CRM, own named key — plus an invoice mock UI line-itemed
+     separately from the personal account. This is the FIX, so it reads in
+     FIXED-GREEN (opposite of S042's alarming break-red wall). The original
+     valet-key metaphor (start-the-car / not-the-trunk) is a paid AI-GEN
+     b-roll overlay that is GATED — see HTML comment below; not built here. ===== */
+  .app { display: grid; grid-template-rows: 96px 1fr 44px; height: 100%; }
+
+  .topbar { display: flex; align-items: center; gap: var(--s5); padding: 0 var(--s7);
+    border-bottom: 1px solid var(--ct-line); background: var(--ct-surface); }
+  .crumb { font-family: var(--ct-font-mono); font-size: var(--ct-ui-md); color: var(--ct-text-muted); }
+  .crumb b { color: var(--ct-text); font-weight: 500; }
+  .topbar .spacer { flex: 1; }
+  .fixed-pill { display: inline-flex; align-items: center; gap: 10px; padding: 9px 18px;
+    border-radius: var(--ct-r-pill); background: var(--ct-fixed-deep); color: var(--ct-text);
+    font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); font-weight: 700;
+    border: 1px solid var(--ct-fixed); box-shadow: 0 0 20px rgba(43,213,118,0.40); }
+  .fixed-pill .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--ct-fixed-glow); box-shadow: 0 0 10px var(--ct-fixed); }
+
+  .body { display: grid; grid-template-columns: 560px 1fr; min-height: 0; }
+
+  /* left — scoped sift-bot account card */
+  .idcol { padding: var(--s7) var(--s6); border-right: 1px solid var(--ct-line);
+    background: var(--ct-bg); box-shadow: inset 0 0 160px rgba(43,213,118,0.05); }
+  .col-title { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); text-transform: uppercase;
+    letter-spacing: 0.12em; color: var(--ct-text-muted); font-weight: 500; margin: 0 0 var(--s5); }
+  .idcard { background: var(--ct-surface); border: 1px solid color-mix(in srgb, var(--ct-fixed) 34%, var(--ct-line));
+    border-radius: var(--ct-r-lg); padding: 30px 28px; box-shadow: var(--ct-shadow-2); text-align: center; }
+  .avatar { width: 108px; height: 108px; border-radius: var(--ct-r-lg); margin: 6px auto 20px; display: grid; place-items: center;
+    background: radial-gradient(circle at 50% 38%, var(--ct-surface-raised), var(--ct-bg));
+    border: 2px solid color-mix(in srgb, var(--ct-fixed) 50%, var(--ct-line));
+    box-shadow: 0 0 30px rgba(43,213,118,0.18); }
+  .avatar svg { width: 60px; height: 60px; }
+  .avatar svg [stroke] { stroke: var(--ct-fixed-glow); }
+  .idcard .who { font-family: var(--ct-font-mono); font-weight: 700; font-size: var(--ct-ui-2xl); color: var(--ct-text); }
+  .idcard .mail { font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); color: var(--ct-text-muted); margin-top: 6px; }
+  .idcard .dedicated { display: inline-flex; align-items: center; gap: 9px; margin-top: 18px;
+    padding: 8px 16px; border-radius: var(--ct-r-pill); background: var(--ct-fixed-wash);
+    border: 1px solid var(--ct-fixed); color: var(--ct-fixed-glow);
+    font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); font-weight: 700; }
+
+  .scopes { margin-top: 24px; display: flex; flex-direction: column; gap: 12px; text-align: left; }
+  .scope-row { display: grid; grid-template-columns: 40px 1fr auto; align-items: center; gap: 14px;
+    background: var(--ct-bg); border: 1px solid color-mix(in srgb, var(--ct-fixed) 26%, var(--ct-line));
+    border-radius: var(--ct-r-md); padding: 14px 16px; }
+  .scope-row .si { width: 40px; height: 40px; border-radius: 9px; display: grid; place-items: center;
+    background: var(--ct-fixed-wash); border: 1px solid color-mix(in srgb, var(--ct-fixed) 45%, var(--ct-line)); }
+  .scope-row .si svg { width: 22px; height: 22px; }
+  .scope-row .si svg [stroke] { stroke: var(--ct-fixed-glow); }
+  .scope-row .sl .name { font-family: var(--ct-font-body); font-weight: 600; font-size: var(--ct-ui-md); color: var(--ct-text); }
+  .scope-row .sl .scope { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); color: var(--ct-text-muted); margin-top: 2px; }
+  .scope-row .tag { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.06em; padding: 5px 12px; border-radius: var(--ct-r-pill); }
+  .tag.on { color: var(--ct-fixed-glow); border: 1px solid var(--ct-fixed); background: var(--ct-fixed-wash); }
+  .tag.ro { color: var(--ct-accent-glow); border: 1px solid var(--ct-accent); background: var(--ct-accent-wash); }
+  .tag.off { color: var(--ct-text-muted); border: 1px solid var(--ct-line); background: transparent; }
+
+  .keyline { margin-top: 22px; padding-top: 20px; border-top: 1px solid var(--ct-line);
+    display: flex; align-items: center; gap: 14px; font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); }
+  .keyline svg { width: 22px; height: 22px; flex: 0 0 22px; }
+  .keyline svg [stroke] { stroke: var(--ct-fixed-glow); }
+  .keyline .kv { color: var(--ct-text); }
+  .keyline .kv b { color: var(--ct-fixed-glow); font-weight: 700; }
+
+  /* right — invoice mock UI, sift-bot line-itemed separately */
+  .invcol { padding: var(--s7) var(--s7) var(--s6); background: var(--ct-bg); overflow: hidden; }
+  .invhead { display: flex; align-items: baseline; gap: 18px; margin-bottom: var(--s5); }
+  .invhead h2 { margin: 0; font-family: var(--ct-font-display); font-stretch: 125%; font-weight: 800;
+    font-size: var(--ct-ui-3xl); color: var(--ct-text); }
+  .invhead .sub { font-family: var(--ct-font-mono); font-size: var(--ct-ui-md); color: var(--ct-text-muted); }
+
+  .invoice { background: var(--ct-surface); border: 1px solid var(--ct-line); border-radius: var(--ct-r-lg);
+    box-shadow: var(--ct-shadow-2); overflow: hidden; }
+  .inv-bar { display: flex; align-items: center; gap: 16px; padding: 20px 30px;
+    background: var(--ct-surface-raised); border-bottom: 1px solid var(--ct-line); }
+  .inv-bar .num { font-family: var(--ct-font-mono); font-size: var(--ct-ui-md); color: var(--ct-text); }
+  .inv-bar .num b { color: var(--ct-text-muted); font-weight: 400; }
+  .inv-bar .spacer { flex: 1; }
+  .inv-bar .period { font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); color: var(--ct-text-muted); }
+
+  .lines { padding: 8px 0; }
+  .lrow { display: grid; grid-template-columns: 1fr 220px 160px; align-items: center; gap: 20px;
+    padding: 20px 30px; border-bottom: 1px solid var(--ct-line); }
+  .lrow:last-child { border-bottom: none; }
+  .lrow .li-name { font-family: var(--ct-font-body); font-weight: 600; font-size: var(--ct-ui-lg); color: var(--ct-text); }
+  .lrow .li-sub { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); color: var(--ct-text-muted); margin-top: 4px; }
+  .lrow .li-key { font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); color: var(--ct-text-muted); }
+  .lrow .li-amt { font-family: var(--ct-font-mono); font-size: var(--ct-ui-lg); color: var(--ct-text); text-align: right; }
+
+  /* the traceable sift-bot line — highlighted fixed-green */
+  .lrow.bot { background: var(--ct-fixed-wash); border-left: 4px solid var(--ct-fixed); }
+  .lrow.bot .li-name { color: var(--ct-text); }
+  .lrow.bot .li-name .badge-sm { margin-left: 12px; font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs);
+    font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ct-fixed-glow);
+    border: 1px solid var(--ct-fixed); border-radius: var(--ct-r-pill); padding: 4px 12px; }
+  .lrow.bot .li-key { color: var(--ct-fixed-glow); }
+  .lrow.bot .li-amt { color: var(--ct-fixed-glow); font-weight: 700; }
+
+  .inv-foot { display: flex; align-items: center; justify-content: space-between; padding: 20px 30px;
+    background: var(--ct-surface-raised); border-top: 1px solid var(--ct-line); }
+  .inv-foot .note { font-family: var(--ct-font-body); font-size: var(--ct-ui-sm); color: var(--ct-text-muted); }
+  .inv-foot .note b { color: var(--ct-fixed-glow); }
+
+  .callout { margin-top: 26px; display: flex; gap: 18px; padding: 22px 26px; border-radius: var(--ct-r-md);
+    background: var(--ct-surface); border: 1px solid var(--ct-line); border-left: 4px solid var(--ct-fixed);
+    box-shadow: var(--ct-shadow-1); }
+  .callout svg { width: 30px; height: 30px; flex: 0 0 30px; }
+  .callout svg [stroke] { stroke: var(--ct-fixed-glow); }
+  .callout .b { font-family: var(--ct-font-body); font-size: var(--ct-ui-md); color: var(--ct-text-muted); line-height: 1.55; }
+  .callout .b b { color: var(--ct-text); }
+
+  .disclaimer { display: flex; align-items: center; justify-content: center;
+    background: var(--ct-surface); border-top: 1px solid var(--ct-line);
+    color: var(--ct-text-muted); font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); letter-spacing: 0.03em; }
+</style>
+</head>
+<body>
+  <div class="stage" role="img"
+       aria-label="Tier-0 base frame: a dedicated scoped sift-bot account card showing inbox-only mail access and read-only CRM, next to an invoice mock UI where the sift-bot line item is highlighted separately with its own named key and cost, both in fixed green">
+    <div class="grid-bg"></div>
+
+    <div class="app">
+      <header class="topbar">
+        <span class="crumb">Rolodash &nbsp;/&nbsp; Settings &nbsp;/&nbsp; <b>sift-bot · scoped account</b></span>
+        <span class="spacer"></span>
+        <span class="fixed-pill"><span class="dot"></span> LEAST PRIVILEGE · scoped &amp; traceable</span>
+      </header>
+
+      <!-- AI-GEN b-roll overlay (valet-key handoff) GATED: needs Ryan spend-approval -->
+
+      <div class="body">
+        <aside class="idcol">
+          <p class="col-title">Signed in as</p>
+          <div class="idcard">
+            <div class="avatar" aria-hidden="true">
+              <svg viewBox="0 0 64 64" fill="none"><rect x="14" y="14" width="36" height="36" rx="8" stroke-width="4"/><path d="M24 32h16M32 24v16" stroke-width="4" stroke-linecap="round"/></svg>
+            </div>
+            <div class="who">sift-bot</div>
+            <div class="mail">sift-bot@harborsupply.co</div>
+            <div class="dedicated">
+              <svg viewBox="0 0 24 24" fill="none" width="16" height="16"><path d="M5 12l4 4 10-11" stroke="var(--ct-fixed-glow)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              dedicated account &middot; not a person
+            </div>
+
+            <div class="scopes">
+              <div class="scope-row">
+                <span class="si"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="12" rx="2" stroke-width="2"/><path d="M3 8l9 6 9-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                <span class="sl"><span class="name">Support inbox</span><span class="scope">read &amp; reply — this inbox only</span></span>
+                <span class="tag on">Scoped-on</span>
+              </div>
+              <div class="scope-row">
+                <span class="si"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke-width="2"/><path d="M5 20c1-5 4-7 7-7s6 2 7 7" stroke-width="2" stroke-linecap="round"/></svg></span>
+                <span class="sl"><span class="name">CRM (Rolodash)</span><span class="scope">look up customers only</span></span>
+                <span class="tag ro">Read-only</span>
+              </div>
+              <div class="scope-row">
+                <span class="si"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3l8 3v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-3z" stroke-width="2" stroke-linejoin="round"/></svg></span>
+                <span class="sl"><span class="name">Admin &amp; billing</span><span class="scope">no access</span></span>
+                <span class="tag off">Off</span>
+              </div>
+              <div class="scope-row">
+                <span class="si"><svg viewBox="0 0 24 24" fill="none"><path d="M6 8h12l-1 12H7L6 8z" stroke-width="2" stroke-linejoin="round"/><path d="M9 8V5h6v3M4 8h16" stroke-width="2" stroke-linecap="round"/></svg></span>
+                <span class="sl"><span class="name">Delete / export</span><span class="scope">no access</span></span>
+                <span class="tag off">Off</span>
+              </div>
+            </div>
+
+            <div class="keyline">
+              <svg viewBox="0 0 24 24" fill="none"><circle cx="8" cy="9" r="4" stroke-width="2.2"/><path d="M11 12l9 9m-3 0h3v-3m-5 0l2 2" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="kv">own named key: <b>rd_sift_bot_5nQ8&hellip;</b></span>
+            </div>
+          </div>
+        </aside>
+
+        <main class="invcol">
+          <div class="invhead">
+            <h2 class="display">August invoice</h2>
+            <span class="sub">Rolodash &middot; billed to Harbor Supply Co.</span>
+          </div>
+
+          <div class="invoice">
+            <div class="inv-bar">
+              <span class="num">Invoice <b>#HS-2026-08</b></span>
+              <span class="spacer"></span>
+              <span class="period">Aug 1 &ndash; Aug 9, 2026</span>
+            </div>
+            <div class="lines">
+              <div class="lrow">
+                <div><div class="li-name">Platform subscription</div><div class="li-sub">Rolodash CRM &middot; team plan</div></div>
+                <div class="li-key">&mdash;</div>
+                <div class="li-amt">$249.00</div>
+              </div>
+              <div class="lrow">
+                <div><div class="li-name">Ryan Ellis (owner)</div><div class="li-sub">personal account &middot; console usage</div></div>
+                <div class="li-key">rd_live_8fQ2x&hellip;</div>
+                <div class="li-amt">$0.00</div>
+              </div>
+              <div class="lrow bot">
+                <div><div class="li-name">sift-bot<span class="badge-sm">traceable</span></div><div class="li-sub">inbox-only &middot; CRM read-only</div></div>
+                <div class="li-key">rd_sift_bot_5nQ8&hellip;</div>
+                <div class="li-amt">$37.40</div>
+              </div>
+            </div>
+            <div class="inv-foot">
+              <span class="note">every line ties back to <b>one named key</b> &mdash; nothing hides in "owner usage"</span>
+            </div>
+          </div>
+
+          <div class="callout">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 3l8 3v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-3z" stroke-width="2" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <div class="b"><b>Least privilege, applied:</b> sift-bot's own account &middot; inbox-only &middot; CRM read-only &middot; own named key on the invoice &mdash; damage is capped and spend is traceable.</div>
+          </div>
+        </main>
+      </div>
+
+      <div class="disclaimer">FICTIONAL DEMO &middot; Harbor Supply Co., Sift, Rolodash and all accounts/invoices are invented for Crash Test Agents</div>
+    </div>
+
+    <!-- Kill-Counter HUD (global overlay) — no new break; still holding at break #3 (over-privilege) fix, 23/25 -->
+    <div class="ct-killcounter" data-state="ticking" aria-label="Kill counter: 23 of 25 breaks">
+      <span class="kc-dot"></span>
+      <span class="kc-label">Breaks</span>
+      <span class="kc-tally"><span class="kc-n">23</span><span class="kc-of">/ 25</span></span>
+    </div>
+  </div>
+</body>
+</html>

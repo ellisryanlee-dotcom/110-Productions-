@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, initial-scale=1">
+<title>S051 — Community CTA: send us your agent · Crash Test Agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  /* ===== S051 — COMMUNITY CTA card. A stylized crash-test rig graphic with
+     a submitted agent mounted in the clamps, "send us your agent" CTA,
+     the brand lockup, a subscribe prompt, and the required synthetic-media
+     disclosure line held legibly on screen. Bible §4.1 (spine), §6.1 (badges). ===== */
+
+  /* --- mini brand lockup, top-left --- */
+  .logo-lockup { position: absolute; z-index: 3; top: 56px; left: 80px; display: flex; align-items: center; gap: 16px; }
+  .logo-lockup .umbrella { font-size: var(--ct-kicker); }
+  .logo-lockup .spine-mini { width: 6px; height: 40px; border-radius: 2px;
+    background: linear-gradient(to bottom, var(--ct-break) 0 50%, var(--ct-fixed) 50% 100%); }
+  .logo-lockup .wm-mini { font-family: var(--ct-font-display); font-stretch: 125%; font-weight: 900;
+    text-transform: uppercase; letter-spacing: 0.02em; font-size: 30px; color: var(--ct-text); }
+
+  /* --- centered composition --- */
+  .center { position: absolute; inset: 0; z-index: 2; display: grid;
+    grid-template-columns: 640px 640px; column-gap: 96px; align-content: center; justify-content: center;
+    align-items: center; padding-top: 20px; }
+
+  .rig-wrap { display: grid; place-items: center; }
+  .rig-svg { width: 620px; height: 620px; }
+
+  .cta-col { display: flex; flex-direction: column; gap: 26px; }
+  .kicker { margin: 0; font-family: var(--ct-font-mono); text-transform: uppercase; letter-spacing: 0.16em;
+    font-size: var(--ct-kicker); color: var(--ct-break-glow); font-weight: 600; }
+  .cta-line { margin: 0; font-family: var(--ct-font-display); font-stretch: 125%; font-weight: 900;
+    text-transform: uppercase; letter-spacing: 0.01em; font-size: 72px; line-height: 1.04; color: var(--ct-text); }
+  .cta-line .arrow { color: var(--ct-break-glow); }
+  .cta-sub { margin: 0; font-family: var(--ct-font-body); font-weight: 500; font-size: var(--ct-h3);
+    color: var(--ct-text-muted); line-height: 1.35; max-width: 560px; }
+
+  .subscribe-btn { align-self: flex-start; display: inline-flex; align-items: center; gap: 14px;
+    margin-top: 10px; padding: 18px 34px; border-radius: var(--ct-r-pill);
+    background: var(--ct-accent); color: #041017; font-family: var(--ct-font-mono); font-weight: 700;
+    font-size: var(--ct-ui-xl); text-transform: uppercase; letter-spacing: 0.04em;
+    box-shadow: 0 0 30px rgba(56,189,248,0.5); }
+  .subscribe-btn svg { width: 26px; height: 26px; }
+
+  .submit-tag { display: inline-flex; align-items: center; gap: 10px; align-self: flex-start;
+    font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); color: var(--ct-text-muted);
+    border: 1px dashed var(--ct-line); border-radius: var(--ct-r-pill); padding: 8px 18px; }
+  .submit-tag b { color: var(--ct-accent-glow); font-weight: 600; }
+
+  /* --- rig graphic parts --- */
+  .rig-svg .frame { stroke: var(--ct-line); stroke-width: 6; fill: none; }
+  .rig-svg .clamp { stroke: var(--ct-break); stroke-width: 8; fill: none; stroke-linecap: round; }
+  .rig-svg .node-body { fill: var(--ct-surface); stroke: var(--ct-break); stroke-width: 4; }
+  .rig-svg .node-glyph { stroke: var(--ct-break-glow); stroke-width: 3; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+  .rig-svg .cable { stroke: var(--ct-text-muted); stroke-width: 3; fill: none; opacity: 0.6; }
+  .rig-svg .plate-bg { fill: var(--ct-surface-raised); stroke: var(--ct-line); stroke-width: 3; }
+  .rig-svg .plate-text { font-family: var(--ct-font-mono); font-weight: 700; font-size: 20px; letter-spacing: 0.1em;
+    fill: var(--ct-text-muted); text-transform: uppercase; }
+  .rig-svg .gauge-ring { stroke: var(--ct-line); stroke-width: 6; fill: var(--ct-surface); }
+  .rig-svg .gauge-arc { stroke: var(--ct-break); stroke-width: 6; fill: none; stroke-linecap: round; }
+  .rig-svg .gauge-needle { stroke: var(--ct-break-glow); stroke-width: 4; stroke-linecap: round; }
+  .rig-svg .hazard { fill: none; stroke: var(--ct-break-deep); stroke-width: 10; stroke-dasharray: 14 10; opacity: 0.55; }
+
+  /* --- disclosure bar (real compliance caveat — reserved amber, not decorative) --- */
+  .disclaimer-bar { position: absolute; left: 0; right: 0; bottom: 0; height: 76px; z-index: 4;
+    display: flex; align-items: center; justify-content: center; gap: 14px;
+    background: var(--ct-surface); border-top: 1px solid color-mix(in srgb, var(--ct-warn) 35%, var(--ct-line)); }
+  .disclaimer-bar .warn-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--ct-warn);
+    box-shadow: 0 0 10px var(--ct-warn); flex: 0 0 10px; }
+  .disclaimer-bar .txt { font-family: var(--ct-font-mono); font-size: var(--ct-ui-md); color: var(--ct-warn);
+    letter-spacing: 0.02em; }
+</style>
+</head>
+<body>
+  <div class="stage" role="img"
+       aria-label="Community CTA card: a stylized crash-test rig with a submitted agent mounted in red clamps, headline send us your agent we'll break it, brand logo, cyan subscribe button, and a visible synthetic-media disclosure line">
+    <div class="grid-bg"></div>
+
+    <!-- Kill-Counter HUD (global overlay) — Artifact/CTA: locked at 25/25, episode complete -->
+    <div class="ct-killcounter" data-state="locked" aria-label="Kill counter: 25 of 25 breaks, locked">
+      <span class="kc-dot"></span>
+      <span class="kc-label">Breaks</span>
+      <span class="kc-tally"><span class="kc-n">25</span><span class="kc-of">/ 25</span></span>
+    </div>
+
+    <div class="logo-lockup" aria-hidden="true">
+      <span>
+        <span class="umbrella">AI UNIVERSITY</span><br>
+        <span class="wm-mini">Crash&nbsp;Test&nbsp;Agents</span>
+      </span>
+      <span class="spine-mini"></span>
+    </div>
+
+    <div class="center">
+      <div class="rig-wrap">
+        <svg class="rig-svg" viewBox="0 0 620 620" fill="none" aria-hidden="true">
+          <!-- hazard ring on the base plinth -->
+          <circle class="hazard" cx="310" cy="310" r="270"/>
+          <!-- gantry frame -->
+          <path class="frame" d="M120 520V140M500 520V140M120 140h380"/>
+          <path class="frame" d="M120 520h380" stroke-width="10"/>
+          <!-- cables from the crossbeam -->
+          <path class="cable" d="M220 140v70M400 140v70"/>
+          <!-- clamps gripping the mounted agent node -->
+          <path class="clamp" d="M175 300c0-20 16-36 36-36h20M175 380c0-20 16-36 36-36h20"/>
+          <path class="clamp" d="M445 300c0-20-16-36-36-36h-20M445 380c0-20-16-36-36-36h-20"/>
+          <!-- the agent node under test -->
+          <rect class="node-body" x="231" y="230" width="158" height="158" rx="16"/>
+          <path class="node-glyph" d="M270 300h80M270 280h50M270 320h64M290 350l10 10 20-20"/>
+          <!-- readout plate -->
+          <rect class="plate-bg" x="236" y="450" width="148" height="46" rx="8"/>
+          <text class="plate-text" x="310" y="479" text-anchor="middle">test rack</text>
+          <!-- side gauge, needle deep in the red -->
+          <circle class="gauge-ring" cx="500" cy="440" r="46"/>
+          <path class="gauge-arc" d="M470 466a46 46 0 0166-52" />
+          <line class="gauge-needle" x1="500" y1="440" x2="524" y2="410"/>
+        </svg>
+      </div>
+
+      <div class="cta-col">
+        <p class="kicker">Community crash test</p>
+        <h1 class="cta-line">Send us your agent<span class="arrow"> &rarr;</span><br>we&rsquo;ll break it.</h1>
+        <p class="cta-sub">We put it on the rack and break it on camera. That&rsquo;s the whole channel. We break AI agents so yours don&rsquo;t.</p>
+        <span class="submit-tag">Submit link in the description &middot; <b>every episode, a new agent</b></span>
+        <button class="subscribe-btn" type="button">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 4a5 5 0 015 5v3.2c0 .9.3 1.8.9 2.5l1.1 1.3H5l1.1-1.3c.6-.7.9-1.6.9-2.5V9a5 5 0 015-5z" stroke="#041017" stroke-width="2" stroke-linejoin="round"/><path d="M9.5 18a2.5 2.5 0 005 0" stroke="#041017" stroke-width="2" stroke-linecap="round"/></svg>
+          Subscribe
+        </button>
+      </div>
+    </div>
+
+    <div class="disclaimer-bar">
+      <span class="warn-dot" aria-hidden="true"></span>
+      <span class="txt">Contains realistic AI-generated media.</span>
+    </div>
+    <!-- ⚠️VERIFY: confirm synthetic-media disclosure placement/wording (S051) meets current YouTube
+         altered-content policy before publish — see screenplay Notes "Compliance blocker" (S051, S052). -->
+  </div>
+</body>
+</html>
