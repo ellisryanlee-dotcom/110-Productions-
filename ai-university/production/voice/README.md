@@ -1,6 +1,18 @@
 # Episode 1 — VOICE (VO) pipeline
 
-Status: **PATH VERIFIED, blocked on credit top-up.**
+Status: **SUPERSEDED — EP1 finished with a $0 built-in VO path (OPE-175).**
+
+> **2026-08-09 — Ryan directive (OPE-175):** drop all paid tools; finish EP1 with
+> free/owned tools only, zero spend, no approval gate. The paid higgsfield VO path
+> below is no longer on the critical path. EP1 now ships with **macOS `say` (voice
+> "Reed", built-in, $0)** narration + an ffmpeg-synthesized music bed, muxed onto the
+> silent animatic. Finished cut: `production/animatic/crash-test-001-finished.mp4`.
+> Builder: `production/build/render-finished.mjs`. The higgsfield notes below are
+> retained only as a reference for a future paid re-voice if Ryan ever chooses to fund one.
+
+---
+
+Status (historical): **PATH VERIFIED, blocked on credit top-up.**
 
 Ryan approved VO via **built-in higgsfield audio credits** (interaction `bab739ef`,
 answered 2026-08-09). On execution the account balance was found nearly empty, so the
