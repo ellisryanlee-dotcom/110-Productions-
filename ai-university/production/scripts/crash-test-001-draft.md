@@ -3,8 +3,10 @@ title: "I Tried to Break This AI Agent 25 Ways (so yours won't die in production
 brief: production/briefs/brief-001.md
 cards_used: [kc-0226, kc-0114, kc-0115, kc-0105, kc-0118, kc-0306, kc-0213, kc-0325, kc-0323, kc-0206, kc-0215, kc-0117]
 target_length: 17:00
-status: revised-pending-regate
+status: approved
 packaging: "A — honor the count (OPE-160, Ryan 2026-08-09): 25 named breaks, on-screen Break NN/25 counter, 25-line checklist"
+regate: "OPE-167 (2026-08-09): editor voice/similarity re-gate PASS — deterministic 8-gram sweep of all 57 VO lines (3,072 8-grams) vs all 110 source transcripts (1.21M 8-grams) → 0 shared 8-grams. Option-A break-naming introduced no new analogies (soup + valet-key unchanged). Screenplay already synced to 25-break structure (Kill-Counter HUD spec)."
+runtime_note: "VO word count = 3,084 → est ~19–20 min at conversational pace, over the 17:00 target. Trim DEFERRED to the EDIT stage (timeline pacing + redundant-line lifts), NOT re-cut in the script: keyframes are mid-build against this exact cut, so a VO re-cut here would desync the screenplay shot-map + built keyframes. Tighten briefly-named breaks (2,3,7,13,14,15,16,18,19,22) on the timeline."
 ---
 
 ## HOOK (0:00)
