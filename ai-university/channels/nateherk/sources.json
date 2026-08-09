@@ -2,7 +2,7 @@
  "channel": "@nateherk",
  "generated_at": "2026-08-09",
  "git_archive_commit": "b8d02e5",
- "drive_folder_id": null,
+ "drive_folder_id": "1OusZtNI2vy7x5GMDxnJGEenrBEGJMqTk",
  "id_policy": {
   "next_kc": 401,
   "note": "kc ids are allocated from next_kc by the orchestrator at dispatch; legacy ranges 0001-0016, 0101-0126, 0301-0304 are in use; scratchpad batch manifests are obsolete. sc id = view rank at rip time."
@@ -731,8 +731,8 @@
     "bytes": 32112,
     "est_tokens": 8028,
     "git_archive_commit": "b8d02e5",
-    "drive_file_id": null,
-    "drive_status": "pending_bulk_upload"
+    "drive_file_id": "1xemgCnpSs5Fv1boxQDEc0YsT9Cr6h05f",
+    "drive_status": "uploaded_verified"
    },
    "extraction": {
     "status": "none",
@@ -3474,5 +3474,6 @@
     "notes": ""
    }
   }
- ]
+ ],
+ "drive_folder_url": "https://drive.google.com/drive/folders/1OusZtNI2vy7x5GMDxnJGEenrBEGJMqTk"
 }
