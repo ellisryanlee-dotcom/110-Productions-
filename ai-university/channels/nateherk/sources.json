@@ -4,7 +4,7 @@
  "git_archive_commit": "b8d02e5",
  "drive_folder_id": "1OusZtNI2vy7x5GMDxnJGEenrBEGJMqTk",
  "id_policy": {
-  "next_kc": 401,
+  "next_kc": 409,
   "note": "kc ids are allocated from next_kc by the orchestrator at dispatch; legacy ranges 0001-0016, 0101-0126, 0301-0304 are in use; scratchpad batch manifests are obsolete. sc id = view rank at rip time."
  },
  "context_policy": {
@@ -735,12 +735,30 @@
     "drive_status": "uploaded_verified"
    },
    "extraction": {
-    "status": "none",
-    "kc_ids": [],
+    "status": "extracted",
+    "kc_ids": [
+     "kc-0401",
+     "kc-0402",
+     "kc-0403",
+     "kc-0404",
+     "kc-0405",
+     "kc-0406",
+     "kc-0407",
+     "kc-0408"
+    ],
     "sc_id": "sc-0007",
-    "sc_written": false,
-    "chapter_coverage": {},
-    "notes": ""
+    "sc_written": true,
+    "chapter_coverage": {
+     "1": "done",
+     "2": "done",
+     "3": "done",
+     "4": "done",
+     "5": "done",
+     "6": "done",
+     "7": "done",
+     "8": "done"
+    },
+    "notes": "dry-test of per-video span protocol; all 8 chapters, spans fetched once each"
    }
   },
   {
