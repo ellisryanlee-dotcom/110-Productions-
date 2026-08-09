@@ -15,7 +15,8 @@ episode: 1
 - **Target runtime:** 17:00 (paced from the approved script's `target_length: 17:00`; VO clocked at ~150 wpm plus visual-business buffers on slates/gags/montages).
 - **Visual system:** all assets ORIGINAL and fictional. Fictional universe locked by the script — company "Harbor Supply Co.", agent "Sift", CRM "Rolodash". No source-channel footage, thumbnails, examples, or metaphors.
 - **Brand tokens:** brand colors/logo/typography are set downstream in the BRANDING stage — this file uses placeholder tokens like `[BRAND palette]`, `[BRAND accent]`, `[BRAND logo]`. Do not hard-code hex.
-- **Per-shot field schema:** `Shot ID` · `Timecode` (approx start–end) · `VO` (verbatim from approved script) · `Visual` (generatable on-screen description) · `On-screen text` (captions/titles/labels) · `Motion/Transition` · `Keyframe prompt seed` (one-line establishing-frame prompt for the image model).
+- **Per-shot field schema:** `Shot ID` · `Timecode` (approx start–end) · `VO` (verbatim from approved script) · `Visual` (generatable on-screen description) · `On-screen text` (captions/titles/labels) · `Motion/Transition` · `Keyframe prompt seed`. The full per-shot **ASSET TYPE** and **GEN APPROACH** for every shot live in the consolidated **SHOT ASSET / GEN INDEX** immediately below the section map (one row per shot: type + how to actually build it + duration), and are rolled up in the **ASSET MANIFEST** at the end. Read the index alongside each shot block.
+- **⚠️ Tier-0-first (production economics):** this is a software/agent-teardown — ~94% of runtime is faked UIs, dashboards, meters, code editors, and diagrams that render **deterministically** (HTML/CSS/SVG screen recordings, scripted keyframes) far cheaper and more controllably than AI video. The default for every shot is Tier-0 deterministic. AI image/video generation is reserved **only** for shots with no realistic deterministic option (atmospheric physical-metaphor b-roll) and is flagged ⚠️AI-GEN. **The `Keyframe prompt seed` on each shot is a design-reference / art-direction target for the Tier-0 build, NOT an instruction to AI-generate that shot** — it is an actual generation prompt only on the 3 shots flagged ⚠️AI-GEN in the index (S017, S035, S043).
 - **⚠️ VERIFY:** unresolved factual/demo caveats flagged by the editor are carried forward on the relevant shot; never silently dropped.
 - **Compliance:** realistic synthetic media requires YouTube's synthetic-media disclosure on title/end cards (see S052 VERIFY).
 
@@ -25,6 +26,8 @@ episode: 1
 |---|---|
 | Total shots | 52 (S001–S052) |
 | Total estimated runtime | 17:00 |
+| Shots requiring AI image/video generation | **3** (S017, S035, S043 — all optional b-roll overlays; base cut = 0 AI-gen) |
+| Deterministic Tier-0 shots | 49 of 52 (~94%) |
 | ⚠️ VERIFY flags carried forward | 3 |
 
 | Section | Shots | Count |
@@ -40,6 +43,69 @@ episode: 1
 | FINAL SAFETY NET — human in the loop | S044–S046 | 3 |
 | WHAT SURVIVED — the clean rerun | S047–S049 | 3 |
 | ARTIFACT DROP + CTA | S050–S052 | 3 |
+
+---
+
+## SHOT ASSET / GEN INDEX (all 52 shots)
+
+Per-shot **ASSET TYPE** + **GEN APPROACH** + duration. Cross-reference with each shot block above. ASSET TYPE ∈ {SCREEN-SIM (faked app/dashboard/code UI rendered deterministically as HTML/CSS), MOTION-GRAPHIC (diagram/animation), B-ROLL (AI-generated image/video), TITLE-CARD, TALKING-HEAD}. Every row is **Tier-0 deterministic** unless marked ⚠️AI-GEN.
+
+| Shot | Section | Asset type | Gen approach | Dur (s) |
+|---|---|---|---|---|
+| S001 | Hook | SCREEN-SIM | Tier-0: HTML/CSS inbox-triage dashboard (reusable), scripted CSS-keyframe email feed; screen-record. | 9 |
+| S002 | Hook | SCREEN-SIM | Tier-0: same dashboard component in "failure/duplicate-send" state; scripted timeline + counter. | 13 |
+| S003 | Hook | TITLE-CARD | Tier-0: HTML/CSS title card over a blurred frame of S002; GSAP/CSS transition. | 14 |
+| S004 | Hook | MOTION-GRAPHIC | Tier-0: HTML/CSS animated agenda list; staggered row reveal + simple icons. | 15 |
+| S005 | Context | MOTION-GRAPHIC | Tier-0: SVG split-screen diagram; ×200 action-arrow cascade. | 19 |
+| S006 | Context | MOTION-GRAPHIC | Tier-0: reusable token/cost meter component + wallet icon; animated counters. ⚠️VERIFY figures illustrative. | 14 |
+| S007 | Context | SCREEN-SIM | Tier-0: HTML/CSS node-canvas + code-editor mock; CSS transform reveal. | 14 |
+| S008 | Build | SCREEN-SIM | Tier-0: reusable Harbor inbox component; seeded fictional data + watermark. | 14 |
+| S009 | Build | MOTION-GRAPHIC | Tier-0: reusable SVG/HTML 5-node pipeline diagram + CRM callout. | 22 |
+| S010 | Build | MOTION-GRAPHIC | Tier-0: reuse S009 diagram; desaturate + caption overlay. | 9 |
+| S011 | Build | MOTION-GRAPHIC | Tier-0: reuse pipeline; per-chunk rule/needs-AI tag styling + logic cards. | 32 |
+| S012 | Build | TITLE-CARD | Tier-0: empty system-prompt-builder doc lead-in → reusable round-slate template. | 18 |
+| S013 | Round 1 | SCREEN-SIM | Tier-0: inbox + agent-config split; near-empty instructions field. | 11 |
+| S014 | Round 1 | SCREEN-SIM | Tier-0: draft pane (hollow reply) + prompt-section checklist component. | 16 |
+| S015 | Round 1 | SCREEN-SIM | Tier-0: reusable system-prompt-builder; section-by-section typewriter + checklist ticks. | 34 |
+| S016 | Round 1 | SCREEN-SIM | Tier-0: prompt-builder contrast (rejected wall vs line-by-line + test-run tethers). | 12 |
+| S017 | Round 1 | MOTION-GRAPHIC + ⚠️AI-GEN B-ROLL | Base Tier-0: paired "one line → test → adjust" loop animation. Overlay ⚠️AI-GEN: soup-pot + pinch-of-spice b-roll (appetizing food has no clean deterministic render). Fallback = loop animation alone. | 37 |
+| S018 | Round 1 | SCREEN-SIM | Tier-0: three-field correction block in prompt-builder + discarded-example token tag. | 19 |
+| S019 | Round 1 | SCREEN-SIM | Tier-0: inbox + pipeline + Rolodash CRM mock; 400 error state. | 18 |
+| S020 | Round 1 | MOTION-GRAPHIC | Tier-0: SVG request/response + status-families chart frame. | 20 |
+| S021 | Round 1 | MOTION-GRAPHIC | Tier-0: SVG code-family chart; sequential row reveal + 400 highlight. | 34 |
+| S022 | Round 1 | SCREEN-SIM | Tier-0: pipeline edit (clean&validate node) + 400→200 flip + checklist tick. | 18 |
+| S023 | Round 2 | SCREEN-SIM | Tier-0: round-slate lead-in → Rolodash key-status panel flip; dashboard runs on. | 13 |
+| S024 | Round 2 | SCREEN-SIM | Tier-0: run-detail view; magnifier reveal of silent empty lookup. | 19 |
+| S025 | Round 2 | MOTION-GRAPHIC | Tier-0: SVG error-handler workflow diagram; converging on-failure arrows. | 23 |
+| S026 | Round 2 | SCREEN-SIM | Tier-0: log-sheet + CSS device-frame notification card; 3-beat proof + caveat stamp. | 18 |
+| S027 | Round 2 | MOTION-GRAPHIC | Tier-0: SVG draft node splitting into success/error branches. | 21 |
+| S028 | Round 2 | MOTION-GRAPHIC | Tier-0: animated retry-loop diagram; human-readable error card → orchestrator. | 26 |
+| S029 | Round 2 | SCREEN-SIM | Tier-0: reusable checklist sidebar component; R1/R2 rows tick. | 13 |
+| S030 | Round 3 | SCREEN-SIM | Tier-0: round-slate → inbox + confident hallucinated draft (typewriter). | 8 |
+| S031 | Round 3 | SCREEN-SIM | Tier-0: split panel — draft vs CRM/order record; red "invented" stamps. | 22 |
+| S032 | Round 3 | TITLE-CARD | Tier-0: slate template; error-glyph → datapoint morph. | 7 |
+| S033 | Round 3 | SCREEN-SIM | Tier-0: prompt-builder rule patch + rerun + memory-file mock. | 34 |
+| S034 | Round 4 | SCREEN-SIM | Tier-0: round-slate → reuse hook dashboard failure component; extend counter >40. | 14 |
+| S035 | Round 4 | TITLE-CARD + ⚠️AI-GEN B-ROLL | Base Tier-0: "guardrails" slate. Overlay ⚠️AI-GEN: puppy-in-warehouse-with-keys b-roll (whimsical physical scene, no deterministic option). Fallback = slate alone. | 14 |
+| S036 | Round 4 | SCREEN-SIM | Tier-0: rules/config panel + scrollable run-history transcript mock. | 31 |
+| S037 | Round 4 | SCREEN-SIM | Tier-0: giant-thread mock + reused token meter spiking. ⚠️VERIFY figures illustrative. | 11 |
+| S038 | Round 4 | SCREEN-SIM | Tier-0: thread-collapse animation + meter drop + quality tick. | 34 |
+| S039 | Round 5 | TITLE-CARD | Tier-0: heavier round-slate variant (key + shield). | 6 |
+| S040 | Round 5 | SCREEN-SIM | Tier-0: prompt-builder with highlighted plaintext key + CSS blur. | 12 |
+| S041 | Round 5 | SCREEN-SIM | Tier-0: leak-arrows MG + code-editor/file-tree (.env/.gitignore) mock + rotate chip. | 39 |
+| S042 | Round 5 | SCREEN-SIM | Tier-0: permissions panel mock, all toggles ON. | 9 |
+| S043 | Round 5 | SCREEN-SIM + ⚠️AI-GEN B-ROLL | Base Tier-0: scoped sift-bot account + invoice line-item mock. Overlay ⚠️AI-GEN: valet-key handoff b-roll (physical-object metaphor, no deterministic option). Fallback = account UI alone. | 34 |
+| S044 | Safety net | MOTION-GRAPHIC | Tier-0: pipeline-over-safety-net motif + human handoff + slate. | 10 |
+| S045 | Safety net | SCREEN-SIM | Tier-0: generic (non-Slack-chrome) approval-card mock; typed feedback. | 18 |
+| S046 | Safety net | MOTION-GRAPHIC | Tier-0: SVG classifier branching diagram + version counter v1→v3. | 38 |
+| S047 | What survived | TITLE-CARD | Tier-0: "clean rerun" slate + queued round lineup. | 8 |
+| S048 | What survived | MOTION-GRAPHIC | Tier-0: montage compositing reused shot components; scripted green-pass states. | 34 |
+| S049 | What survived | SCREEN-SIM | Tier-0: reuse hook dashboard in hardened/clean state under same input. | 17 |
+| S050 | Artifact/CTA | SCREEN-SIM | Tier-0: render `production/artifacts/agent-prelaunch-checklist.md` as styled one-pager; scroll capture. | 27 |
+| S051 | Artifact/CTA | TITLE-CARD | Tier-0: CTA card + crash-test-rig graphic + brand logo + disclosure line. | 18 |
+| S052 | Artifact/CTA | TITLE-CARD | Tier-0: end-card template (YouTube end-screen safe zones) + disclosure. ⚠️VERIFY disclosure placement. | 30 |
+
+**Type tally:** SCREEN-SIM 29 · MOTION-GRAPHIC 15 · TITLE-CARD 8 · B-ROLL(AI) 0 base (3 optional overlays) · TALKING-HEAD 0. **AI-gen required: 3 (all optional).**
 
 ---
 
@@ -514,3 +580,61 @@ episode: 1
 - **Vague-ish screen directions expanded with judgment (flag for review):** S007 ("cut to a code/workflow canvas"), S044 (safety-net was implied, rendered as a literal net motif), S047 ("clean rerun slate") — confirm the expanded visual intent matches the director's vision before keyframing.
 - **Illustrative figures:** S006, S037, S038 show token/dollar numbers that must remain visibly stylized (not spec-accurate) — see the two VERIFY flags; keep any on-screen number clearly "demo/illustrative".
 - **Compliance blocker:** the synthetic-media disclosure (S051, S052) placement is a hard VERIFY against current YouTube policy before publish (out of scope for this repo artifact, but must not be dropped).
+
+---
+
+## ASSET MANIFEST
+
+### Deduplicated count by ASSET TYPE (base cut)
+
+| ASSET TYPE | Count | Shots |
+|---|---|---|
+| SCREEN-SIM | 29 | S001,S002,S007,S008,S013,S014,S015,S016,S018,S019,S022,S023,S024,S026,S029,S030,S031,S033,S034,S036,S037,S038,S040,S041,S042,S043,S045,S049,S050 |
+| MOTION-GRAPHIC | 15 | S004,S005,S006,S009,S010,S011,S017,S020,S021,S025,S027,S028,S044,S046,S048 |
+| TITLE-CARD | 8 | S003,S012,S032,S035,S039,S047,S051,S052 |
+| B-ROLL (AI) | 0 base | S017, S035, S043 as optional overlays only |
+| TALKING-HEAD | 0 | (faceless format — no on-camera/avatar host specified) |
+| **Total** | **52** | |
+
+### Shots REQUIRING AI image/video generation (budget drivers)
+
+**Base cut = 0 required.** Every `[SCREEN:]` cue resolves to a deterministic UI, diagram, or slate — all three physical-world analogies (soup, puppy, valet key) live in the VO, and their on-screen cues are Tier-0 (animation / slate / account UI). AI generation is needed **only** if the producer wants atmospheric b-roll overlays on those three analogy beats. All three are **optional**, each with a Tier-0 fallback that loses no information.
+
+| Shot | AI-gen asset | One-line rationale |
+|---|---|---|
+| S017 | Soup pot + pinch-of-spice (image or 3–5s clip) | "Seasoning a pot of soup" is a physical metaphor; appetizing food b-roll has no realistic deterministic render. Fallback: the paired line→test→adjust loop animation alone. |
+| S035 | Eager puppy loose in a warehouse holding keys (image or 3–5s clip) | "Puppy with the keys to the warehouse" is a whimsical physical scene impossible to fake deterministically. Fallback: the "guardrails" slate alone. |
+| S043 | Valet key handoff, trunk/glovebox staying locked (image or 3–5s clip) | "Valet key" is a physical-object metaphor; a believable key exchange needs generated imagery. Fallback: the scoped sift-bot account UI alone. |
+
+**Budget guidance:** commission at most 3 short AI assets (stills preferred over clips; promote to motion only if it adds value). Keep them brand-neutral and clearly stylized so they read as illustration, not stock realism. If budget is tight, ship the base cut at **0 AI-gen** with no loss of meaning — the analogies land in VO regardless.
+
+---
+
+## RECURRING ELEMENTS (build once, reuse everywhere)
+
+~90% of runtime is these components in different states — this is the production leverage. Build each as a parameterized Tier-0 component with named states.
+
+1. **Sift dashboard** (S001, S002, S034, S049) — inbox-triage app chrome: live label feed, Sales/Support/Billing pills, green-check badges, send-counter, error rail. States: `healthy`, `failing/duplicate-send`, `hardened/clean`.
+2. **Harbor Supply Co. inbox** (S008, S013, S019, S030) — ~200 seeded fictional sender rows (Dana Okafor, priya@vendorline.co, deals@free-cruise-now.biz), openable email + draft pane, "all invented" watermark.
+3. **Round slate / title-card template** (S003, S012, S023, S030, S032, S034, S035, S039, S047, S051, S052) — brand slate with round number/name; concept-slate variants ("failure = data", "guardrails", "human-in-the-loop"); CTA + end cards with baked-in synthetic-media disclosure.
+4. **Token / cost meter** (S006, S037, S038) — animated token counter + running dollar figure with a permanent "illustrative demo values" disclaimer strip. States: `ticking`, `spiking`, `dropping`. Carries the two ⚠️VERIFY fabricated-figure flags.
+5. **System-prompt builder** (S012, S014, S015, S016, S018, S033, S040) — markdown/code editor with section headers (Role/Context/Tools/Rules/Examples/Final notes), typewriter reveal, per-line→test-run tethers, highlight+blur for the leaked key, and the prompt-section checklist (all-✗ ↔ filling).
+6. **Workflow / pipeline node canvas** (S007, S009–S011, S019, S022, S025, S027, S028, S044, S046) — the Read→Classify→Label→Rolodash→Draft flow plus reusable node primitives (rule/needs-AI tags, success/error branches, error-trigger handler, classifier split, retry loop). One SVG/HTML node kit drives every diagram.
+7. **Rolodash CRM / order record / permissions** (S019, S023, S024, S031, S033, S042, S043) — CRM lookup panel, order/shipment record ("no shipment logged"), key-status badge (`active`/`expired`), permissions/scoping panel (all-ON ↔ scoped sift-bot read-only). Reused for over-privilege + hallucination-vs-record.
+8. **Checklist sidebar / Agent Pre-Launch Checklist** (S022, S029, S050) — running rules sidebar that ticks per round, plus the full one-page render of `production/artifacts/agent-prelaunch-checklist.md`. Same source content, two presentations.
+
+Secondary reusables: **error-log sheet + CSS device-frame notification card** (S026, S041), **HTTP status chart** (S020, S021), **.env/.gitignore/file-tree editor** (S040, S041), **approval card** (S045).
+
+---
+
+## OPEN QUESTIONS / RISKS for the producer
+
+1. **AI b-roll go/no-go (S017/S035/S043).** Base cut ships with 0 AI-gen; the three overlays are pure production-value adds with Tier-0 fallbacks. Approve or cut — cutting removes the entire AI budget line with no information loss.
+2. **Faceless vs host.** This screenplay is faceless (0 TALKING-HEAD), per the format spec. If a presenter or AI-avatar host is wanted, that's a new asset stream to spec — and an avatar interacts with the synthetic-media disclosure.
+3. **Synthetic-media disclosure placement (S051, S052 ⚠️VERIFY).** Confirm current YouTube "altered/synthetic content" policy — persistent on-screen line vs. platform label — and whether adding the 3 AI b-roll overlays changes the requirement. Blocking for upload, not for edit.
+4. **Fabricated cost/token figures (S006, S037, S038 ⚠️VERIFY).** Keep the "illustrative" disclaimer on every meter frame; never imply a measured per-run cost. A real benchmark would be a separate data pass.
+5. **Brand tokens unresolved.** All `[BRAND palette]`/`[BRAND accent]`/`[BRAND logo]` slots are set in the BRANDING stage. Lock design-system tokens before mass-rendering the reusable components, or re-renders multiply.
+6. **Third-party UI likeness (S045).** Rendered as a generic approval card (not Slack's real chrome) to avoid trademark issues; confirm acceptable, or secure rights to depict the real product.
+7. **Runtime lock.** Timecodes sum to exactly 17:00 on 150-wpm estimates; re-time against recorded VO. If VO runs long, trim from the montage (S048) or longest builders (S015, S033, S041, S046).
+8. **"25 checks" consistency (S050 vs artifact).** VO says "about twenty-five checks"; the artifact currently has 28 in 6 groups. Ensure the on-screen scroll and sidebar ticks stay consistent with `agent-prelaunch-checklist.md` so a viewer can't catch a mismatch.
+9. **Title's "25 ways" vs 5 rounds.** The 25 breaks are grouped into 5 rounds; on-screen only a handful of distinct breaks are itemized. Recommend the S050 checklist scroll satisfies the "25" promise — confirm we needn't enumerate all 25 on screen.
