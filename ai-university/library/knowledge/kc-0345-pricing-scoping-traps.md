@@ -12,8 +12,8 @@ confidence: high
 
 **What:** Three traps that quietly destroy an automation business. Underpricing
 attracts the wrong clients and makes future rate increases nearly impossible.
-Under-scoping — saying yes to "just one more feature" without rescoping — obliterates
-margins. Chasing many small monthly retainers too early is worse for money, mental
+Under-scoping — agreeing to every "small additional feature" while never redrawing
+the scope — obliterates margins. Chasing many small monthly retainers too early is worse for money, mental
 health, and reputation than landing fewer larger projects.
 
 **Why it matters:** Each trap feels like progress (a sale, a happy client, recurring

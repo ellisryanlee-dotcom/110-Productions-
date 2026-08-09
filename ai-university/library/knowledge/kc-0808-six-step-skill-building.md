@@ -24,7 +24,7 @@ helper can walk you through to gather the right information.
    order, what you look at, what decisions you make.
 4. **Reference files** — the context it needs (images, current priorities, style
    guides, brand assets).
-5. **Rules** — think about what could go wrong and add guardrails/constraints.
+5. **Rules** — anticipate the failure paths and add guardrails/constraints.
 6. **Self-improvement loop** — plan to test, watch, and refine it repeatedly.
 
 **Watch out for:** You will not write a perfect skill on the first try; the

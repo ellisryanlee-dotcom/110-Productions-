@@ -10,9 +10,9 @@ confidence: medium
 ---
 # /review and /ultra review: built-in code review
 
-**What:** Two built-in review commands. The plain review runs a fast, local structured review of what you just wrote — bugs, edge cases, design issues — at no cost beyond normal usage. The ultra variant uploads your branch to a cloud sandbox and spins up a fleet of reviewer agents that attack the code from different angles (logic, security, performance, edge cases), and every reported bug must be independently reproduced and verified before it lands on your list.
+**What:** Two built-in review commands. The plain review runs a fast, local structured review of what you just wrote — bugs, edge cases, design issues — at no cost beyond normal usage. The ultra variant works differently: your branch gets pushed to a sandboxed cloud environment, where a swarm of review agents launches and attacks the code from different angles (logic, security, performance, edge cases); every reported bug must be independently reproduced and verified before it lands on your list.
 
-**Why it matters:** Most people never use these even though they're already built in. The reproduce-before-report design means you get confirmed bugs, not a pile of style nitpicks or false positives.
+**Why it matters:** Most people never use these even though they're already built in. Because reproduction comes before reporting, what lands in front of you are confirmed bugs — not false alarms or a heap of stylistic complaints.
 
 **The moves:**
 1. Use the fast local review for quick feedback on everything you build.

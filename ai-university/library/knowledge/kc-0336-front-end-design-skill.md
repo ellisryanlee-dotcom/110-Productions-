@@ -23,8 +23,8 @@ prompting effort, so it's a near-free upgrade for any UI work.
 **The moves:**
 1. Install the front-end design skill (run the provided install commands, e.g., by
    pasting them into the agent) so it's available globally.
-2. In CLAUDE.md, add a rule to always invoke it before writing any front-end code,
-   every session, no exceptions.
+2. In CLAUDE.md, add a rule that the skill must run ahead of any front-end work —
+   each and every session, zero exceptions.
 3. Optionally add a brand-assets folder (logo, brand guidelines with colors and
    typography) and reference it so output is on-brand; you can also tag specific
    assets inline with @.

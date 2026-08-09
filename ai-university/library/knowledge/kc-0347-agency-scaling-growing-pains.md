@@ -11,8 +11,8 @@ confidence: medium
 # The freelancer-to-agency climb and its growing pains
 
 **What:** Moving from solo freelancer to consultant to agency raises what you can
-charge but adds operational drag: more people to manage, more moving pieces, and
-more chances for inefficiency. Early on, senior people end up doing work below
+charge but adds operational drag: more staff to coordinate, extra moving parts, and
+wider openings for inefficiency. Early on, senior people end up doing work below
 their role (e.g., a technical lead stuck building instead of leading engineers)
 because systems haven't caught up to project size. Maturity looks like each person
 in their right seat — sales, account management, engineering leadership, delivery.

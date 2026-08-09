@@ -12,7 +12,7 @@ confidence: medium
 
 **What:** A middle tier where the assistant runs on your machine with real read/write access to folders you grant, executing work rather than just describing it. Its defining features: **file-system access** (runs in an isolated environment but can own the folders you permit), **skills** (reusable markdown-defined workflows, with large public/official libraries to install from), **scheduled tasks** (run on a cadence, though the machine must be awake), **mobile control** (dispatch tasks from your phone while your desktop works), and **computer use** (visually navigate apps that lack integrations, by clicking/typing like a human).
 
-**Why it matters:** This is where the assistant stops being advice-only and becomes a co-worker that sorts your files, runs recurring reports, and operates apps. It's often the first tier where you save serious weekly time and where non-coders can sell automation as a service — the practical floor for an automation business.
+**Why it matters:** This is where the assistant stops being advice-only and becomes a co-worker that sorts your files, runs recurring reports, and operates apps. It's often the first tier that saves serious weekly time, and the first where someone without a coding background can charge clients for automation work — the practical floor for an automation business.
 
 **The moves:**
 1. Grant access only to the folders it needs; it can't touch what you don't permit.

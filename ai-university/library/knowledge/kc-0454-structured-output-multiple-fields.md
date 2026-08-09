@@ -10,7 +10,7 @@ confidence: high
 ---
 # Get multiple structured fields from one agent call
 
-**What:** By enabling a required output format and attaching a structured output parser, you make an agent return several named fields per item in one call — for example an image prompt, a video prompt, and an audio prompt for a given subject — instead of a single blob of text.
+**What:** By enabling a required output format and attaching a structured output parser, you make an agent return several named fields per item in one call — for example, one prompt each for image, video, and audio generation on a given subject — instead of a single blob of text.
 
 **Why it matters:** Downstream steps each need a specific piece of data. Structured output hands each field to the right next node cleanly, avoiding fragile text parsing.
 

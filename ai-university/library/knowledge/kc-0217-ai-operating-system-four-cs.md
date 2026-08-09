@@ -15,7 +15,7 @@ you work through all day — it can see your files and communications, act on th
 remember them better than you. It's built in four ordered pillars, the Four C's:
 Context (what it knows about you, your team, tools, voice, money), Connections (what
 data it can reach), Capabilities (what it can actually produce/do), and Cadence
-(when it acts on its own while your laptop is closed).
+(the schedule on which it acts unprompted, even with the laptop shut).
 
 **Why it matters:** It reframes AI from a chat window into a durable, tool-agnostic
 personal operating layer. The order matters — each C builds on the previous: no

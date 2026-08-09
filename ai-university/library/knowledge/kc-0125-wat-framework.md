@@ -10,7 +10,7 @@ confidence: high
 ---
 # The WAT framework: Workflows, Agent, Tools
 
-**What:** A structure for building reliable automations in an agentic coding tool. W = Workflows: natural-language instruction files (markdown SOPs) describing a process, its inputs, which tools to use, expected outputs, and edge cases. A = Agent: the coding model itself, which reads workflows, decides sequencing, calls tools, and handles failures. T = Tools: small code scripts (e.g., Python) that each perform one concrete action (scrape a page, generate a PDF, send an email).
+**What:** A structure for building reliable automations in an agentic coding tool. W = Workflows: natural-language instruction files (markdown SOPs) that lay out a process — what comes in, which tools get called, what should come out, and the edge cases to handle. A = Agent: the coding model itself, which reads workflows, decides sequencing, calls tools, and handles failures. T = Tools: small code scripts (e.g., Python) that each perform one concrete action (scrape a page, generate a PDF, send an email).
 
 **Why it matters:** It separates probabilistic reasoning (the agent) from deterministic execution (the tools), which is what makes agent-built systems dependable. Structure also prevents the mess of an unorganized project, and both workflows and tools improve over time as the agent learns from failures.
 

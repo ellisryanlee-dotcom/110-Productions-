@@ -10,8 +10,8 @@ confidence: high
 ---
 # n8n's core building blocks and node types
 
-**What:** n8n is a low-code/no-code automation tool where you drag and drop nodes on a
-canvas to build workflows. Three foundational concepts: a workflow is the overall set
+**What:** n8n is a drag-and-drop automation platform — you arrange nodes on a canvas
+to assemble workflows, with little or no code required. Three foundational concepts: a workflow is the overall set
 of instructions; a node is a single step/action within it; an execution is one run of
 the workflow. Nodes come in four main types: trigger (starts the workflow), action
 (does a specific task like send email or make an API request), data transformation

@@ -10,7 +10,7 @@ confidence: high
 ---
 # Git, GitHub, and work trees
 
-**What:** Git is a local version-control system that snapshots your project on each commit (with repos, commits, branches, push/pull/merge). GitHub is the cloud service on top of Git for backup, collaboration, pull requests, and version history. A git work tree lets you check out multiple branches of one repo at the same time, each in its own folder — so multiple agent sessions can work in parallel without colliding.
+**What:** Git is a local version-control system that snapshots your project on each commit (with repos, commits, branches, push/pull/merge). GitHub is the cloud service on top of Git for backup, collaboration, pull requests, and version history. Git work trees give you several simultaneous checkouts of a single repo, one folder per branch — so multiple agent sessions can work in parallel without colliding.
 
 **Why it matters:** Version control lets you roll back safely, collaborate, and move a project (like your executive assistant) across devices. Work trees are the key to running several coding agents at once on the same project without them overwriting each other's files.
 

@@ -12,9 +12,9 @@ confidence: high
 
 **What:** The value you sell isn't knowing how to wire up nodes or agents — it's
 diagnosing where a business leaks time or money and prescribing a fix. You pitch
-the outcome, not the tech: instead of "I can build you a chatbot," you say "your
-team spends N hours a week on X; I can build a system that cuts that to near zero
-so they can do Y." That reframing turns you from a builder into a business partner.
+the outcome, not the tech: instead of "I can build you a chatbot," you say "X is eating
+N hours of your team's week; the system I'd put in place takes that down to almost
+nothing, freeing them up for Y." That reframing turns you from a builder into a business partner.
 
 **Why it matters:** Builders compete on price and commoditized templates. Problem-
 solvers who tie a solution to a quantified business pain command higher prices and
@@ -29,9 +29,9 @@ long-term relationships, because the client buys the result, not the tool.
 4. Position yourself as an ongoing partner in the client's operations, not a
    one-off vendor.
 
-**Watch out for:** If your value is defined by the templates you hand out, it's
-being commoditized — use templates to build faster, but sell the customization and
-the outcome. Understanding how the business runs is the real skill, not node
+**Watch out for:** When handed-out templates are the whole of what clients pay
+you for, you're being commoditized — templates are for building faster; what you
+sell is the customization and the outcome. Understanding how the business runs is the real skill, not node
 wiring.
 
 **Original example to invent:** Source contrasted a chatbot pitch with an

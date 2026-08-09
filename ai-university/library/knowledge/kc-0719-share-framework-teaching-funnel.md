@@ -13,8 +13,8 @@ confidence: medium
 **What:** A five-step framework for the teaching stage — the highest-margin model,
 where you monetize expertise through content and community. SHARE = Show
 (demonstrate genuinely unique, impressive automations), Hook (offer a free
-resource to build trust and start a community), Attract in the free group (deliver
-consistent value to warm people up), Recommend (present a paid community as the
+resource to build trust and start a community), Attract (warm the free group up with
+a steady drip of value), Recommend (present a paid community as the
 natural next step for deeper access), Expand (keep producing content and templates
 that grow audience and recurring revenue). The funnel is: videos → free community
 → paid community.

@@ -29,8 +29,8 @@ recovers revenue the business already paid to generate.
 4. Stop instantly on reply/booking and hand off to sales with context.
 5. Enrich with CRM data or research to keep each touch personal.
 
-**Watch out for:** This is distinct from reactivating old contacts — it's for leads who
-just came in and need more touchpoints. It only helps businesses that already have
+**Watch out for:** This is distinct from reactivating old contacts — the target is a
+freshly arrived lead that still needs several more touches. It only helps businesses that already have
 decent lead volume; if getting leads is the bottleneck, fix that first. The cited
 conversion lifts are illustrative, not demonstrated.
 

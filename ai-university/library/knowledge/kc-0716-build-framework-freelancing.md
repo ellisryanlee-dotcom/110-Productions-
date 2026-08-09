@@ -14,8 +14,8 @@ confidence: medium
 automation templates rather than building from scratch. BUILD = Block by block
 (master one template at a time), Understand the use case (which businesses that
 template helps most), Install and imitate (import it, run with test data until you
-know every step, then record a short demo), Land the first client (reach out to
-businesses that clearly need that outcome), Document and duplicate (measure before/
+know every step, then record a short demo), Land your first client (pitch the
+businesses that visibly need that outcome), Document and duplicate (measure before/
 after results into a case study, then repeat with the next template).
 
 **Why it matters:** Templates lower the technical barrier so beginners can deliver

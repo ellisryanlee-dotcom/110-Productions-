@@ -10,7 +10,7 @@ confidence: medium
 ---
 # Trust, not tech, is the real barrier to autonomy
 
-**What:** The thing that actually stops people from running autonomous, always-on automations isn't technical difficulty — almost anyone can set up a scheduled cloud routine. It's trust: handing the wheel to a system that runs while you're asleep feels reckless, especially when you don't fully know what it's doing under the hood. Trust is built through reps over time, not installed as a feature.
+**What:** The thing that actually stops people from running autonomous, always-on automations isn't technical difficulty — almost anyone can set up a scheduled cloud routine. It's trust: surrendering control to something that keeps operating while you sleep feels reckless — all the more when what happens under the hood is partly opaque to you. Trust is built through reps over time, not installed as a feature.
 
 **Why it matters:** People plateau just below full autonomy because they won't deploy what they could easily build. Recognizing the blocker as trust (a skill you develop) rather than capability lets you deliberately earn it and cross into always-on operation responsibly.
 

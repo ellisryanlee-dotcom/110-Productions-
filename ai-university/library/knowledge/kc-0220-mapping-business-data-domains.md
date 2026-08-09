@@ -12,8 +12,8 @@ confidence: medium
 
 **What:** A planning exercise done on paper before onboarding an agent: list the
 seven tier-one domains you actually track month to month and, under each, the specific
-tools where that data lives. The seven domains are revenue, customer, calendar, comms,
-tasks, meetings, and knowledge (which group loosely into ops, comms, data, planning).
+tools where that data lives. Those seven: knowledge, meetings, tasks, comms, calendar,
+customer, and revenue — buckets that map loosely onto ops, comms, data, planning.
 
 **Why it matters:** You can't wire connections you haven't identified. Sketching the
 domains and their tools first reveals exactly which integrations you'll need and

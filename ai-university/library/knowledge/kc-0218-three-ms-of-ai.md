@@ -15,11 +15,11 @@ bring; Method is how you decide what's worth automating and how much; Machine is
 technical build. The mindset layer carries three habits: the default shift (before
 any task, ask how AI could do at least part of it), the function breakdown (your role
 is a tree of small tasks — automate one chunk at a time), and the curiosity rule
-(never accept output without asking why; treat AI as a mentor, not a vending machine).
+(question the reasoning behind every answer instead of just taking it — approach AI as a teacher to learn from, not a dispenser that hands you finished output).
 
 **Why it matters:** Most people ask a binary question — "will AI do this for me?" —
-and give up when the answer is "not fully." Reframing to "to what extent can I
-leverage AI here (30%? 60%?)" finds value in nearly every task. Breaking work into
+and give up when the answer is "not fully." Asking instead "what share of this could AI carry — 30%? 60%?" finds value in
+nearly every task. Breaking work into
 reusable chunks makes big, vague automations feel achievable and lets pieces be
 recombined across processes.
 

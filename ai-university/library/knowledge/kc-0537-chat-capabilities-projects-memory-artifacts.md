@@ -15,7 +15,7 @@ confidence: medium
 **Why it matters:** Most people stay stuck treating chat as a search bar and miss that it can hold context, plug into their existing tools, and produce actual deliverables. Using these turns chat into something that remembers you, pulls live data, and hands back finished work — reportedly saving hours a week.
 
 **The moves:**
-1. Create a project for anything recurring; drop in reference docs and a short system prompt about who you are and how you want responses.
+1. Create a project for anything recurring; drop in reference docs plus a short system prompt covering your identity and the response style you prefer.
 2. Rely on memory/past-chat search so you stop "starting from zero" each session.
 3. Connect the tools you already use (via OAuth) and ask the assistant to pull/summarize instead of pasting.
 4. Generate downloadable files when you need a deliverable, not just a brainstorm.

@@ -13,8 +13,8 @@ confidence: high
 **What:** How to make Claude Code build real n8n workflows. On its own the agent
 knows JSON but not n8n's nodes, expression syntax, and parameters. You add two
 things: an *n8n-MCP server* (exposes complete node coverage — all nodes with
-documented properties, thousands of workflow templates, and the ability to create,
-update, activate, and manage workflows in your instance) and an *n8n skills* set
+documented properties — plus thousands of workflow templates and lifecycle control
+over workflows in your instance: creating, updating, activating, managing) and an *n8n skills* set
 (teaches the agent expression syntax, how to use the MCP, workflow patterns,
 validation, node configuration, and coding). The easiest install is to give the
 agent the two GitHub repo URLs and tell it to install them and make them

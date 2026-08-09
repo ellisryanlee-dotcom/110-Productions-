@@ -10,7 +10,7 @@ confidence: high
 ---
 # Why coding-agent token cost compounds (and where the invisible spend hides)
 
-**What:** A token is the smallest unit of text a model reads and is billed for (roughly one word, imperfectly). The key mechanic: on every message, the agent re-reads the *entire* conversation from the beginning. So cost isn't additive, it compounds — an early message might be cheap, but a much later message costs far more because it re-processes everything before it. On top of your messages, the agent reloads the instruction file, MCP tool definitions, system prompt, skills, and open files every turn — invisible overhead that drips constantly.
+**What:** Tokens are the tiny chunks a model splits text into — the unit it both reads and bills by (each roughly one word, imperfectly). The key mechanic: on every message, the agent re-reads the *entire* conversation from the beginning. So cost isn't additive, it compounds — an early message might be cheap, but a much later message costs far more because it re-processes everything before it. On top of your messages, the agent reloads the instruction file, MCP tool definitions, system prompt, skills, and open files every turn — invisible overhead that drips constantly.
 
 **Why it matters:** Understanding this reverse-engineers every token-saving habit. It explains why long sessions get expensive fast, why a bloated instruction file or idle MCP server bleeds money, and why "I need a bigger plan" is usually really "I need better context hygiene." One tracked long chat reportedly spent ~98.5% of its tokens just re-reading old history.
 

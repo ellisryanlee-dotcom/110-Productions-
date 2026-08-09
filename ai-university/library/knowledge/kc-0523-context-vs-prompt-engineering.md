@@ -10,7 +10,7 @@ confidence: medium
 ---
 # Context engineering vs. prompt engineering
 
-**What:** A distinction between two related skills. **Prompt engineering** is telling the model *what to do*. **Context engineering** is the broader discipline of giving the model the *information it needs to think well* at the moment it needs it. Prompting is a subset of context engineering. An LLM doesn't inherently know your business, clients, or internal processes — at its core it predicts the next plausible token — so output quality is bounded by the context and subject-matter expertise you supply.
+**What:** A distinction between two related skills. **Prompt engineering** is the instruction side: you specify *the task to perform*. **Context engineering** is the broader discipline of giving the model the *information it needs to think well* at the moment it needs it. Prompting is a subset of context engineering. An LLM doesn't inherently know your business, clients, or internal processes — at its core it predicts the next plausible token — so output quality is bounded by the context and subject-matter expertise you supply.
 
 **Why it matters:** People expect models to "just know" and then distrust them when they guess wrong. Reframing the job as supplying the right context at the right time is what actually produces useful outputs and stops you from treating the model as a mind reader.
 

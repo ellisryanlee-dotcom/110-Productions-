@@ -15,7 +15,7 @@ confidence: medium
 **Why it matters:** Clients don't live in the tech and don't care about the jargon; they care about business impact. You understand the value because you build daily — it's your job to translate it. And without tracking, you can't prove value over time or produce case studies, which means lost future business.
 
 **The moves:**
-1. Before building, articulate the business impact: what time it saves, what labor cost it removes, what errors it reduces, what scale it unlocks.
+1. Before building, articulate the business impact: hours handed back, labor spend cut, error rates pushed down, new scale made possible.
 2. Start with MVPs that solve a clear, predictable problem before pitching flashier agents/voice.
 3. Once live, collect data: how often it runs, time saved, outcomes produced.
 4. After a few months, present real numbers to build trust and long-term relationships.

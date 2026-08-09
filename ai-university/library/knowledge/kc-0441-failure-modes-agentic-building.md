@@ -17,7 +17,7 @@ confidence: medium
 **The moves:**
 1. Context drift: break work into shorter focused sessions and keep an updated project summary so the agent always knows the current state.
 2. Hallucinations: always run whatever it builds — never take its word — and consider a dedicated QA/review sub-agent, since review agents catch things humans miss.
-3. Scoping: be specific up front, use plan mode, have it ask questions, and set explicit boundaries so it neither over- nor under-builds.
+3. Scoping: spell out the requirements before work starts, run plan mode, prompt the agent to ask clarifying questions, and set explicit boundaries so it neither over- nor under-builds.
 4. Frame all of these as normal parts of directing an agent, not signs the tool failed.
 
 **Watch out for:** Hallucinated errors are often subtle and only surface when real data hits the code — testing is the only reliable catch, especially if you can't read the code yourself.

@@ -27,7 +27,7 @@ starting at agency) is "running before you walk."
 
 **The moves:**
 1. Start at freelancing to generate proof and confidence.
-2. Use freelance case studies as your entry ticket into consulting.
+2. Let the case studies from freelancing open the door to consulting.
 3. Scale into an agency only once you have steady clients, ROI case studies, more
    work than you can handle, and a brand.
 4. Move to teaching last, when your automations and results can withstand public
