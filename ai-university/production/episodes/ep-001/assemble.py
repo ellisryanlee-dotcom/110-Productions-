@@ -11,7 +11,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-FF = "/usr/local/lib/python3.11/dist-packages/imageio_ffmpeg/binaries/ffmpeg-linux-x86_64-v7.0.2"
+FF = "/usr/bin/ffmpeg"
 HERE = Path(__file__).parent
 A = HERE / "assets"
 W = HERE / "build"
@@ -118,8 +118,10 @@ if not video_all.exists():
     ins = []
     for p, _, _ in pieces:
         ins += ["-i", str(p)]
-    labels = "".join(f"[{i}:v]" for i in range(len(pieces)))
-    fc = f"{labels}concat=n={len(pieces)}:v=1:a=0[out]"
+    norm = ";".join(f"[{i}:v]scale=1920:1080,setsar=1,fps=24,format=yuv420p[n{i}]"
+                    for i in range(len(pieces)))
+    labels = "".join(f"[n{i}]" for i in range(len(pieces)))
+    fc = f"{norm};{labels}concat=n={len(pieces)}:v=1:a=0[out]"
     run([FF, "-y", "-v", "error", *ins, "-filter_complex", fc, "-map", "[out]",
          "-r", "24", "-c:v", "libx264", "-preset", "veryfast", "-crf", "18",
          "-pix_fmt", "yuv420p", str(video_all)])
