@@ -1,0 +1,40 @@
+{
+  "$comment": "Schema for production/episodes/ep-NNN/shots.json — the shot ledger. Every generation attempt is logged; the episode report is computed from this file.",
+  "episode": "ep-001",
+  "status": "pre-production | in-production | delivered",
+  "script_ref": "path or null — the approved script this shot list implements",
+  "shots": [
+    {
+      "id": "s001",
+      "description": "one-line shot description",
+      "shot_type": ["human-hero", "body-movement", "facial-performance", "complex-camera", "dialogue", "b-roll", "screen-capture", "motion-graphics"],
+      "duration_s": 5,
+      "endpoints_defined": "true → prefer first/last-frame workflow",
+      "references": {
+        "keyframe": "path or generation id of the approved final-quality keyframe",
+        "last_frame": "path/id or null",
+        "elements": {"character": "element_id", "environment": "element_id"},
+        "locks": "identity+wardrobe+environment+lighting+composition confirmed before animation (bool)"
+      },
+      "attempts": [
+        {
+          "n": 1,
+          "surface": "rig | session",
+          "engine": "wan-2.2 | seedance-2.5 | seedance-2.0 | kling-3.0 | veo-3 | minimax-h3 | flux-3-video | other",
+          "model_id": "exact model/workflow id",
+          "cost": {"credits": 0, "usd_est": 0},
+          "result": "pass | fail",
+          "fail_reason": "null | keyframe-deficiency | prompt-deficiency | identity-drift | motion-artifact | facial-artifact | camera-failure | continuity-break | realism-below-standard | engine-limitation",
+          "output_ref": "generation/job id or file path"
+        }
+      ],
+      "final": {
+        "engine": "engine of the ACCEPTED take",
+        "model_id": "",
+        "attempt_n": 1,
+        "output_ref": "",
+        "total_shot_cost_usd": 0
+      }
+    }
+  ]
+}

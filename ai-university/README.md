@@ -37,6 +37,12 @@ ai-university/
     curriculum.md       AI University syllabus v0 (10 tracks + gaps)
     knowledge/          kc-* cards (what to teach)      ← filled by librarian
     style/              sc-* cards (how to package it)  ← sc-0000 + per-video cards
+  production/
+    engine-routing.md   video engine policy: Wan 2.2 workhorse, Seedance premium,
+                        reference-first workflow, routing loop, attempt caps
+    shots.schema.json   shot-ledger schema (every attempt + final engine tracked)
+    episode-report-template.md  post-episode stack-discovery report
+    episodes/ep-001/    shot ledger (pre-production)
 ```
 
 **Token architecture:** raw sources are cold (Drive canonical, git history as
