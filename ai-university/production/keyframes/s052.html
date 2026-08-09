@@ -30,12 +30,13 @@
   .logo-lockup .wm-mini { font-family: var(--ct-font-display); font-stretch: 125%; font-weight: 900;
     text-transform: uppercase; letter-spacing: 0.02em; font-size: 30px; color: var(--ct-text); }
 
+  /* disclosure: NEUTRAL + legible — amber is reserved for VERIFY, never decorative (per S052 brief) */
   .disclosure { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
     display: inline-flex; align-items: center; gap: 12px; padding: 12px 24px; border-radius: var(--ct-r-pill);
-    background: var(--ct-surface); border: 1px solid color-mix(in srgb, var(--ct-warn) 40%, var(--ct-line)); }
-  .disclosure .warn-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--ct-warn);
-    box-shadow: 0 0 9px var(--ct-warn); flex: 0 0 9px; }
-  .disclosure .txt { font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); color: var(--ct-warn); letter-spacing: 0.02em; white-space: nowrap; }
+    background: var(--ct-surface); border: 1px solid var(--ct-line); }
+  .disclosure .warn-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--ct-text-muted);
+    flex: 0 0 9px; }
+  .disclosure .txt { font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); color: var(--ct-text); letter-spacing: 0.02em; white-space: nowrap; }
 
   /* --- centered takeaways --- */
   .takeaways { position: absolute; left: 0; right: 0; top: 210px; z-index: 3;
