@@ -1,0 +1,157 @@
+<!doctype html>
+<meta charset="utf-8">
+<style>
+  :root{--ink:#0B0E14;--amber:#FFB300;--teal:#2DD4BF;--white:#F5F7FA;--dim:#8A93A6;}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{width:1920px;height:1080px;background:var(--ink);color:var(--white);
+       font-family:'Liberation Sans','DejaVu Sans',sans-serif;overflow:hidden}
+  .card{width:1920px;height:1080px;padding:110px 140px;position:relative;display:none}
+  .card.active{display:block}
+  .grain{position:absolute;inset:0;opacity:.05;pointer-events:none;
+    background-image:radial-gradient(#fff 0.6px,transparent 0.6px);background-size:5px 5px}
+  .kicker{font-size:30px;letter-spacing:.42em;color:var(--amber);font-weight:700}
+  .rule{height:5px;width:210px;background:var(--amber);margin:34px 0 60px}
+  h1{font-size:120px;line-height:1.04;font-weight:700;letter-spacing:-.01em}
+  h1 .t{color:var(--teal)} h1 .a{color:var(--amber)}
+  .sub{font-size:40px;color:var(--dim);margin-top:44px;font-weight:400}
+  .mark{position:absolute;bottom:74px;right:140px;font-size:34px;letter-spacing:.34em;
+        color:var(--dim);font-weight:700}
+  .mark b{color:var(--amber)}
+  .cols{display:flex;gap:70px;margin-top:20px}
+  .col{flex:1;background:#11141D;border:1px solid #1C2230;border-radius:26px;padding:64px}
+  .col h2{font-size:56px;margin-bottom:14px}
+  .col .tag{font-size:26px;letter-spacing:.3em;font-weight:700;margin-bottom:36px;display:block}
+  .col ul{list-style:none;font-size:38px;line-height:1.85;color:var(--white)}
+  .col li::before{content:"—  ";color:var(--dim)}
+  .closed .tag{color:#FF6B6B}.open .tag{color:var(--teal)}
+  .foot{position:absolute;bottom:74px;left:140px;font-size:30px;color:var(--dim)}
+  svg text{font-family:'Liberation Sans','DejaVu Sans',sans-serif}
+  .checkrow{display:flex;gap:60px;margin-top:70px}
+  .check{flex:1;border:2px solid #1C2230;border-radius:22px;padding:50px 56px;background:#11141D}
+  .check .lbl{font-size:28px;letter-spacing:.3em;color:var(--teal);font-weight:700}
+  .check p{font-size:40px;margin-top:22px;line-height:1.4}
+  table{border-collapse:collapse;width:100%;margin-top:30px;font-size:36px}
+  th{color:var(--dim);font-size:27px;letter-spacing:.22em;text-align:left;
+     padding:0 34px 26px 34px;border-bottom:2px solid #1C2230}
+  td{padding:27px 34px;border-bottom:1px solid #161B26;font-family:'Liberation Mono','DejaVu Sans Mono',monospace;font-size:33px}
+  .zero{color:var(--teal);font-weight:700}.paid{color:#FF6B6B;font-weight:700}
+  .warnstrip{display:flex;gap:60px;margin-top:64px}
+  .warn{flex:1;border-left:6px solid var(--amber);padding:8px 0 8px 44px;font-size:37px;line-height:1.45;color:var(--white)}
+</style>
+
+<div class="card" id="title">
+  <div class="grain"></div>
+  <div style="position:absolute;top:0;left:0;right:0;height:6px;background:linear-gradient(90deg,var(--amber),var(--teal))"></div>
+  <div style="margin-top:170px">
+    <div class="kicker">110 AI UNIVERSITY&nbsp;&nbsp;·&nbsp;&nbsp;EP.001</div>
+    <div class="rule"></div>
+    <h1>CLAUDE CODE,<br>NEARLY <span class="a">FREE</span><span class="t">.</span></h1>
+    <div class="sub">The cartridge trick — two zero-cost routes, two silent traps.</div>
+  </div>
+  <div class="mark"><b>110</b> AI UNIVERSITY</div>
+</div>
+
+<div class="card" id="closed_open">
+  <div class="grain"></div>
+  <div class="kicker">THE TWO KINDS OF CARTRIDGE</div>
+  <div class="rule"></div>
+  <div class="cols">
+    <div class="col closed"><span class="tag">CLOSED</span>
+      <h2>You rent it.</h2>
+      <ul><li>Reached only through the maker's paid API</li>
+          <li>Sealed — no inspecting, no modifying</li>
+          <li>Still leads the benchmarks</li></ul></div>
+    <div class="col open"><span class="tag">OPEN-WEIGHT</span>
+      <h2>You hold it.</h2>
+      <ul><li>Download the file, run it anywhere</li>
+          <li>Inspect it, modify it, keep it offline</li>
+          <li>The gap shrinks every release cycle</li></ul></div>
+  </div>
+  <div class="foot">Swapping the model under Claude Code is supported use — not a rules violation.</div>
+  <div class="mark"><b>110</b></div>
+</div>
+
+<div class="card" id="gap_chart">
+  <div class="grain"></div>
+  <div class="kicker">CODING-BENCHMARK SCORES, RELEASE OVER RELEASE</div>
+  <div class="rule"></div>
+  <svg width="1640" height="640" viewBox="0 0 1640 640">
+    <line x1="60" y1="560" x2="1600" y2="560" stroke="#1C2230" stroke-width="3"/>
+    <line x1="60" y1="60"  x2="60"   y2="560" stroke="#1C2230" stroke-width="3"/>
+    <path d="M 60 180 C 400 150, 900 120, 1560 95"  fill="none" stroke="#FF6B6B" stroke-width="9" stroke-linecap="round"/>
+    <path d="M 60 470 C 420 430, 900 300, 1560 150" fill="none" stroke="#2DD4BF" stroke-width="9" stroke-linecap="round"/>
+    <text x="1250" y="70"  fill="#FF6B6B" font-size="36" font-weight="bold">CLOSED FRONTIER</text>
+    <text x="1180" y="235" fill="#2DD4BF" font-size="36" font-weight="bold">BEST OPEN-WEIGHT</text>
+    <line x1="1560" y1="95" x2="1560" y2="150" stroke="#FFB300" stroke-width="7" stroke-dasharray="2 14" stroke-linecap="round"/>
+    <text x="1370" y="135" fill="#FFB300" font-size="34" font-weight="bold">the gap, today</text>
+    <text x="70" y="612" fill="#8A93A6" font-size="30">release cycles →</text>
+  </svg>
+  <div class="foot">Open models you can run today beat closed models that led the field two years ago.</div>
+  <div class="mark"><b>110</b></div>
+</div>
+
+<div class="card" id="gate_card">
+  <div class="grain"></div>
+  <div class="kicker">ONE-TIME GATE, THEN VERIFY</div>
+  <div class="rule"></div>
+  <h1 style="font-size:84px">Sign-in once. <span class="a">$5</span> once.<br>Then it sits unused.</h1>
+  <div class="checkrow">
+    <div class="check"><span class="lbl">READ TEST</span>
+      <p>"Explain what this repo's README promises."</p></div>
+    <div class="check"><span class="lbl">WRITE TEST</span>
+      <p>"Add a changelog entry for today."</p></div>
+  </div>
+  <div class="foot">Both land → your sessions are off the meter.</div>
+  <div class="mark"><b>110</b></div>
+</div>
+
+<div class="card" id="logs_card">
+  <div class="grain"></div>
+  <div class="kicker">VERIFY LIKE AN ACCOUNTANT — THE ROUTER'S OWN LOGS</div>
+  <div class="rule"></div>
+  <table>
+    <tr><th>TIME</th><th>MODEL</th><th>TOKENS</th><th>COST</th></tr>
+    <tr><td>09:41:22</td><td>freemodel-large-ctx</td><td>18,204</td><td class="zero">$0.00</td></tr>
+    <tr><td>09:41:9</td><td>freemodel-large-ctx</td><td>2,113</td><td class="zero">$0.00</td></tr>
+    <tr><td>09:40:51</td><td>freemodel-large-ctx</td><td>7,486</td><td class="zero">$0.00</td></tr>
+    <tr><td style="color:#FF6B6B">09:12:03</td><td class="paid">fast-sidekick (PAID)</td><td>1,022</td><td class="paid">$0.04</td></tr>
+  </table>
+  <div class="foot">That last row is the trap: one un-overridden model role, silently billed.</div>
+  <div class="mark"><b>110</b></div>
+</div>
+
+<div class="card" id="triage">
+  <div class="grain"></div>
+  <div class="kicker">WHICH CARTRIDGE, WHEN</div>
+  <div class="rule"></div>
+  <div class="cols" style="gap:60px">
+    <div class="col open"><span class="tag">FREE CARTRIDGE</span>
+      <ul style="font-size:37px"><li>Summarizing files</li><li>Searching a codebase</li>
+      <li>Scaffolding &amp; boilerplate</li><li>Triage &amp; classification</li><li>Research runs</li></ul></div>
+    <div class="col closed"><span class="tag">FRONTIER</span>
+      <ul style="font-size:37px"><li>Work that bleeds when wrong</li><li>Final reviews of free-model output</li>
+      <li>Anything shipping tonight</li></ul></div>
+  </div>
+  <div class="warnstrip">
+    <div class="warn">Free tiers rate-limit by the day <i>and</i> the minute.</div>
+    <div class="warn">Open models can fake a web search — test on something recent.</div>
+    <div class="warn">Cramped? Cheap <i>paid</i> open model: fraction of frontier price.</div>
+  </div>
+  <div class="mark"><b>110</b></div>
+</div>
+
+<div class="card" id="end_slate">
+  <div class="grain"></div>
+  <div style="position:absolute;top:0;left:0;right:0;height:6px;background:linear-gradient(90deg,var(--amber),var(--teal))"></div>
+  <div style="margin-top:230px;text-align:center">
+    <div class="kicker" style="letter-spacing:.5em">110 AI UNIVERSITY</div>
+    <h1 style="font-size:150px;margin-top:60px">Class dismissed<span class="a">.</span></h1>
+    <div class="sub" style="margin-top:70px">EP.002 — Agent memory: what your workflows forget, and why.</div>
+  </div>
+  <div class="mark" style="left:140px;right:auto">EP.001 · CLAUDE CODE, NEARLY FREE</div>
+</div>
+
+<script>
+  const id = location.hash.slice(1) || 'title';
+  document.getElementById(id).classList.add('active');
+</script>

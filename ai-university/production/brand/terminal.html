@@ -1,0 +1,90 @@
+<!doctype html>
+<meta charset="utf-8">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{width:1920px;height:1080px;background:#0B0E14;overflow:hidden;
+       font-family:'Liberation Mono','DejaVu Sans Mono',monospace;
+       display:flex;align-items:center;justify-content:center}
+  .win{width:1560px;height:840px;background:#0E1119;border:1px solid #1C2230;
+       border-radius:18px;box-shadow:0 40px 120px rgba(0,0,0,.6);overflow:hidden}
+  .bar{height:64px;background:#11141D;border-bottom:1px solid #1C2230;display:flex;
+       align-items:center;padding:0 30px;gap:12px}
+  .dot{width:18px;height:18px;border-radius:50%}
+  .d1{background:#FF6B6B}.d2{background:#FFB300}.d3{background:#2DD4BF}
+  .bt{margin-left:24px;color:#8A93A6;font-size:24px;letter-spacing:.08em}
+  .brand{margin-left:auto;color:#3A4356;font-size:22px;letter-spacing:.3em;font-weight:bold}
+  .brand b{color:#FFB300}
+  pre{padding:44px 52px;font-size:31px;line-height:1.72;color:#D7DEEA;white-space:pre-wrap}
+  .p{color:#2DD4BF}.c{color:#FFB300}.g{color:#5BE49B}.dim{color:#5A6478}.hl{background:#3A2E00;color:#FFD466;border-radius:4px;padding:0 6px}
+  .cur{display:inline-block;width:16px;height:34px;background:#D7DEEA;vertical-align:-6px;
+       animation:bl .9s steps(1) infinite}
+  @keyframes bl{50%{opacity:0}}
+</style>
+<div class="win">
+  <div class="bar"><div class="dot d1"></div><div class="dot d2"></div><div class="dot d3"></div>
+    <span class="bt" id="title">terminal</span><span class="brand"><b>110</b> LAB</span></div>
+  <pre id="out"></pre>
+</div>
+<script>
+// scenes: [type, payload, after-delay-ms]; type: t=type chars, p=print instant, w=wait
+const SCENES = {
+ ollama: {title:"~/projects/fieldkit — ollama", steps:[
+  ["t","<span class='p'>$</span> ollama pull nimbus-9b",900],
+  ["p","<span class='dim'>pulling manifest… \npulling 6.1 GB  ██████████████████████████  100%\nverifying sha256 digest… success</span>",700],
+  ["t","<span class='p'>$</span> ollama run nimbus-9b",700],
+  ["t","<span class='c'>>>></span> hello — one sentence, who are you?",500],
+  ["p","<span class='g'>I'm a 9-billion-parameter open-weight model running entirely on this machine.</span>",900],
+  ["t","<span class='p'>$</span> ollama launch claude",600],
+  ["p","<span class='dim'>Select model for this session:</span>\n  <span class='c'>❯ nimbus-9b            local · 6.1 GB</span>\n    nimbus-9b-cloud      cloud\n    vega-30b-cloud       cloud",1400]
+ ]},
+ ctx: {title:"~/projects/fieldkit — fixing the memory cap", steps:[
+  ["t","<span class='p'>$</span> ollama show nimbus-9b <span class='dim'>| grep context</span>",800],
+  ["p","<span class='dim'>context length</span>   <span class='hl'>8192</span>   <span class='dim'>← runtime cap, not the 200K the card advertises</span>",1100],
+  ["t","<span class='p'>$</span> ollama create nimbus-9b-64k -f Modelfile <span class='dim'># SET num_ctx 65536</span>",800],
+  ["p","<span class='g'>created custom model: nimbus-9b-64k</span>",600],
+  ["t","<span class='p'>$</span> ollama launch claude",600],
+  ["p","<span class='dim'>Select model:</span>\n    nimbus-9b            local\n  <span class='c'>❯ nimbus-9b-64k        local · 64K context</span>",900],
+  ["p","<span class='g'>✓ rename applied across 3 files — task held to completion</span>",1200]
+ ]},
+ settings: {title:".claude/settings.local.json — route EVERY role", steps:[
+  ["p","<span class='dim'>// point the console at the rental library — then override every cartridge slot</span>",500],
+  ["t","{\n  <span class='c'>\"env\"</span>: {",300],
+  ["t","\n    <span class='c'>\"ANTHROPIC_BASE_URL\"</span>: <span class='g'>\"https://openrouter.ai/api/v1\"</span>,",380],
+  ["t","\n    <span class='c'>\"ANTHROPIC_AUTH_TOKEN\"</span>: <span class='g'>\"sk-or-…your-openrouter-key\"</span>,",380],
+  ["t","\n    <span class='c'>\"ANTHROPIC_API_KEY\"</span>: <span class='g'>\"\"</span>,  <span class='dim'>// blank on purpose</span>",380],
+  ["t","\n    <span class='hl'>\"ANTHROPIC_MODEL\"</span>: <span class='g'>\"freemodel-large-ctx:free\"</span>,",420],
+  ["t","\n    <span class='hl'>\"ANTHROPIC_DEFAULT_SONNET_MODEL\"</span>: <span class='g'>\"freemodel-large-ctx:free\"</span>,",420],
+  ["t","\n    <span class='hl'>\"ANTHROPIC_DEFAULT_HAIKU_MODEL\"</span>: <span class='g'>\"freemodel-large-ctx:free\"</span>,",420],
+  ["t","\n    <span class='hl'>\"ANTHROPIC_SMALL_FAST_MODEL\"</span>: <span class='g'>\"freemodel-large-ctx:free\"</span>",420],
+  ["t","\n  }\n}",300],
+  ["p","\n<span class='dim'>every highlighted role overridden — nothing left to fall back to a paid model</span>",1200]
+ ]}
+};
+const scene = SCENES[location.hash.slice(1) || 'ollama'];
+document.getElementById('title').textContent = scene.title;
+const out = document.getElementById('out');
+let html = "";
+const CUR = "<span class='cur'></span>";
+async function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
+async function run(){
+  await sleep(600);
+  for (const [kind, payload, after] of scene.steps){
+    if (kind === "t"){
+      // type visible chars, preserving tags
+      const parts = payload.split(/(<[^>]+>)/);
+      for (const part of parts){
+        if (part.startsWith("<")) { html += part; out.innerHTML = html + CUR; }
+        else for (const ch of part){ html += ch; out.innerHTML = html + CUR; await sleep(26); }
+      }
+      html += "\n";
+    } else {
+      html += payload + "\n"; out.innerHTML = html + CUR;
+    }
+    out.innerHTML = html + CUR;
+    await sleep(after);
+  }
+  await sleep(1500);
+  document.title = "DONE";
+}
+run();
+</script>
