@@ -8,7 +8,7 @@ source_channel: "@nateherk"
 source_views: "415K"
 confidence: high
 ---
-# Plan first, treat the agent like a junior developer
+# Plan first: align before the agent writes code
 
 **What:** A prompting discipline that forces alignment before any code is written. You keep the agent in a read-only planning stance, hand it problems rather than exact commands, and make it interrogate you until it is confident it understands the goal.
 
@@ -23,4 +23,4 @@ confidence: high
 
 **Watch out for:** Maximum-thinking mode is expensive and slow; don't spend it on simple edits. Skipping the plan step is the fastest way to accumulate rework.
 
-**Original example to invent:** Source alludes to generic tasks. Writers should script a realistic feature request and show the clarifying-question exchange that prevents a wrong build.
+**Original example to invent:** Source alludes to generic tasks. Writers should script a realistic feature request and show the clarifying-question exchange that prevents a wrong build. Don't reuse the "treat the agent like a junior developer" framing — convey "plan and align first" a different way.

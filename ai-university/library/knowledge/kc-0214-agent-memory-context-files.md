@@ -18,8 +18,8 @@ about-me, priorities). Good agent harnesses also extract facts from your work an
 update these files automatically.
 
 **Why it matters:** Without loaded context every session feels like re-introducing
-yourself. Holistic context files make the agent behave like a briefed teammate from
-the first message. The source likens statelessness to a character who can't form new
+yourself. Holistic context files let the agent act with full knowledge of you
+and your work from the first message. The source likens statelessness to a character who can't form new
 memories — describe that analogy abstractly rather than copying it.
 
 **The moves:**
@@ -38,4 +38,4 @@ state in memory files. At large scale, prefer a queryable knowledge base over ev
 growing context files (see the LLM-wiki card).
 
 **Original example to invent:** Source auto-saved a user's name/preferences. Writers
-should show context files for a different persona/business.
+should show context files for a different persona/business. Don't reuse the "briefed teammate" personification.

@@ -10,7 +10,7 @@ confidence: medium
 ---
 # What an AI agent is (and how it differs from a chatbot)
 
-**What:** An AI agent is a software system that understands natural-language instructions and then takes real actions to complete a task, rather than only replying with text. Where a basic chatbot returns a pre-written or generated message, an agent can call tools to search data, update records, send messages, book appointments, and generate files. It functions like a digital worker: you give it a role and access to systems, and it operates on its own.
+**What:** An AI agent is a software system that understands natural-language instructions and then takes real actions to complete a task, rather than only replying with text. Where a basic chatbot returns a pre-written or generated message, an agent can call tools to search data, update records, send messages, book appointments, and generate files. It operates autonomously: you give it a role and access to systems, and it carries out tasks without step-by-step prompting.
 
 **Why it matters:** This distinction is the whole point of the field. A support chatbot can state a business's hours; an agent can check a live calendar, find an open slot, book it, send a confirmation, and log the interaction. Understanding "reply vs. act" tells you when a use case actually needs an agent versus a simpler bot.
 

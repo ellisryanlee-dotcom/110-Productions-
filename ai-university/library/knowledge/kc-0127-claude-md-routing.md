@@ -12,7 +12,7 @@ confidence: high
 
 **What:** A CLAUDE.md file is the system prompt for an agentic coding project — a markdown file the agent reads in full before every message you send. It should carry only the essentials: what the project is and its stack, the why of each component, and how you want the agent to work. Because it loads every turn, keep it lean (a common target is well under ~200 lines).
 
-**Why it matters:** A bloated system prompt burns context on every message. Routing solves this: rather than stuffing all business/personal/reference detail inside, CLAUDE.md points to other files ("if you need X, read this file"), acting like a table of contents so the agent knows where everything lives without paying for it constantly.
+**Why it matters:** A bloated system prompt burns context on every message. Routing solves this: rather than stuffing all business/personal/reference detail inside, CLAUDE.md points to other files ("if you need X, read this file"), functioning as an index so the agent knows where everything lives without paying for it constantly.
 
 **The moves:**
 1. Create CLAUDE.md and state the project's purpose, stack, key packages/skills, and working rules.

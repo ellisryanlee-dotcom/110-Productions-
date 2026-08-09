@@ -1,0 +1,149 @@
+{
+  "_comment": "OPE-158 triage: confirmed IDIOMS / literal usage \u2014 NOT source figures. card_lint suppresses exactly these (basename+match+snippet) hits. If a card body is edited near an entry the snippet no longer matches, so it re-flags for fresh review. Genuine source figures were relocated to each card's 'Original example to invent:' note instead of being allowlisted.",
+  "allow": {
+    "kc-0131-prompting-claude-code.md": [
+      {
+        "match": "like a",
+        "snippet": "utonomously, so you can't nudge them mid-run like a chat. Getting the request right up front is"
+      }
+    ],
+    "kc-0301-n8n-workflow-as-agent-tool.md": [
+      {
+        "match": "as if",
+        "snippet": "n lets one agent call another whole workflow as if it were a single tool. You add a \"call workf"
+      }
+    ],
+    "kc-0326-secrets-env-vars-exact-match.md": [
+      {
+        "match": "like a",
+        "snippet": ". **Watch out for:** The failure mode looks like a missing key even when it's set, purely from"
+      }
+    ],
+    "kc-0330-ollama-context-window-fix.md": [
+      {
+        "match": "as if",
+        "snippet": "oing, fails to complete a file edit, behaves as if it lost the thread \u2014 look like model incompe"
+      }
+    ],
+    "kc-0342-package-and-anchor-offers.md": [
+      {
+        "match": "like a",
+        "snippet": "sensible choice, and tiering makes you look like a professional service rather than an hourly f"
+      }
+    ],
+    "kc-0415-sell-outcomes-not-ai.md": [
+      {
+        "match": "like an",
+        "snippet": "e result as the product makes the price feel like an obvious return. This holds across both freel"
+      }
+    ],
+    "kc-0432-dynamic-tool-parameters-from-ai.md": [
+      {
+        "match": "like a",
+        "snippet": "at:** Instead of hardcoding a tool's inputs (like a fixed recipient), you mark fields as dynamic"
+      }
+    ],
+    "kc-0439-build-automations-claude-code-triggerdev.md": [
+      {
+        "match": "like a",
+        "snippet": "with a visual runtime that shows each step, like a traditional platform. **Why it matters:** I"
+      }
+    ],
+    "kc-0457-make-files-public-downstream.md": [
+      {
+        "match": "like a",
+        "snippet": "tream tools **What:** When a later service (like a render service) must fetch a file by URL, a"
+      }
+    ],
+    "kc-0500-four-cs-ai-operating-system.md": [
+      {
+        "match": "like a",
+        "snippet": "g system\" \u2014 a workspace where an AI harness (like a coding agent) becomes the default place you"
+      }
+    ],
+    "kc-0511-test-inactive-n8n-webhook.md": [
+      {
+        "match": "like an",
+        "snippet": "on an external event (a webhook/app trigger like an incoming message) only listens for a live ev"
+      }
+    ],
+    "kc-0523-context-vs-prompt-engineering.md": [
+      {
+        "match": "on top of thin context still produces",
+        "snippet": "is true. **Watch out for:** A great prompt on top of thin context still produces weak, guess-y answers. The best results need"
+      }
+    ],
+    "kc-0538-cowork-claude-operating-computer.md": [
+      {
+        "match": "like a",
+        "snippet": "s that lack integrations, by clicking/typing like a human). **Why it matters:** This is where t"
+      }
+    ],
+    "kc-0543-why-token-cost-compounds.md": [
+      {
+        "match": "On top of your messages",
+        "snippet": "ecause it re-processes everything before it. On top of your messages, the agent reloads the instruction file, MCP"
+      }
+    ],
+    "kc-0607-value-based-pricing-outcomes.md": [
+      {
+        "match": "like a",
+        "snippet": "uild system command a price that still feels like a bargain to the client because it's a fractio"
+      }
+    ],
+    "kc-0624-broker-api-trade-limits.md": [
+      {
+        "match": "like an",
+        "snippet": "**Watch out for:** A blocked call can look like an agent failure when it's really a tier or lim"
+      }
+    ],
+    "kc-0630-internal-reporting-notifications.md": [
+      {
+        "match": "imagine",
+        "snippet": "on it, becomes extremely sticky \u2014 they can't imagine going back. Delivering into existing tools ("
+      }
+    ],
+    "kc-0704-become-tool-agnostic.md": [
+      {
+        "match": "like a",
+        "snippet": "ity to one tool makes every new release feel like a threat. Anchoring to problem-solving makes t"
+      }
+    ],
+    "kc-0954-dynamic-system-prompt-injection.md": [
+      {
+        "match": "like a",
+        "snippet": "context. **Why it matters:** Some context \u2014 like a planning/scope document produced earlier in"
+      }
+    ],
+    "kc-0956-agentic-rag.md": [
+      {
+        "match": "like a",
+        "snippet": "and fetch full documents, or a second store like a knowledge graph or web search). 3. Use the s"
+      }
+    ],
+    "kc-1003-rag-delete-before-insert.md": [
+      {
+        "match": "on top of the old chunks",
+        "snippet": "es and you re-ingest it, the new chunks pile on top of the old chunks \u2014 the store now holds two versions of the sa"
+      }
+    ],
+    "kc-1049-ingesting-tabular-data-for-rag.md": [
+      {
+        "match": "like a",
+        "snippet": "ole table into a single text string to chunk like a document (simplest), create one embedded rec"
+      }
+    ],
+    "kc-1202-delete-then-reingest-to-keep-rag-in-sync.md": [
+      {
+        "match": "on top of the old ones",
+        "snippet": "ocument changes, don't append its new chunks on top of the old ones. First delete every existing record tied to"
+      }
+    ],
+    "kc-1219-knowledge-graphs-for-rag.md": [
+      {
+        "match": "on top of other RAG strategies",
+        "snippet": "he vector DB,\" or vice versa). 4. Layer this on top of other RAG strategies (hybrid chunking, contextual retrieval) rath"
+      }
+    ]
+  }
+}

@@ -16,11 +16,11 @@ confidence: medium
 
 **The moves:**
 1. On early passes of a new video type, be very specific: describe each beat, its card/text, position, and timing.
-2. Coach it like an iterative learning process — expect the first outputs to be rough and refine with targeted comments (compare to steering a beginner through a new skill, holding on until they can do it unassisted).
+2. Treat early passes as iterative refinement — expect the first outputs to be rough and refine with targeted comments until the look is dialed in.
 3. After a few examples of the same type, have the agent write a reusable design/philosophy file capturing that style.
 4. Reuse prior projects as references so each new video of that type gets better.
 5. Aim for the end state where one style file plus a raw file yields a near-finished edit.
 
 **Watch out for:** Early outputs land partway there and need iteration; don't expect a codified style before you've produced enough examples to generalize from. Keep a reference library organized by video type so the agent can point to the right style.
 
-**Original example to invent:** The source builds toward a shorts-automation style. Writers should invent a different repeatable format (e.g., a weekly recap video) and show distilling a style file from three prior editions.
+**Original example to invent:** The source builds toward a shorts-automation style. Writers should invent a different repeatable format (e.g., a weekly recap video) and show distilling a style file from three prior editions. Avoid the source's "steering a beginner through a new skill" teaching-a-person analogy.

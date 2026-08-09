@@ -16,7 +16,7 @@ confidence: high
 
 **The moves:**
 1. Install it, ideally at a user/global scope so it's available in every project without thinking about it.
-2. Describe the desired job conversationally, as if briefing a coworker, or drop in an existing SOP document.
+2. Describe the desired job conversationally in plain language, or drop in an existing SOP document.
 3. Let it draft, test, and iterate the skill, then package it for reuse.
 4. Reuse the packaged skill so the job runs the same way every time.
 

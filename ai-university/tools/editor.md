@@ -29,7 +29,11 @@ allowed to read BOTH the script and the source transcripts. Verdict is binary:
    the editor logged "revisions on top of revisions" as a 5-gram, below any n-gram
    threshold, so an overlap-only check gives false comfort. A flagged card means a
    source figure may reach the writer; confirm and fix the card before trusting the
-   script's example-originality.
+   script's example-originality. Reviewed idioms are suppressed via
+   `tools/card_lint_allow.json` (OPE-158 triage), so a clean run means "no
+   *unreviewed* figures"; a flag is therefore a genuinely new candidate — relocate
+   it into the card's `Original example to invent:` note, don't allowlist it. Run
+   `--no-allow` to audit the full idiom set.
 4. **Fact & step check.** Build steps must be executable as written (run them
    or verify against current official docs — tools change fast). Prices,
    limits, and model names verified as of the draft date.

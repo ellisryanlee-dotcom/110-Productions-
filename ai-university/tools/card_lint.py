@@ -23,9 +23,18 @@ Design (per the OPE-154 method note):
 
 Exit status: 0 if clean, 1 if any card is flagged (usable as a gate step).
 
+Confirmed-idiom allowlist (OPE-158): generic English similes and literal "on top
+of" usage carry no source fingerprint, but the broad cues still match them. Hits a
+human has reviewed as clear idioms are recorded in tools/card_lint_allow.json and
+suppressed by default, so a clean run means "no UNREVIEWED figures." The allowlist
+key is (basename, match, snippet); editing a card body near an allowed spot shifts
+the snippet and re-flags it, so the allowlist can never mask a newly-added figure.
+Genuine figures are relocated into each card's invent-note — never allowlisted.
+
 Usage:
     python3 tools/card_lint.py                      # lint all knowledge cards
     python3 tools/card_lint.py library/knowledge/kc-0215-*.md   # specific cards
+    python3 tools/card_lint.py --no-allow           # show reviewed idioms too
     python3 tools/card_lint.py --transcripts channels   # + 8-gram supplement
     python3 tools/card_lint.py --json               # machine-readable output
 """
@@ -85,19 +94,42 @@ def snippet(body, start, end, pad=45):
     return re.sub(r"\s+", " ", s)
 
 
-def lint_card(path):
+def load_allowlist(path=None):
+    """Load the confirmed-idiom allowlist (OPE-158 triage).
+
+    Maps a card basename to a set of (match, snippet) hits a human already
+    reviewed as clear idioms / literal usage — NOT source figures. Suppressing
+    the exact (match, snippet) keeps the key tight: if a card body is later
+    edited near an allowed spot the snippet shifts and the hit RE-FLAGS for
+    fresh review, so the allowlist can never silence a newly-introduced figure.
+    Genuine figures are relocated into each card's invent-note, never allowlisted."""
+    if path is None:
+        here = os.path.dirname(os.path.abspath(__file__))
+        path = os.path.join(here, "card_lint_allow.json")
+    if not os.path.isfile(path):
+        return {}
+    with open(path, encoding="utf-8") as fh:
+        data = json.load(fh)
+    allow = {}
+    for base, entries in data.get("allow", {}).items():
+        allow[base] = {(e["match"], e["snippet"]) for e in entries}
+    return allow
+
+
+def lint_card(path, allowlist=None):
     with open(path, encoding="utf-8") as fh:
         text = fh.read()
     frontmatter, body, _note = split_card(text)
     traceable = bool(SOURCE_VIDEO_RE.search(frontmatter))
+    allowed = (allowlist or {}).get(os.path.basename(path), set())
     hits = []
     for regex, label in CUE_RES:
         for m in regex.finditer(body):
-            hits.append({
-                "cue": label,
-                "match": m.group(0).strip(),
-                "snippet": snippet(body, m.start(), m.end()),
-            })
+            match = m.group(0).strip()
+            snip = snippet(body, m.start(), m.end())
+            if (match, snip) in allowed:
+                continue
+            hits.append({"cue": label, "match": match, "snippet": snip})
     return {"path": path, "traceable": traceable, "hits": hits}
 
 
@@ -146,8 +178,12 @@ def main():
     ap.add_argument("--transcripts", metavar="ROOT",
                     help="also run the 8-gram overlap SUPPLEMENT vs source transcripts under ROOT")
     ap.add_argument("--json", action="store_true", help="machine-readable output")
+    ap.add_argument("--no-allow", action="store_true",
+                    help="ignore card_lint_allow.json and show every cue hit, incl. reviewed idioms")
     ap.add_argument("-n", type=int, default=8, help="n-gram length for the supplement (default 8)")
     args = ap.parse_args()
+
+    allowlist = {} if args.no_allow else load_allowlist()
 
     if args.paths:
         paths = []
@@ -160,7 +196,7 @@ def main():
 
     results = []
     for path in paths:
-        r = lint_card(path)
+        r = lint_card(path, allowlist)
         if args.transcripts:
             r["shared_ngrams"] = ngram_supplement(path, args.transcripts, args.n)
         results.append(r)

@@ -20,6 +20,6 @@ confidence: medium
 3. **Capabilities** — build skills, agents, automations, and pipelines that let the system *do* work, not just answer.
 4. **Cadence** — promote proven capabilities to run on triggers (manual, event, or schedule) so work happens unattended.
 
-**Watch out for:** Take the stages in order; skipping to automation before context/connections exist produces a system that behaves like a stranger. As you add autonomy, cost, risk, and maintenance all rise — cadence must be *earned* by battle-testing capabilities first.
+**Watch out for:** Take the stages in order; skipping to automation before context/connections exist produces a system that doesn't actually know your world. As you add autonomy, cost, risk, and maintenance all rise — cadence must be *earned* by battle-testing capabilities first.
 
-**Original example to invent:** The source frames this for a solo creator's business. Writers should invent a different domain (e.g., a freelance bookkeeper or a small landscaping firm) and walk each C with domain-specific data sources and automations.
+**Original example to invent:** The source frames this for a solo creator's business. Writers should invent a different domain (e.g., a freelance bookkeeper or a small landscaping firm) and walk each C with domain-specific data sources and automations. Avoid the "behaves like a stranger" personification for a context-poor system.

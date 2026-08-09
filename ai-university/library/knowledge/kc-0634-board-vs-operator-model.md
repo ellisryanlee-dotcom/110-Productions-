@@ -8,11 +8,11 @@ source_channel: "@nateherk"
 source_views: "244K"
 confidence: high
 ---
-# Manage agents as a board, not as an operator
+# Direct agents by outcomes, not step-by-step execution
 
-**What:** A stance for running an agent organization: act like a board of directors,
-not a hands-on operator. You supply high-level goals, target metrics, and the outcomes
-you want, then let a lead agent (e.g., a CEO agent) figure out who to hire, how to
+**What:** A stance for running an agent organization: set high-level direction and
+review outcomes rather than executing tasks yourself. You supply high-level goals,
+target metrics, and the outcomes you want, then let a lead agent (e.g., a CEO agent) figure out who to hire, how to
 sequence work, and which specialists to loop in. You interact by creating issues,
 leaving comments, and approving decisions — not by micromanaging each step.
 
@@ -34,5 +34,5 @@ well-instructed; vague goals with no review produces drift. Turning off approval
 increases autonomy and cost/risk simultaneously.
 
 **Original example to invent:** Source gave a content-scaling goal to an AIS company.
-Writers should invent a different high-level objective and show a board-style issue and
-approval rather than hands-on task execution.
+Writers should invent a different high-level objective and show a direction-setting issue and
+approval rather than hands-on task execution. Don't reuse the source's "board of directors vs. hands-on operator" analogy.

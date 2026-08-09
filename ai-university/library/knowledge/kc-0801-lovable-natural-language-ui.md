@@ -11,8 +11,8 @@ confidence: high
 # Building a web app UI by prompting Lovable
 
 **What:** Generating and refining a working web interface by describing it in
-plain language to an AI app builder, treating the tool like a developer you chat
-with rather than something you hand-code.
+plain language to an AI app builder and refining it conversationally rather than
+hand-coding.
 
 **Why it matters:** You can stand up a usable front end in minutes with no coding
 knowledge, then shape it conversationally until it fits, which collapses the gap
@@ -36,4 +36,4 @@ another instruction rather than restarting. Auth and persistent per-user data
 require a real backend/database, not the prototype alone.
 
 **Original example to invent:** The source made a problem-submission landing page
-with a playful theme. Writers should build a different simple single-purpose page.
+with a playful theme. Writers should build a different simple single-purpose page. Avoid the "treating the tool like a developer you chat with" framing.

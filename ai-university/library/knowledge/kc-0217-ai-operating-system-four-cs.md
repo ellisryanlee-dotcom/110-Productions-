@@ -33,7 +33,8 @@ churn because the foundation (files, structure, principles) ports across harness
 **Watch out for:** Skipping the order leaves gaps (a connected agent with no
 capabilities is just a search box). Tools change roughly every six months — invest in
 the durable layer underneath, not any one product. A quick test: open a fresh session
-and ask a question; if it answers like a stranger, your context pillar is thin.
+and ask a question; if the answer shows no real knowledge of you or your business,
+your context pillar is thin.
 
 **Original example to invent:** Source built the OS around a creator/education
-business. Writers should instantiate the Four C's for a different business type.
+business. Writers should instantiate the Four C's for a different business type. Avoid the "answers like a stranger" personification when illustrating a thin context layer.

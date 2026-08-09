@@ -16,11 +16,11 @@ confidence: high
 
 **The moves:**
 1. Give a rough goal, then instruct the agent to ask clarifying questions until it's ~95% confident (invoke its question tool).
-2. Treat it like a capable new contractor who's never seen your project — supply context, constraints, and expected outcomes.
+2. Assume it has zero prior knowledge of your project — supply the context, constraints, and expected outcomes it needs to act correctly.
 3. Prefer posing problems over dictating commands ("how should we handle X?") so it reasons and you can inspect its assumptions.
 4. Define what "done" looks like (exact counts, fields, stop conditions) so it doesn't over-build or loop.
 5. Use voice-to-text to brain-dump faster and more naturally than typing.
 
 **Watch out for:** Under-specified goals ("build me a lead scraper") give random results; the agent needs the industry, role, and format. Not defining a finish line lets it over-complicate or keep researching.
 
-**Original example to invent:** The source contrasts a weak website prompt with a detailed one and role-plays the agent as an expert asking questions. Write your own weak-vs-strong prompt pair for a different deliverable.
+**Original example to invent:** The source contrasts a weak website prompt with a detailed one and role-plays the agent as an expert asking questions. Write your own weak-vs-strong prompt pair for a different deliverable. Do not reuse the source's "new contractor / new hire who's never seen your project" framing for "needs full upfront context" — convey it a different way.

@@ -11,8 +11,8 @@ confidence: high
 # MCP as an app-store for agent tools; skills load on demand to save context
 
 **What:** Two related ideas about giving agents capabilities efficiently. An MCP
-(Model Context Protocol) is like an app store for agents: tools pre-wrapped and
-documented so an agent knows what's available and how to call each correctly; if a
+(Model Context Protocol) is a standard that wraps tools with documentation so an
+agent knows what's available and how to call each correctly; if a
 tool has no MCP, the agent can fall back to reading the API docs and making the
 request itself. Skills, by contrast, are on-demand knowledge: the agent knows they
 exist but only reads a skill's full contents when a task needs it, keeping tokens

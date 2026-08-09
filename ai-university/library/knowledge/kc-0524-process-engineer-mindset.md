@@ -8,7 +8,7 @@ source_channel: "@nateherk"
 source_views: "293K"
 confidence: medium
 ---
-# Think like a process engineer: map and wireframe before you build
+# Map and wireframe the process before you build
 
 **What:** Before opening the automation canvas, sit down and map the business process on paper, then wireframe it — clarifying who does what, when it happens, what triggers it, where data comes from, what's done with the data, and the final outcome that matters. Only after the steps are clear and everyone agrees do you start building.
 
@@ -23,4 +23,4 @@ confidence: medium
 
 **Watch out for:** If you can't explain the process clearly on paper and get agreement, you can't automate it cleanly — building from memory yields something that "kind of works" but takes far longer and is often wrong. The source invokes the well-known aphorism about spending most of your prep time sharpening the tool before starting; treat that idea abstractly.
 
-**Original example to invent:** The source references a Lego-instructions comparison for building without a plan. Writers should invent a different metaphor and a concrete process-mapping walkthrough for one workflow.
+**Original example to invent:** The source references a Lego-instructions comparison for building without a plan. Writers should invent a different metaphor and a concrete process-mapping walkthrough for one workflow. Also avoid the "think like a process engineer" role framing.

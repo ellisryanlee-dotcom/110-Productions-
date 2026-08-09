@@ -16,9 +16,9 @@ confidence: medium
 
 **The moves:**
 1. Treat knowledge as the foundation: gather and organize what the system needs to know before building any automation.
-2. A quick gut check: ask the system something about you and your business. If the answer sounds like a stranger, your knowledge layer is thin; if it sounds like a teammate/co-founder, it's ready.
-3. Only after the knowledge layer feels like a colleague, start layering capabilities and cadence on top.
+2. A quick gut check: ask the system something about you and your business. If the answer is generic and shows no real familiarity, the knowledge layer is thin; if it answers with specific, correct detail about your world, it's ready.
+3. Only after the knowledge layer reliably answers with real familiarity, start layering capabilities and cadence on top.
 
 **Watch out for:** Don't jump straight to flashy automations. An action layer sitting on shallow knowledge produces confident, wrong output.
 
-**Original example to invent:** The source demonstrates the gut check on a creator's own business. Writers should script a different persona asking their system a "what did we decide about X" question and contrast a stranger-like vs. teammate-like answer.
+**Original example to invent:** The source demonstrates the gut check on a creator's own business. Writers should script a different persona asking their system a "what did we decide about X" question and contrast a generic, unfamiliar answer with a specific, well-informed one. Invent your own contrast — don't reuse the source's "stranger / teammate / co-founder / colleague" personifications.

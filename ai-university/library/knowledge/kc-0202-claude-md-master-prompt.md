@@ -19,8 +19,8 @@ gemini.md), and each agent understands its own convention.
 
 **Why it matters:** Without it, the agent is generic — it doesn't know the
 business, the tools available, or where documents live. This one file is what turns
-a blank agent into something that behaves like a briefed teammate. It is also the
-first thing a cloud/remote run reads, so it is the durable brain of the project.
+a blank, generic agent into one that acts with full knowledge of the project from
+the first message. It is also the first thing a cloud/remote run reads, so it is the durable brain of the project.
 
 **The moves:**
 1. Create the instruction file at the project root.
@@ -36,4 +36,4 @@ them.
 
 **Original example to invent:** Source's file routes an AI-operating-system project.
 Writers should show a differently-scoped instruction file (e.g., for a research
-project) so the structure, not the wording, is what transfers.
+project) so the structure, not the wording, is what transfers. Don't reuse the "briefed teammate" personification for a well-configured agent.
