@@ -19,6 +19,18 @@ episode: 1
 - **⚠️ Tier-0-first (production economics):** this is a software/agent-teardown — ~94% of runtime is faked UIs, dashboards, meters, code editors, and diagrams that render **deterministically** (HTML/CSS/SVG screen recordings, scripted keyframes) far cheaper and more controllably than AI video. The default for every shot is Tier-0 deterministic. AI image/video generation is reserved **only** for shots with no realistic deterministic option (atmospheric physical-metaphor b-roll) and is flagged ⚠️AI-GEN. **The `Keyframe prompt seed` on each shot is a design-reference / art-direction target for the Tier-0 build, NOT an instruction to AI-generate that shot** — it is an actual generation prompt only on the 3 shots flagged ⚠️AI-GEN in the index (S017, S035, S043).
 - **⚠️ VERIFY:** unresolved factual/demo caveats flagged by the editor are carried forward on the relevant shot; never silently dropped.
 - **Compliance:** realistic synthetic media requires YouTube's synthetic-media disclosure on title/end cards (see S052 VERIFY).
+- **🔢 Kill-Counter HUD (global overlay — Option A, ratified by Ryan 2026-08-09):** the title promises *25*, so a persistent **"BREAKS NN / 25"** instrument is docked **top-right from the hook onward** and ticks **once per break beat** — the 25 `[COUNTER: Break NN / 25]` cues in the approved script (`crash-test-001-draft.md`) are the **source of truth** for when it increments. Reusable component: `.ct-killcounter` in `production/keyframes/tokens.css` (states: `armed` 00/25 through the hook → `ticking` during the rounds → `locked` 25/25 at the end of Round 5 / safety net → `fixed` green on the clean rerun, showing the survivor count). It is a HUD overlay layered on top of each shot's base render — **not** a separate shot — so it does not change the 52-shot count or the AI-GEN gating. The 25 breaks map to the round sections as follows (exact per-beat placement follows the script COUNTER cues verbatim):
+
+  | Breaks | Round section | Shots | Checklist group |
+  |---|---|---|---|
+  | 1–6 | ROUND 1 — Bad inputs / wrong tool | S013–S022 | Input & scope |
+  | 7–11 | ROUND 2 — Dead APIs / fragile chains | S023–S029 | Errors & retries |
+  | 12–15 | ROUND 3 — The lying model | S030–S033 | Verification |
+  | 16–20 | ROUND 4 — Runaway / cost blowup | S034–S038 | Guardrails & cost |
+  | 21–23 | ROUND 5 — Leaky secrets / over-privilege | S039–S043 | Secrets & permissions |
+  | 24–25 | FINAL SAFETY NET — human in the loop | S044–S046 | Human gates |
+
+  The counter reaches **25 / 25** by the end of the safety-net section, then flips to `fixed` (green) on the clean rerun (S047–S049). The **diegetic** counters already in the shot descriptions (duplicate-send counter past 40, token/cost meters, unread counts) are separate in-world UI and are unaffected by this HUD.
 
 ## Summary
 

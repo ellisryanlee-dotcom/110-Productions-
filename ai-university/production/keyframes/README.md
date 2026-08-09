@@ -15,11 +15,22 @@ for fully offline/deterministic renders, self-host the woff2 files and drop the 
 
 | File | Shot | What it shows |
 |---|---|---|
-| `tokens.css` | — | Single source of truth. `--ct-*` tokens authored verbatim from brand-bible §2.1 + shared `.stage`, grid, badge, wordmark helpers. |
+| `tokens.css` | — | Single source of truth. `--ct-*` tokens authored verbatim from brand-bible §2.1 + shared `.stage`, grid, badge, wordmark helpers, and the global **`.ct-killcounter`** HUD (Option A). |
 | `s001.html` | S001 | Calm, trustworthy **Sift** inbox-triage dashboard. Emails auto-labeled Sales / Support / Billing, green ✓ per row, "all systems nominal". |
 | `s002.html` | S002 | Same dashboard **glitching** — one corrupted email card, four stacked duplicate "sent" cards, red **API error** banner, spinning duplicate-send counter, RGB-split header. |
 | `s003.html` | S003 | **Title card (money-shot).** CRASH TEST AGENTS wordmark + break→fix spine over a blurred/desaturated freeze of S002. Tagline "We break AI agents so yours don't." + promise line "25 ways to kill an agent → 25 fixes." |
 | `s004.html` | S004 | **Agenda panel.** Five failure-round rows (bad inputs / dead APIs / lying model / runaway loop / leaky secrets) with minimal SVG icons, a green "Final safety net" row, and a highlighted accent-cyan **Free: Agent Pre-Launch Checklist** download row. |
+
+## Kill-Counter HUD (Option A — global overlay)
+
+Ryan ratified **Option A ("honor the count")** on 2026-08-09: the title promises *25*, so a
+persistent **`BREAKS NN / 25`** instrument (`.ct-killcounter`, defined in `tokens.css`) is docked
+**top-right from the hook onward** and ticks once per break beat. The 25 `[COUNTER: Break NN / 25]`
+cues in the approved script are the source of truth for *when* it increments; the break→round-section
+mapping lives in the screenplay Format spec. In this HOOK slice all four shots rest at **`00 / 25`
+(`data-state="armed"`)** — the instrument is present but hasn't ticked yet. Downstream shots set
+`data-state` to `ticking` / `locked` (25/25) / `fixed` (green survivor count on the clean rerun).
+The HUD is a layered overlay, **not** a separate shot — the 52-shot count and AI-GEN gating are unchanged.
 
 ## How these render
 

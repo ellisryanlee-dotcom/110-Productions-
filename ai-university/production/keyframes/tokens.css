@@ -135,6 +135,58 @@ html, body {
 .badge--warn  { background: transparent; border: 1px solid var(--ct-warn);
   color: var(--ct-warn); }
 
+/* ============================================================
+   Kill-Counter HUD (global overlay) — Option A (OPE-160 / parent OPE-156)
+   Ryan ratified "honor the count": a persistent "BREAKS NN / 25"
+   instrument docked top-right FROM THE HOOK, ticking once per break
+   beat (the 25 [COUNTER: Break NN / 25] cues in the approved script
+   are the source of truth), locking at 25 / 25 before the clean rerun,
+   then resetting to the survivor count on the rerun.
+   Drop as the LAST child of .stage on every shot.
+   States (data-state):
+     armed  — hook/setup, rests at 00 / 25 (red dot, not yet ticking)
+     ticking— during the rounds, shows current tally in break-red
+     locked — 25 / 25, the full teardown (intensified red glow)
+     fixed  — clean rerun, recolored green (survivor count)
+   ============================================================ */
+.ct-killcounter {
+  position: absolute; top: 28px; right: 32px; z-index: 60;
+  display: flex; align-items: center; gap: 14px;
+  padding: 12px 20px 12px 16px; border-radius: var(--ct-r-pill);
+  background: color-mix(in srgb, var(--ct-surface-raised) 90%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ct-break) 40%, var(--ct-line));
+  box-shadow: var(--ct-shadow-2), 0 0 24px rgba(255, 59, 48, 0.15);
+  backdrop-filter: blur(4px);
+  font-family: var(--ct-font-mono); font-feature-settings: "tnum" 1;
+}
+.ct-killcounter .kc-dot {
+  width: 11px; height: 11px; border-radius: 50%; flex: 0 0 11px;
+  background: var(--ct-break); box-shadow: 0 0 12px var(--ct-break);
+}
+.ct-killcounter .kc-label {
+  text-transform: uppercase; letter-spacing: 0.14em;
+  font-size: var(--ct-ui-xs); font-weight: 500; color: var(--ct-text-muted);
+}
+.ct-killcounter .kc-tally { display: flex; align-items: baseline; gap: 4px; }
+.ct-killcounter .kc-n {
+  font-size: var(--ct-ui-2xl); font-weight: 700; line-height: 1;
+  color: var(--ct-break-glow);
+}
+.ct-killcounter .kc-of { font-size: var(--ct-ui-md); color: var(--ct-text-muted); }
+
+.ct-killcounter[data-state="locked"] {
+  border-color: var(--ct-break);
+  box-shadow: var(--ct-shadow-2), 0 0 32px rgba(255, 59, 48, 0.38);
+}
+.ct-killcounter[data-state="fixed"] {
+  border-color: color-mix(in srgb, var(--ct-fixed) 40%, var(--ct-line));
+  box-shadow: var(--ct-shadow-2), 0 0 24px rgba(43, 213, 118, 0.20);
+}
+.ct-killcounter[data-state="fixed"] .kc-n { color: var(--ct-fixed-glow); }
+.ct-killcounter[data-state="fixed"] .kc-dot {
+  background: var(--ct-fixed); box-shadow: 0 0 12px var(--ct-fixed);
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.001ms !important;
