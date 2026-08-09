@@ -13,10 +13,23 @@ allowed to read BOTH the script and the source transcripts. Verdict is binary:
    in its frontmatter. Slide through the script in ~40-word windows; any window
    whose wording or sentence rhythm materially matches a source → KICKBACK for
    that section. Mechanical aid (optional): 8-gram overlap — any shared 8-gram
-   that isn't a technical term is a red flag.
+   that isn't a technical term is a red flag. **Shard by source** — run one
+   comparison per source transcript against only the cards derived from it, not
+   one global pass over all sources; per-source sharding is what drove false
+   positives to zero on OPE-153 (a global sweep flags cross-source coincidences a
+   per-source sweep structurally cannot raise). *Status: recommend-and-arm — ran
+   1× clean (OPE-153); promote to the mandated default after a 2nd clean gate run
+   reports its FP count (nomination ≠ proof).*
 3. **Example originality.** Demos, datasets, analogies, jokes, and on-screen
    scenarios must not replicate any source's. Same *technique* is fine; same
-   *example* is not.
+   *example* is not. **Card pre-gate (mechanical aid):** run
+   `python3 tools/card_lint.py` over the cards the script cites — it flags analogy
+   *cues* + coined phrases left in card BODIES (the leak vector OPE-153 exposed).
+   Cue+traceability is the primary signal; 8-gram overlap is a SUPPLEMENT only —
+   the editor logged "revisions on top of revisions" as a 5-gram, below any n-gram
+   threshold, so an overlap-only check gives false comfort. A flagged card means a
+   source figure may reach the writer; confirm and fix the card before trusting the
+   script's example-originality.
 4. **Fact & step check.** Build steps must be executable as written (run them
    or verify against current official docs — tools change fast). Prices,
    limits, and model names verified as of the draft date.
