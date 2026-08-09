@@ -32,7 +32,10 @@
   .sidebar { position: absolute; top: 0; right: 0; bottom: 0; width: 600px; z-index: 10;
     background: var(--ct-surface); border-left: 1px solid var(--ct-line);
     box-shadow: -28px 0 60px rgba(0,0,0,0.55);
-    display: flex; flex-direction: column; padding: var(--s6) var(--s6) var(--s5); }
+    display: flex; flex-direction: column;
+    /* top pad clears the global Kill-Counter HUD (top:28, ~62px tall) so the
+       "Agent Pre-Launch Checklist" title never tucks under the BREAKS badge */
+    padding: 108px var(--s6) var(--s5); }
 
   .sb-head { display: flex; align-items: center; gap: var(--s4); padding-bottom: var(--s5); border-bottom: 1px solid var(--ct-line); }
   .sb-head .icon { width: 56px; height: 56px; border-radius: 13px; display: grid; place-items: center; flex: 0 0 56px;
