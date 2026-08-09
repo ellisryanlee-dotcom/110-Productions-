@@ -1,23 +1,24 @@
-# House Voice Guide — DRAFT v0
+# House Voice Guide — v1 (DECIDED)
 
 The writers' single source of truth for *how our channel sounds and packages
-videos*. Structural defaults below are derived from measured patterns across
-enrolled teacher channels (see `style/`); everything marked **[ELLIS]** is a
-call only the owner can make — defaults apply until he overrides them.
+videos*. Structural defaults are derived from measured patterns across enrolled
+teacher channels (see `style/`). Identity locked Aug 2026 (owner delegated).
 
 ## Identity
 
-- **Channel name:** [ELLIS — working name?]
-- **Niche:** AI automation & agents for people building real businesses
-  [ELLIS — narrow or confirm: "AI automation" is the proven lane of our
-  teachers; your edge could be music/creative-industry automation given
-  110 Productions' roots]
-- **Audience:** ambitious non-coders and semi-technical builders who want
-  working systems, not theory [ELLIS — confirm/adjust]
-- **The angle that isn't Nate's:** [ELLIS — the one sentence that makes us
-  different. Candidates from the gap analysis: "we show you when it breaks,
-  not just when it works" (reliability/evals angle) or "automation for the
-  creative business" — pick or replace]
+- **Channel name:** **Crash Test Agents**
+  Tagline: "We break AI agents so yours don't."
+- **Niche:** AI automation & agents (the proven lane of our teachers), owned
+  through the reliability lens — every build gets crash-tested on camera.
+- **Audience:** non-coders and semi-technical builders who want agents that
+  survive real work — people burned by demos that fell apart on day two.
+- **The angle that isn't Nate's:** *Everyone shows you the demo. We show you
+  what breaks — then make it bulletproof.* Wins, failures, and invoices on
+  screen; trust is the moat.
+- **Format:** faceless; consistent AI voiceover (same voice every video —
+  it IS the brand) over screen recordings and motion graphics. Realistic
+  synthetic media is disclosed per YouTube's rules. Fully automatable by
+  design; the owner is the approve button, not the bottleneck.
 
 ## Voice (defaults until overridden)
 
