@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, initial-scale=1">
+<title>S040 — Plaintext API key in the system prompt · Crash Test Agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  /* ===== S040 — SCREEN-SIM. The system-prompt document scrolled to a line
+     with a LIVE API key pasted in plaintext. AMBER warning outline (canonical
+     reserved amber = plaintext-key VERIFY), value blurred, "plaintext key in
+     prompt" warning tag. Break #1 of Round 5. ===== */
+  .ide { display: grid; grid-template-rows: 72px 1fr 44px; height: 100%; }
+
+  .idebar { display: flex; align-items: center; gap: var(--s5); padding: 0 var(--s7);
+    background: var(--ct-surface); border-bottom: 1px solid var(--ct-line); }
+  .dots { display: flex; gap: 10px; }
+  .dots i { width: 13px; height: 13px; border-radius: 50%; background: #3a4150; display: inline-block; }
+  .idebar .file { font-family: var(--ct-font-mono); font-size: var(--ct-ui-md); color: var(--ct-text-muted); }
+  .idebar .file b { color: var(--ct-text); font-weight: 500; }
+  .idebar .spacer { flex: 1; }
+  .idebar .warnmode { display: inline-flex; align-items: center; gap: 10px;
+    font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); color: var(--ct-warn);
+    border: 1px solid var(--ct-warn); background: transparent;
+    padding: 6px 16px; border-radius: var(--ct-r-pill); }
+  .idebar .warnmode svg { width: 18px; height: 18px; }
+
+  .editor { display: grid; grid-template-columns: 86px 1fr; min-height: 0;
+    background: var(--ct-bg); overflow: hidden; }
+
+  /* gutter with line numbers */
+  .gutter { border-right: 1px solid var(--ct-line); padding: var(--s7) 0; text-align: right; }
+  .gutter .g { display: block; font-family: var(--ct-font-mono); font-size: var(--ct-ui-md);
+    line-height: 46px; color: color-mix(in srgb, var(--ct-text-muted) 60%, transparent); padding-right: 22px; }
+  .gutter .g.hot { color: var(--ct-warn); font-weight: 700; }
+
+  .doc { padding: var(--s7) var(--s8) var(--s7) var(--s6); position: relative; overflow: hidden; }
+  .doc .sect { font-family: var(--ct-font-mono); font-size: var(--ct-ui-md); line-height: 46px;
+    color: var(--ct-text); white-space: pre; }
+  .doc .c { color: var(--ct-text-muted); }
+  .doc .k { color: var(--ct-accent); }
+  .doc .s { color: var(--ct-fixed-glow); }
+  .doc .hdr { color: var(--ct-text); font-weight: 700; }
+
+  /* the offending line — amber warning outline (reserved amber) */
+  .keyline { position: relative; display: block; margin: 8px 0; padding: 10px 20px;
+    border-radius: var(--ct-r-md);
+    background: color-mix(in srgb, var(--ct-warn) 12%, transparent);
+    border: 2px solid var(--ct-warn);
+    box-shadow: 0 0 34px rgba(255,176,32,0.28); }
+  .keyline .code { font-family: var(--ct-font-mono); font-size: var(--ct-ui-lg); line-height: 46px; }
+  .keyline .prop { color: var(--ct-warn); }
+  .keyline .eq { color: var(--ct-text-muted); }
+  .keyline .val { color: var(--ct-text); }
+  /* blurred, sensitive portion of the (fictional) key value */
+  .keyline .blur { color: var(--ct-text); filter: blur(7px); user-select: none;
+    -webkit-user-select: none; padding: 0 2px; }
+
+  /* warning tag anchored to the key line */
+  .keytag { position: absolute; right: -12px; top: -22px; z-index: 3;
+    display: inline-flex; align-items: center; gap: 10px; padding: 9px 18px;
+    border-radius: var(--ct-r-pill); background: var(--ct-surface-raised);
+    border: 1px solid var(--ct-warn); color: var(--ct-warn);
+    font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.06em; box-shadow: var(--ct-shadow-2); }
+  .keytag svg { width: 18px; height: 18px; }
+  /* connector from tag down onto the line */
+  .keytag::after { content: ""; position: absolute; right: 30px; bottom: -10px;
+    width: 2px; height: 10px; background: var(--ct-warn); }
+
+  .callout { position: absolute; right: 64px; bottom: 70px; width: 470px;
+    background: var(--ct-surface); border: 1px solid var(--ct-line);
+    border-left: 4px solid var(--ct-warn); border-radius: var(--ct-r-md);
+    padding: 22px 26px; box-shadow: var(--ct-shadow-2); }
+  .callout .h { display: flex; align-items: center; gap: 12px; font-family: var(--ct-font-mono);
+    font-weight: 700; font-size: var(--ct-ui-md); color: var(--ct-warn); text-transform: uppercase; letter-spacing: 0.06em; }
+  .callout .h svg { width: 22px; height: 22px; }
+  .callout .b { font-family: var(--ct-font-body); font-size: var(--ct-ui-md);
+    color: var(--ct-text-muted); line-height: 1.5; margin-top: 12px; }
+
+  .disclaimer { display: flex; align-items: center; justify-content: center;
+    background: var(--ct-surface); border-top: 1px solid var(--ct-line);
+    color: var(--ct-text-muted); font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); letter-spacing: 0.03em; }
+</style>
+</head>
+<body>
+  <div class="stage" role="img"
+       aria-label="A system prompt scrolled to a line where a live Rolodash API key is pasted in plaintext, outlined in amber warning with the value blurred and a plaintext key in prompt tag">
+    <div class="grid-bg"></div>
+
+    <div class="ide">
+      <header class="idebar">
+        <span class="dots"><i></i><i></i><i></i></span>
+        <span class="file">sift / <b>system-prompt.md</b></span>
+        <span class="spacer"></span>
+        <span class="warnmode">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 3l9 16H3l9-16z" stroke="var(--ct-warn)" stroke-width="2" stroke-linejoin="round"/><path d="M12 10v4" stroke="var(--ct-warn)" stroke-width="2.2" stroke-linecap="round"/><circle cx="12" cy="17" r="1.2" fill="var(--ct-warn)"/></svg>
+          1 secret exposed
+        </span>
+      </header>
+
+      <div class="editor">
+        <div class="gutter" aria-hidden="true">
+          <span class="g">38</span><span class="g">39</span><span class="g">40</span>
+          <span class="g">41</span><span class="g hot">42</span><span class="g">43</span>
+          <span class="g">44</span><span class="g">45</span><span class="g">46</span>
+        </div>
+
+        <div class="doc">
+          <span class="sect"><span class="hdr">## Tools</span></span>
+          <span class="sect"><span class="c"># Rolodash CRM — look up customers by email or order id.</span></span>
+          <span class="sect"><span class="hdr">### Auth</span></span>
+          <span class="sect"><span class="c"># the agent calls Rolodash directly with the credentials below.</span></span>
+
+          <span class="keyline">
+            <span class="keytag">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M12 3l9 16H3l9-16z" stroke="var(--ct-warn)" stroke-width="2" stroke-linejoin="round"/><path d="M12 10v4" stroke="var(--ct-warn)" stroke-width="2.2" stroke-linecap="round"/><circle cx="12" cy="17" r="1.2" fill="var(--ct-warn)"/></svg>
+              plaintext key in prompt
+            </span>
+            <span class="code"><span class="prop">api_key</span> <span class="eq">=</span> <span class="val">rd_live_8fQ2x<span class="blur">R7vN0pLmZ4kD1sWc</span></span></span>
+          </span>
+
+          <span class="sect"><span class="hdr">## Rules</span></span>
+          <span class="sect"><span class="c"># be concise. never invent order details.</span></span>
+          <span class="sect"><span class="k">- always</span> confirm the customer before drafting a reply.</span>
+
+          <div class="callout">
+            <div class="h">
+              <svg viewBox="0 0 24 24" fill="none"><rect x="5" y="10" width="14" height="10" rx="2" stroke="var(--ct-warn)" stroke-width="2"/><path d="M8 10V7a4 4 0 018 0v3" stroke="var(--ct-warn)" stroke-width="2" stroke-linecap="round"/></svg>
+              live secret in plaintext
+            </div>
+            <div class="b">A <b>real, working</b> Rolodash key is pasted straight into the instructions. Anything that can read the prompt can read the key.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="disclaimer">FICTIONAL DEMO · Harbor Supply Co., Sift, Rolodash and the key rd_live_8fQ2x&hellip; are invented for Crash Test Agents</div>
+    </div>
+
+    <!-- Kill-Counter HUD (global overlay) — Round 5 break #1, ticking at 22/25 -->
+    <div class="ct-killcounter" data-state="ticking" aria-label="Kill counter: 22 of 25 breaks">
+      <span class="kc-dot"></span>
+      <span class="kc-label">Breaks</span>
+      <span class="kc-tally"><span class="kc-n">22</span><span class="kc-of">/ 25</span></span>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, initial-scale=1">
+<title>S014 — Generic mush: hollow reply + all-unchecked prompt checklist · Crash Test Agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  /* ===== S014 — ROUND 1 / Break 1 result. The vague agent's draft is
+     "generic mush": a hollow "Thank you for contacting us." with no answer
+     (red = broke), beside the prompt-section checklist with EVERY box
+     unchecked / grayed — Role/Context/Tools/Rules/Examples/Final notes. ===== */
+  .app { display: grid; grid-template-rows: 96px 1fr 44px; height: 100%; }
+
+  .topbar { display: flex; align-items: center; gap: var(--s5);
+    padding: 0 var(--s7); border-bottom: 1px solid var(--ct-line); background: var(--ct-surface); }
+  .brandchip { display: flex; align-items: center; gap: var(--s3); }
+  .brandchip .glyph { width: 40px; height: 40px; border-radius: 9px; display: grid; place-items: center;
+    background: var(--ct-surface-raised); border: 1px solid var(--ct-line); }
+  .brandchip .name { font-weight: 700; font-size: var(--ct-ui-2xl); letter-spacing: -0.01em; }
+  .topbar .sub { color: var(--ct-text-muted); font-size: var(--ct-ui-lg); }
+  .topbar .spacer { flex: 1; }
+  .round-tag { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.14em; color: var(--ct-break-glow);
+    padding: 8px 16px; border: 1px solid color-mix(in srgb, var(--ct-break) 45%, var(--ct-line));
+    border-radius: var(--ct-r-pill); background: var(--ct-break-wash); }
+
+  .split { display: grid; grid-template-columns: 1.15fr 0.85fr; min-height: 0; }
+  .pane { padding: var(--s7); overflow: hidden; position: relative; display: flex; flex-direction: column; }
+  .pane.left { border-right: 1px solid var(--ct-line); background: var(--ct-bg); box-shadow: inset 0 0 200px rgba(255,59,48,0.06); }
+  .pane.right { background: var(--ct-bg); }
+  .pane-title { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs);
+    text-transform: uppercase; letter-spacing: 0.12em; color: var(--ct-text-muted);
+    font-weight: 500; margin: 0 0 var(--s5); display: flex; align-items: center; gap: 12px; }
+  .pane-title .dotmark { width: 9px; height: 9px; border-radius: 50%; }
+
+  /* ---- LEFT: the hollow draft reply ---- */
+  .draft { background: var(--ct-surface); border: 1px solid color-mix(in srgb, var(--ct-break) 40%, var(--ct-line));
+    border-radius: var(--ct-r-lg); box-shadow: 0 0 40px rgba(255,59,48,0.16), var(--ct-shadow-2);
+    overflow: hidden; position: relative; }
+  .draft .dhead { display: flex; align-items: center; gap: 14px; padding: 20px 30px; border-bottom: 1px solid var(--ct-line);
+    background: var(--ct-surface-raised); }
+  .draft .dhead .g { width: 30px; height: 30px; border-radius: 7px; display: grid; place-items: center; background: var(--ct-bg); border: 1px solid var(--ct-line); }
+  .draft .dhead .g svg { width: 18px; height: 18px; }
+  .draft .dhead .t { font-family: var(--ct-font-mono); font-size: var(--ct-ui-md); color: var(--ct-text); }
+  .draft .dhead .autotag { margin-left: auto; font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs);
+    text-transform: uppercase; letter-spacing: 0.1em; color: var(--ct-text-muted); }
+  .draft .meta-line { display: flex; gap: 26px; padding: 20px 30px 6px; font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); color: var(--ct-text-muted); }
+  .draft .meta-line b { color: color-mix(in srgb, var(--ct-text) 82%, transparent); font-weight: 500; }
+  .draft .dbody { padding: 26px 30px 34px; }
+  .draft .reply-text { font-family: var(--ct-font-body); font-size: var(--ct-ui-2xl); line-height: 1.6; color: var(--ct-text); }
+  .draft .reply-sub { font-family: var(--ct-font-body); font-size: var(--ct-ui-lg); color: var(--ct-text-muted); margin-top: 18px; }
+  .draft .hollow-blanks { margin-top: 26px; display: flex; flex-direction: column; gap: 16px; }
+  .draft .hollow-blanks .bl { height: 15px; border-radius: 5px; background: repeating-linear-gradient(90deg, var(--ct-surface-raised) 0 22px, transparent 22px 34px); }
+  .draft .hollow-blanks .bl.w1 { width: 70%; } .draft .hollow-blanks .bl.w2 { width: 46%; }
+  .draft .stamp { position: absolute; top: 96px; right: 30px; transform: rotate(-8deg);
+    font-family: var(--ct-font-mono); font-weight: 700; font-size: var(--ct-ui-lg); color: var(--ct-break-glow);
+    padding: 8px 18px; border: 2.5px solid var(--ct-break); border-radius: 8px; background: color-mix(in srgb, var(--ct-break-deep) 30%, var(--ct-bg));
+    box-shadow: 0 0 24px rgba(255,59,48,0.35); text-transform: uppercase; letter-spacing: 0.04em; }
+
+  .diagnosis { margin-top: 26px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+  .diagnosis .d { padding: 16px 18px; border-radius: var(--ct-r-md); background: var(--ct-surface);
+    border: 1px solid var(--ct-line); border-left: 4px solid var(--ct-break); }
+  .diagnosis .d .h { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); text-transform: uppercase; letter-spacing: 0.08em; color: var(--ct-break-glow); }
+  .diagnosis .d .p { font-family: var(--ct-font-body); font-size: var(--ct-ui-md); color: var(--ct-text-muted); margin-top: 8px; line-height: 1.45; }
+
+  .verdict { margin-top: auto; padding-top: 26px; font-family: var(--ct-font-display); font-stretch: 125%; font-weight: 800;
+    font-size: var(--ct-ui-3xl); color: var(--ct-break-glow); letter-spacing: 0.01em; }
+  .verdict span { color: var(--ct-text-muted); font-family: var(--ct-font-body); font-weight: 500; font-size: var(--ct-ui-lg); display: block; margin-top: 8px; letter-spacing: 0; }
+
+  /* ---- RIGHT: prompt-section checklist, ALL unchecked ---- */
+  .checklist { background: var(--ct-surface); border: 1px solid var(--ct-line); border-radius: var(--ct-r-lg);
+    box-shadow: var(--ct-shadow-2); overflow: hidden; display: flex; flex-direction: column; height: 100%; }
+  .checklist .chead { padding: 24px 30px; border-bottom: 1px solid var(--ct-line); background: var(--ct-surface-raised); }
+  .checklist .chead .ttl { font-family: var(--ct-font-display); font-stretch: 125%; font-weight: 800; font-size: var(--ct-ui-2xl); color: var(--ct-text); }
+  .checklist .chead .prog { display: flex; align-items: center; gap: 14px; margin-top: 14px; }
+  .checklist .chead .prog .frac { font-family: var(--ct-font-mono); font-size: var(--ct-ui-md); color: var(--ct-break-glow); font-weight: 700; }
+  .checklist .chead .prog .bar { flex: 1; height: 8px; border-radius: var(--ct-r-pill); background: var(--ct-bg); overflow: hidden; border: 1px solid var(--ct-line); }
+  .checklist .chead .prog .bar > i { display: block; height: 100%; width: 0%; background: var(--ct-fixed); }
+  .checklist .rows { padding: 18px 24px; display: flex; flex-direction: column; gap: 12px; flex: 1; }
+  .crow { display: flex; align-items: center; gap: 18px; padding: 20px 22px; border-radius: var(--ct-r-md);
+    background: var(--ct-bg); border: 1px dashed var(--ct-line); opacity: 0.85; }
+  .crow .box { width: 34px; height: 34px; flex: 0 0 34px; border-radius: 8px; border: 2px solid var(--ct-line);
+    background: var(--ct-surface-raised); }
+  .crow .lab { font-family: var(--ct-font-body); font-weight: 600; font-size: var(--ct-ui-xl); color: var(--ct-text-muted); }
+  .crow .hint { margin-left: auto; font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); color: color-mix(in srgb, var(--ct-text-muted) 70%, transparent); }
+  .cnote { margin: 4px 24px 24px; font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); color: var(--ct-text-muted);
+    display: flex; align-items: center; gap: 12px; }
+  .cnote .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--ct-text-muted); }
+
+  .disclaimer { display: flex; align-items: center; justify-content: center;
+    background: var(--ct-surface); border-top: 1px solid var(--ct-line);
+    color: var(--ct-text-muted); font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); letter-spacing: 0.03em; }
+</style>
+</head>
+<body>
+  <div class="stage" role="img"
+       aria-label="Left, the agent's drafted reply is hollow generic mush reading only 'Thank you for contacting us.' with no actual answer, stamped as broken. Right, the prompt-section checklist has every box unchecked and grayed: Role, Context, Tools, Rules, Examples, Final notes, zero of six. Break one of twenty-five.">
+    <div class="grid-bg"></div>
+
+    <div class="app">
+      <header class="topbar">
+        <div class="brandchip">
+          <span class="glyph">
+            <svg width="26" height="26" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+              <path d="M12 16h40M18 32h28M26 48h12" stroke="var(--ct-break)" stroke-width="5" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <span class="name">Sift</span>
+        </div>
+        <span class="sub">draft output &middot; the empty brain</span>
+        <div class="spacer"></div>
+        <span class="round-tag">Round 1 &middot; Break 1 &middot; generic mush</span>
+      </header>
+
+      <div class="split">
+        <!-- LEFT — the hollow draft -->
+        <section class="pane left">
+          <p class="pane-title"><span class="dotmark" style="background:var(--ct-break)"></span>Drafted reply &middot; to Dana Okafor</p>
+          <div class="draft">
+            <span class="stamp">&#10007; hollow</span>
+            <div class="dhead">
+              <span class="g"><svg viewBox="0 0 24 24" fill="none"><path d="M5 6h14v12H5z" stroke="var(--ct-text-muted)" stroke-width="2"/><path d="M5 8l7 5 7-5" stroke="var(--ct-text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <span class="t">Re: Where&rsquo;s my order?</span>
+              <span class="autotag">auto-draft</span>
+            </div>
+            <div class="meta-line"><span><b>To</b> dana.okafor@harbor-galley.example</span><span><b>Re</b> order #4471</span></div>
+            <div class="dbody">
+              <div class="reply-text">&ldquo;Thank you for contacting us.&rdquo;</div>
+              <div class="reply-sub">We appreciate your message and will get back to you.</div>
+              <div class="hollow-blanks">
+                <span class="bl w1"></span>
+                <span class="bl w2"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="diagnosis">
+            <div class="d"><div class="h">No role</div><div class="p">writes like nobody &mdash; no voice, no owner</div></div>
+            <div class="d"><div class="h">No context</div><div class="p">doesn&rsquo;t know it&rsquo;s a late-order question</div></div>
+            <div class="d"><div class="h">No rules</div><div class="p">never looked up #4471 &middot; answers nothing</div></div>
+          </div>
+
+          <div class="verdict">Generic mush.<span>The classic signature of a missing system prompt.</span></div>
+        </section>
+
+        <!-- RIGHT — checklist, all unchecked -->
+        <section class="pane right">
+          <p class="pane-title"><span class="dotmark" style="background:var(--ct-text-muted)"></span>System prompt &middot; sections</p>
+          <div class="checklist">
+            <div class="chead">
+              <div class="ttl">Prompt checklist</div>
+              <div class="prog"><span class="frac">0 / 6 sections</span><span class="bar"><i></i></span></div>
+            </div>
+            <div class="rows">
+              <div class="crow"><span class="box"></span><span class="lab">Role</span><span class="hint">who Sift is</span></div>
+              <div class="crow"><span class="box"></span><span class="lab">Context</span><span class="hint">what it gets each run</span></div>
+              <div class="crow"><span class="box"></span><span class="lab">Tools</span><span class="hint">which, when, what order</span></div>
+              <div class="crow"><span class="box"></span><span class="lab">Rules</span><span class="hint">conditions &amp; limits</span></div>
+              <div class="crow"><span class="box"></span><span class="lab">Examples</span><span class="hint">only what it gets wrong</span></div>
+              <div class="crow"><span class="box"></span><span class="lab">Final notes</span><span class="hint">date &middot; &ldquo;if unsure, say so&rdquo;</span></div>
+            </div>
+            <p class="cnote"><span class="dot"></span> every box empty &mdash; the agent was given no help at all</p>
+          </div>
+        </section>
+      </div>
+
+      <div class="disclaimer">FICTIONAL DEMO &middot; Harbor Supply Co., Sift, Rolodash and Dana Okafor are invented for Crash Test Agents</div>
+    </div>
+
+    <!-- Kill-Counter HUD (global overlay) — Round 1 ticking, break 01 / 25 -->
+    <div class="ct-killcounter" data-state="ticking" aria-label="Kill counter: 1 of 25 breaks">
+      <span class="kc-dot"></span>
+      <span class="kc-label">Breaks</span>
+      <span class="kc-tally"><span class="kc-n">01</span><span class="kc-of">/ 25</span></span>
+    </div>
+  </div>
+</body>
+</html>
