@@ -24,4 +24,4 @@ confidence: high
 
 **Watch out for:** Only add examples for behaviors the agent actually gets wrong — examples it would nail anyway are wasted tokens. Less is more: bloated prompts cost more and confuse the model. Auto-generated system prompts undercut the whole method because you can't trace behavior back to a line.
 
-**Original example to invent:** The source compares this to correcting a learner mid-activity only when they actually go off course. Describe that idea abstractly and invent your own analogy for observe-then-correct so writers don't reuse the source's.
+**Original example to invent:** The load-bearing idea is *observe-then-correct* — intervene only on an actually-observed error, one targeted fix at a time. The source reached for a human-learning analogy (correcting a learner mid-activity). Invent your own analogy from a DIFFERENT domain, and do NOT drift toward teaching/coaching a person or animal (tutoring a student, a kid learning to ride a bike, training a pet) — those all stay inside the source's figure family. Prefer a non-human-learning domain (e.g., calibrating an instrument, tuning a signal, bisecting a bug, adjusting a recipe by taste).

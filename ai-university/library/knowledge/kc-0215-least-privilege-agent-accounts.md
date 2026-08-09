@@ -12,8 +12,8 @@ confidence: high
 
 **What:** Instead of handing an agent your own full-access account, give it its own
 account (or its own API key) with only the permissions and scopes it needs for its
-job. Treat an autonomous agent like a new intern or employee — you wouldn't give a
-new hire your credit card and admin rights on day one.
+job. Scope every agent to the minimum authority its role requires — never your own
+blanket, full-access credentials.
 
 **Why it matters:** Full-permission access is dangerous (an over-empowered agent can
 delete data or write where it shouldn't) and opaque. Named, scoped credentials limit
@@ -36,4 +36,8 @@ to attribute spend and blame.
 
 **Original example to invent:** Source made a dedicated task-manager account for its
 agent and per-agent research keys. Writers should illustrate with a different tool
-stack and role split.
+stack and role split. The source also framed least-privilege as an onboarding-trust
+role-comparison (don't hand a brand-new hire your credit card and admin rights on day
+one). The load-bearing idea is *minimum standing authority / earn-scope-over-time* —
+invent a fresh analogy for it from a different domain and do NOT reuse the new-hire /
+intern / credit-card framing.

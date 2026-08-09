@@ -10,7 +10,7 @@ confidence: high
 ---
 # Human-in-the-loop approval and revision loops
 
-**What:** A pattern where a workflow pauses and waits for a person to approve, reject, or give feedback before it does something irreversible (send to a client, post publicly). Implemented with a "send and wait for response" step (over Telegram, Slack, email, etc.) offering either yes/no approval or free-text feedback. With free text, feedback routes to a revision agent that regenerates, then loops back for another review — unlimited revisions on top of revisions.
+**What:** A pattern where a workflow pauses and waits for a person to approve, reject, or give feedback before it does something irreversible (send to a client, post publicly). Implemented with a "send and wait for response" step (over Telegram, Slack, email, etc.) offering either yes/no approval or free-text feedback. With free text, feedback routes to a revision agent that regenerates, then loops back for another review — the human can request repeated rounds of refinement until the output is acceptable.
 
 **Why it matters:** It puts a safety gate on autonomous output so nothing ships without sign-off, while still letting the human refine results conversationally instead of restarting from scratch.
 
@@ -24,4 +24,4 @@ confidence: high
 
 **Watch out for:** Always feed forward and act on the most recent version, or revisions are pointless. Free-text responses currently surface via a browser form rather than natively in the chat app. Using send-and-wait as an agent tool doesn't yet work well — the wait happens at the wrong level and no feedback returns to the agent; keep it as a standalone node in one workflow.
 
-**Original example to invent:** The source approves social posts about coffee/crocodiles over Telegram. Build a review gate for a different artifact (e.g., outbound proposal emails) over a different channel.
+**Original example to invent:** The source approves social posts about coffee/crocodiles over Telegram. Build a review gate for a different artifact (e.g., outbound proposal emails) over a different channel. The source also coined a distinctive phrase for the loop ("revisions on top of revisions"); express the idea of iterative, stackable refinement in your own words and do NOT reuse that phrase.

@@ -41,9 +41,31 @@ writers must build a different example.
 
 Rules:
 - Facts, steps, numbers, tool names: extract freely (knowledge is not ownable).
-- Phrasing, analogies, jokes, story beats: do NOT copy into cards. If an analogy
-  is the load-bearing idea, describe it abstractly ("compares X to Y") so writers
-  invent their own.
+- Phrasing, analogies, jokes, story beats: do NOT copy into cards. Every
+  source-originated figure of speech lives ONLY in the card's `Original example to
+  invent:` note, described abstractly — NEVER in the card body. The card body is
+  writer-adoptable material; a downstream writer treats anything left in a body as
+  fair to reuse, so the body must already be fingerprint-free.
+
+  **What counts as a figure to quarantine** (the OPE-153 leak was a recognition
+  miss, not a missing rule — a figure need not be a full sentence or a "like a…"
+  simile):
+  - **role-comparison framings** — "treat X like a new intern/employee", "it's your
+    junior developer", any "X is basically a <familiar role>";
+  - **coined / distinctive phrases** — short, memorable, source-specific wordings
+    ("revisions on top of revisions") even when only 3–5 words;
+  - **vivid one-liners, jokes, metaphors, story beats** — the credit-card-on-day-one
+    image, the kid-on-a-bike, named demo scenarios (coffee/crocodile posts).
+  If in doubt whether a phrase is a figure, quarantine it.
+
+- **Make the invent-note genuinely diverge.** A correctly quarantined note can still
+  steer the writer back to the source's figure if it merely paraphrases it. In the
+  `Original example to invent:` note: (a) name the *abstract* idea in plain terms;
+  (b) name what NOT to drift toward (the source's figure *and* its whole family —
+  e.g. "don't reuse the new-hire framing" / "avoid any teaching-a-person analogy");
+  (c) optionally point at a different domain to invent from. Paraphrasing the source
+  figure in gentler words is a fail.
+
 - Merge duplicates: if a card's topic already exists, update/strengthen that card
   and append the extra source to its frontmatter instead of minting a new one.
   Cross-source cards (2+ channels agreeing) get `confidence: high`.
