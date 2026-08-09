@@ -112,12 +112,17 @@ for seg, plan in PLAN.items():
                  "-t", f"{secs:.3f}", *common])
         print(f"  piece {out.name} {secs:.2f}s")
 
-# ---- concat video ----------------------------------------------------------
-concat_list = W / "list.txt"
-concat_list.write_text("".join(f"file '{p}'\n" for p, _, _ in pieces))
+# ---- concat video (filter graph — the static build's concat demuxer segfaults)
 video_all = W / "video_all.mp4"
-run([FF, "-y", "-v", "error", "-f", "concat", "-safe", "0", "-i", str(concat_list),
-     "-c", "copy", str(video_all)])
+if not video_all.exists():
+    ins = []
+    for p, _, _ in pieces:
+        ins += ["-i", str(p)]
+    labels = "".join(f"[{i}:v]" for i in range(len(pieces)))
+    fc = f"{labels}concat=n={len(pieces)}:v=1:a=0[out]"
+    run([FF, "-y", "-v", "error", *ins, "-filter_complex", fc, "-map", "[out]",
+         "-r", "24", "-c:v", "libx264", "-preset", "veryfast", "-crf", "18",
+         "-pix_fmt", "yuv420p", str(video_all)])
 V_TOTAL = dur(video_all)
 
 # ---- segment start times ---------------------------------------------------
