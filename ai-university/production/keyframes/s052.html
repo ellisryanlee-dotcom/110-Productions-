@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, initial-scale=1">
+<title>S052 — End card: three takeaways + outro · Crash Test Agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  /* ===== S052 — TITLE-CARD / end card (rested final frame). Three
+     takeaway lines resolved to rest, above the outro layout: a
+     next-video thumbnail placeholder on one side, the checklist
+     download link on the other, brand logo, and the synthetic-media
+     disclosure line held legibly at the bottom. Mirrors S051's
+     logo-lockup + disclaimer-bar kit. ===== */
+
+  /* --- mini brand lockup, top-left (same kit as S051) --- */
+  .logo-lockup { position: absolute; z-index: 3; top: 56px; left: 80px; display: flex; align-items: center; gap: 16px; }
+  .logo-lockup .umbrella { font-size: var(--ct-kicker); }
+  .logo-lockup .spine-mini { width: 6px; height: 40px; border-radius: 2px;
+    background: linear-gradient(to bottom, var(--ct-break) 0 50%, var(--ct-fixed) 50% 100%); }
+  .logo-lockup .wm-mini { font-family: var(--ct-font-display); font-stretch: 125%; font-weight: 900;
+    text-transform: uppercase; letter-spacing: 0.02em; font-size: 30px; color: var(--ct-text); }
+
+  .center { position: absolute; inset: 0; z-index: 2; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 64px; padding-top: 24px; }
+
+  /* --- three resolved takeaway lines --- */
+  .takeaways { display: flex; flex-direction: column; gap: 20px; width: 1240px; }
+  .tk-row { display: flex; align-items: center; gap: 24px; }
+  .tk-row .n { flex: 0 0 56px; width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center;
+    background: var(--ct-fixed-wash); border: 1px solid var(--ct-fixed);
+    font-family: var(--ct-font-mono); font-weight: 700; font-size: var(--ct-ui-2xl); color: var(--ct-fixed-glow); }
+  .tk-row .t { font-family: var(--ct-font-display); font-stretch: 125%; font-weight: 800;
+    font-size: var(--ct-h3); color: var(--ct-text); letter-spacing: 0.005em; }
+
+  /* --- outro row: thumbnail placeholder + checklist download --- */
+  .outro-row { display: grid; grid-template-columns: 600px 600px; gap: 80px; }
+  .outro-card { background: var(--ct-surface); border: 1px solid var(--ct-line); border-radius: var(--ct-r-lg);
+    box-shadow: var(--ct-shadow-2); overflow: hidden; }
+
+  .thumb { display: flex; flex-direction: column; }
+  .thumb .art { position: relative; height: 240px; background: var(--ct-surface-raised);
+    display: grid; place-items: center; border-bottom: 1px solid var(--ct-line); }
+  .thumb .art .play { width: 74px; height: 74px; border-radius: 50%; display: grid; place-items: center;
+    background: var(--ct-accent-wash); border: 1px solid var(--ct-accent); }
+  .thumb .art .play svg { width: 30px; height: 30px; }
+  .thumb .cap { padding: 22px 26px; }
+  .thumb .cap .tag { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); color: var(--ct-text-muted);
+    text-transform: uppercase; letter-spacing: 0.1em; }
+  .thumb .cap .lbl { margin-top: 8px; font-family: var(--ct-font-display); font-stretch: 125%; font-weight: 800;
+    font-size: var(--ct-ui-2xl); color: var(--ct-accent-glow); }
+
+  .dl { display: flex; flex-direction: column; }
+  .dl .art { position: relative; height: 240px; background: var(--ct-surface-raised);
+    display: grid; place-items: center; border-bottom: 1px solid var(--ct-line); }
+  .dl .art .icon { width: 74px; height: 74px; border-radius: 50%; display: grid; place-items: center;
+    background: var(--ct-fixed-wash); border: 1px solid var(--ct-fixed); }
+  .dl .art .icon svg { width: 32px; height: 32px; }
+  .dl .cap { padding: 22px 26px; }
+  .dl .cap .tag { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); color: var(--ct-text-muted);
+    text-transform: uppercase; letter-spacing: 0.1em; }
+  .dl .cap .lbl { margin-top: 8px; font-family: var(--ct-font-display); font-stretch: 125%; font-weight: 800;
+    font-size: var(--ct-ui-2xl); color: var(--ct-fixed-glow); }
+  .dl .cap .sub { margin-top: 6px; font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); color: var(--ct-text-muted); }
+
+  /* --- disclosure bar (real compliance caveat — reserved amber, not decorative) --- */
+  .disclaimer-bar { position: absolute; left: 0; right: 0; bottom: 0; height: 76px; z-index: 4;
+    display: flex; align-items: center; justify-content: center; gap: 14px;
+    background: var(--ct-surface); border-top: 1px solid color-mix(in srgb, var(--ct-warn) 35%, var(--ct-line)); }
+  .disclaimer-bar .warn-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--ct-warn);
+    box-shadow: 0 0 10px var(--ct-warn); flex: 0 0 10px; }
+  .disclaimer-bar .txt { font-family: var(--ct-font-mono); font-size: var(--ct-ui-md); color: var(--ct-warn);
+    letter-spacing: 0.02em; }
+</style>
+</head>
+<body>
+  <div class="stage" role="img"
+       aria-label="End card: three resolved takeaway lines, boring parts deterministic, model for real judgment, a net under everything, above an outro row with a next crash test thumbnail placeholder on the left and a checklist download link on the right, the brand logo top-left, and a visible synthetic-media disclosure line at the bottom">
+    <div class="grid-bg"></div>
+
+    <!-- Kill-Counter HUD (global overlay) — Artifact/CTA: locked at 25/25, episode complete -->
+    <div class="ct-killcounter" data-state="locked" aria-label="Kill counter: 25 of 25 breaks, locked">
+      <span class="kc-dot"></span>
+      <span class="kc-label">Breaks</span>
+      <span class="kc-tally"><span class="kc-n">25</span><span class="kc-of">/ 25</span></span>
+    </div>
+
+    <div class="logo-lockup" aria-hidden="true">
+      <span>
+        <span class="umbrella">AI UNIVERSITY</span><br>
+        <span class="wm-mini">Crash&nbsp;Test&nbsp;Agents</span>
+      </span>
+      <span class="spine-mini"></span>
+    </div>
+
+    <div class="center">
+      <div class="takeaways">
+        <div class="tk-row"><span class="n">1</span><span class="t">Boring parts deterministic</span></div>
+        <div class="tk-row"><span class="n">2</span><span class="t">Model for real judgment</span></div>
+        <div class="tk-row"><span class="n">3</span><span class="t">A net under everything</span></div>
+      </div>
+
+      <div class="outro-row">
+        <div class="outro-card thumb">
+          <div class="art">
+            <span class="play"><svg viewBox="0 0 24 24" fill="none"><path d="M8 5l12 7-12 7V5z" fill="var(--ct-accent-glow)"/></svg></span>
+          </div>
+          <div class="cap">
+            <div class="tag">Up next</div>
+            <div class="lbl">[Next crash test &rarr;]</div>
+          </div>
+        </div>
+
+        <div class="outro-card dl">
+          <div class="art">
+            <span class="icon"><svg viewBox="0 0 24 24" fill="none"><path d="M12 4v14M6 13l6 6 6-6" stroke="var(--ct-fixed-glow)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </div>
+          <div class="cap">
+            <div class="tag">Free artifact</div>
+            <div class="lbl">Checklist &darr;</div>
+            <div class="sub">no email wall &middot; link in the description</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="disclaimer-bar">
+      <span class="warn-dot" aria-hidden="true"></span>
+      <span class="txt">Contains realistic AI-generated media.</span>
+    </div>
+    <!-- ⚠️VERIFY: confirm synthetic-media disclosure placement/wording (S052) meets current YouTube
+         altered-content policy before publish — see screenplay Notes "Compliance blocker" (S051, S052). -->
+  </div>
+</body>
+</html>

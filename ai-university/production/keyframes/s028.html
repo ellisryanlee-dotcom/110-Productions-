@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, initial-scale=1">
+<title>S028 — Error loops back for a retry · Crash Test Agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  /* ===== S028 — SVG motion-graphic (rested state). ROUND 2, break 11.
+     Continuation of S027: the split "Draft reply" node's two branches
+     resolve. Success outputs a tidy finished-draft card. Error outputs
+     a plain-sentence card that loops back along a "reissue task" arrow
+     to the orchestrator node, which reissues the task; the second
+     attempt lands green. Same node-canvas kit/style as S027. ===== */
+  .wrap { position: relative; height: 100%; padding: var(--s7) var(--s8) var(--s8); display: flex; flex-direction: column; }
+  .kicker { font-family: var(--ct-font-mono); text-transform: uppercase; letter-spacing: 0.14em;
+    font-size: var(--ct-kicker); color: var(--ct-text-muted); font-weight: 500; }
+  .headline { margin: 10px 0 0; font-family: var(--ct-font-display); font-stretch: 125%; font-weight: 800;
+    font-size: var(--ct-h2); color: var(--ct-text); letter-spacing: 0.005em; }
+  .headline .em { color: var(--ct-fixed-glow); }
+
+  .canvas { flex: 1; margin-top: var(--s5); position: relative; }
+  svg text { font-family: var(--ct-font-mono); }
+
+  .disclaimer { position: absolute; left: 0; right: 0; bottom: 0; height: 44px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--ct-surface); border-top: 1px solid var(--ct-line);
+    color: var(--ct-text-muted); font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); letter-spacing: 0.03em; z-index: 20; }
+</style>
+</head>
+<body>
+  <div class="stage" role="img"
+       aria-label="The orchestrator node dispatches Draft reply, which splits into a success card returning a tidy finished draft, and an error card reading couldn't draft that one please try again; the error card loops back along a reissue task arrow to the orchestrator, and the second attempt lands green with a checkmark">
+    <div class="grid-bg"></div>
+    <!-- Kill-Counter HUD (global overlay) — Round 2 ticking, break 11 -->
+    <div class="ct-killcounter" data-state="ticking" aria-label="Kill counter: 11 of 25 breaks">
+      <span class="kc-dot"></span>
+      <span class="kc-label">Breaks</span>
+      <span class="kc-tally"><span class="kc-n">11</span><span class="kc-of">/ 25</span></span>
+    </div>
+
+    <div class="wrap">
+      <p class="kicker">Fix &middot; break 11 of 25</p>
+      <h1 class="headline">A flaky failure becomes a <span class="em">retry</span>, not a dead run</h1>
+
+      <div class="canvas">
+        <svg viewBox="0 0 1760 720" width="1760" height="720" fill="none">
+          <!-- ORCHESTRATOR node: the main agent loop that dispatches and reissues tasks -->
+          <g>
+            <rect x="60" y="270" width="300" height="160" rx="18" fill="var(--ct-surface-raised)" stroke="var(--ct-accent)" stroke-width="2.5" style="filter:drop-shadow(0 0 26px rgba(56,189,248,0.25))"/>
+            <text x="90" y="313" fill="var(--ct-text-muted)" font-size="15" letter-spacing="0.1em">MAIN LOOP</text>
+            <text x="90" y="350" fill="var(--ct-text)" font-size="27" font-weight="800" font-family="var(--ct-font-display)">Orchestrator</text>
+            <text x="90" y="380" fill="var(--ct-accent-glow)" font-size="15">dispatches &amp; reissues tasks</text>
+          </g>
+
+          <!-- wire: orchestrator dispatches to Draft reply -->
+          <path d="M 360 330 C 460 330, 480 330, 590 335" stroke="var(--ct-line)" stroke-width="2.5"/>
+          <path d="M 578 326 l 20 8 l -18 12 z" fill="var(--ct-line)"/>
+          <text x="380" y="308" fill="var(--ct-text-muted)" font-size="14">dispatch</text>
+
+          <!-- second attempt badge, sitting on the dispatch wire -->
+          <g>
+            <rect x="392" y="230" width="180" height="50" rx="25" fill="var(--ct-fixed-wash)" stroke="var(--ct-fixed)" stroke-width="2"/>
+            <circle cx="422" cy="255" r="13" fill="none" stroke="var(--ct-fixed-glow)" stroke-width="2.6"/>
+            <path d="M 415 255 l 5 6 l 11 -13" stroke="var(--ct-fixed-glow)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <text x="446" y="251" fill="var(--ct-fixed-glow)" font-size="14" font-weight="700" letter-spacing="0.03em">2nd attempt</text>
+            <text x="446" y="270" fill="var(--ct-fixed-glow)" font-size="18" font-weight="800">&#10003; lands green</text>
+          </g>
+
+          <!-- Draft reply node (v2, from S027) -->
+          <g>
+            <rect x="590" y="270" width="300" height="160" rx="18" fill="var(--ct-surface-raised)" stroke="var(--ct-accent)" stroke-width="2.5" style="filter:drop-shadow(0 0 26px rgba(56,189,248,0.25))"/>
+            <text x="620" y="313" fill="var(--ct-text-muted)" font-size="15" letter-spacing="0.1em">NODE &middot; v2</text>
+            <text x="620" y="350" fill="var(--ct-text)" font-size="27" font-weight="800" font-family="var(--ct-font-display)">Draft reply</text>
+            <text x="620" y="380" fill="var(--ct-accent-glow)" font-size="15">two exits, same as before</text>
+          </g>
+
+          <!-- split into success / error branches -->
+          <path d="M 890 300 C 1020 300, 1080 145, 1180 145" stroke="var(--ct-fixed)" stroke-width="3" stroke-linecap="round"/>
+          <path d="M 890 400 C 1020 400, 1080 555, 1180 555" stroke="var(--ct-break)" stroke-width="3" stroke-linecap="round"/>
+          <path d="M 1166 138 l 20 6 l -8 20 z" fill="var(--ct-fixed)"/>
+          <path d="M 1166 547 l 20 -6 l -8 -20 z" fill="var(--ct-break)"/>
+          <text x="950" y="235" fill="var(--ct-fixed-glow)" font-size="16" letter-spacing="0.05em">success &rarr;</text>
+          <text x="950" y="480" fill="var(--ct-break-glow)" font-size="16" letter-spacing="0.05em">error &rarr;</text>
+
+          <!-- SUCCESS output card -->
+          <g>
+            <rect x="1180" y="65" width="380" height="160" rx="16" fill="var(--ct-surface)" stroke="var(--ct-fixed)" stroke-width="2" style="filter:drop-shadow(0 0 20px rgba(43,213,118,0.3))"/>
+            <text x="1208" y="103" fill="var(--ct-fixed-glow)" font-size="18" font-weight="700" letter-spacing="0.06em">SUCCESS</text>
+            <text x="1208" y="140" fill="var(--ct-text)" font-size="21" font-weight="700">Tidy finished draft</text>
+            <text x="1208" y="167" fill="var(--ct-text)" font-size="21" font-weight="700">returned</text>
+            <text x="1208" y="197" fill="var(--ct-text-muted)" font-size="14">ready to send, normal as ever</text>
+          </g>
+
+          <!-- ERROR output card -->
+          <g>
+            <rect x="1180" y="470" width="380" height="180" rx="16" fill="var(--ct-surface)" stroke="var(--ct-break)" stroke-width="2" style="filter:drop-shadow(0 0 20px rgba(255,59,48,0.3))"/>
+            <text x="1208" y="508" fill="var(--ct-break-glow)" font-size="18" font-weight="700" letter-spacing="0.06em">ERROR</text>
+            <text x="1208" y="543" fill="var(--ct-text)" font-size="20" font-weight="600">&ldquo;couldn&rsquo;t draft that one,</text>
+            <text x="1208" y="569" fill="var(--ct-text)" font-size="20" font-weight="600">please try again&rdquo;</text>
+            <text x="1208" y="600" fill="var(--ct-text-muted)" font-size="14">plain-English, not a stack trace</text>
+          </g>
+
+          <!-- loop-back: error card returns to the orchestrator to reissue the task -->
+          <path d="M 1180 585 C 820 700, 340 690, 210 430" stroke="var(--ct-accent)" stroke-width="2.5" stroke-dasharray="2 7" fill="none"/>
+          <path d="M 218 444 l -14 -18 l 22 -4 z" fill="var(--ct-accent)"/>
+          <text x="560" y="672" fill="var(--ct-accent-glow)" font-size="18" font-weight="700" letter-spacing="0.04em">&larr; reissue task</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="disclaimer">FICTIONAL DEMO &middot; Harbor Supply Co., Sift and the external writing service are invented for Crash Test Agents</div>
+  </div>
+</body>
+</html>

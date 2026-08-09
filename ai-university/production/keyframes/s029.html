@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, initial-scale=1">
+<title>S029 — Agent Pre-Launch Checklist sidebar fills up · Crash Test Agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  /* ===== S029 — SCREEN-SIM (rested state). ROUND 2, break 11 (holds).
+     Quick cutaway: the "Agent Pre-Launch Checklist" artifact slides in as a
+     dock on the right edge. Round 1 and Round 2 rows are already ticked
+     green; Rounds 3-5 and the final safety net sit below, empty and
+     waiting. Left side keeps a faint ghost of the episode's flow canvas
+     running behind it so it reads as a cutaway, not a scene change. ===== */
+  .wrap { position: relative; height: 100%; padding: var(--s7) var(--s8) var(--s8); display: flex; flex-direction: column; }
+  .kicker { font-family: var(--ct-font-mono); text-transform: uppercase; letter-spacing: 0.14em;
+    font-size: var(--ct-kicker); color: var(--ct-text-muted); font-weight: 500; }
+  .headline { margin: 10px 0 0; font-family: var(--ct-font-display); font-stretch: 125%; font-weight: 800;
+    font-size: var(--ct-h2); color: var(--ct-text); letter-spacing: 0.005em; max-width: 1120px; }
+  .headline .em { color: var(--ct-fixed-glow); }
+  .sub { margin: 22px 0 0; font-family: var(--ct-font-body); font-size: var(--ct-h3); color: var(--ct-text-muted);
+    max-width: 980px; line-height: 1.35; }
+
+  /* ---- faint ghost of the flow canvas, behind the sidebar, left 2/3 ---- */
+  .ghost-canvas { position: absolute; left: 0; top: 0; width: 1360px; height: 1080px; opacity: 0.16; pointer-events: none; }
+  .ghost-canvas svg { width: 100%; height: 100%; }
+
+  /* ---- right-edge sidebar dock ---- */
+  .sidebar { position: absolute; top: 0; right: 0; bottom: 0; width: 600px; z-index: 10;
+    background: var(--ct-surface); border-left: 1px solid var(--ct-line);
+    box-shadow: -28px 0 60px rgba(0,0,0,0.55);
+    display: flex; flex-direction: column; padding: var(--s6) var(--s6) var(--s5); }
+
+  .sb-head { display: flex; align-items: center; gap: var(--s4); padding-bottom: var(--s5); border-bottom: 1px solid var(--ct-line); }
+  .sb-head .icon { width: 56px; height: 56px; border-radius: 13px; display: grid; place-items: center; flex: 0 0 56px;
+    background: var(--ct-surface-raised); border: 1px solid var(--ct-line); }
+  .sb-head .icon svg { width: 30px; height: 30px; }
+  .sb-head h1 { margin: 0; font-family: var(--ct-font-display); font-stretch: 125%; font-weight: 900;
+    font-size: 34px; letter-spacing: 0.005em; color: var(--ct-text); line-height: 1.08; text-transform: uppercase; }
+  .sb-head .subtxt { margin-top: 6px; font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); color: var(--ct-text-muted); }
+
+  .free-badge { margin: var(--s5) 0 0; display: inline-flex; align-self: flex-start; align-items: center; gap: 10px;
+    padding: 9px 18px; border-radius: var(--ct-r-pill); background: var(--ct-accent-wash);
+    border: 1px solid color-mix(in srgb, var(--ct-accent) 55%, transparent);
+    font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--ct-accent-glow); }
+  .free-badge .d { width: 8px; height: 8px; border-radius: 50%; background: var(--ct-accent); box-shadow: 0 0 8px var(--ct-accent); }
+
+  .rounds { margin-top: var(--s5); display: flex; flex-direction: column; gap: 14px; overflow: hidden; }
+
+  .rrow { display: flex; align-items: center; gap: 16px; padding: 16px 18px; border-radius: var(--ct-r-lg);
+    background: var(--ct-surface-raised); border: 1px solid var(--ct-line); }
+  .rrow .ck { width: 34px; height: 34px; flex: 0 0 34px; border-radius: 9px; display: grid; place-items: center; }
+  .rrow .num { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); color: var(--ct-text-muted); letter-spacing: 0.08em; text-transform: uppercase; }
+  .rrow .name { font-family: var(--ct-font-body); font-weight: 700; font-size: var(--ct-ui-lg); color: var(--ct-text); }
+
+  .rrow.done { border-color: color-mix(in srgb, var(--ct-fixed) 45%, var(--ct-line));
+    box-shadow: 0 0 20px rgba(43,213,118,0.14); }
+  .rrow.done .ck { background: var(--ct-fixed-deep); border: 1px solid var(--ct-fixed); }
+  .rrow.done .ck svg { width: 18px; height: 18px; }
+  .rrow.done .ck path { stroke: var(--ct-text); stroke-width: 3; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+  .rrow.done .num { color: var(--ct-fixed-glow); }
+
+  .rrow.pending { opacity: 0.55; border-style: dashed; }
+  .rrow.pending .ck { background: transparent; border: 1.5px dashed var(--ct-text-muted); }
+  .rrow.pending .name { color: var(--ct-text-muted); font-weight: 600; }
+
+  .sb-foot { margin-top: auto; padding-top: var(--s5); border-top: 1px solid var(--ct-line);
+    display: flex; align-items: center; justify-content: space-between; }
+  .sb-foot .prog { font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); color: var(--ct-text-muted); }
+  .sb-foot .prog b { color: var(--ct-fixed-glow); font-size: var(--ct-ui-xl); }
+
+  /* slide-in cue: a soft leading edge glow to read as "just landed" */
+  .sidebar::before { content: ""; position: absolute; left: -3px; top: 0; bottom: 0; width: 3px;
+    background: linear-gradient(180deg, transparent, var(--ct-accent), transparent); opacity: 0.55; }
+</style>
+</head>
+<body>
+  <div class="stage" role="img"
+       aria-label="A right-edge Agent Pre-Launch Checklist sidebar has slid into view; Round 1 and Round 2 rows are ticked green, Round 3, Round 4, Round 5 and the final safety-net rows sit below empty and waiting, with a free-at-the-end badge, over a faint dimmed ghost of the episode's flow canvas">
+    <div class="grid-bg"></div>
+
+    <!-- Kill-Counter HUD (global overlay) — Round 2 ticking, holds at break 11 -->
+    <div class="ct-killcounter" data-state="ticking" aria-label="Kill counter: 11 of 25 breaks">
+      <span class="kc-dot"></span>
+      <span class="kc-label">Breaks</span>
+      <span class="kc-tally"><span class="kc-n">11</span><span class="kc-of">/ 25</span></span>
+    </div>
+
+    <!-- faint ghost of the flow canvas continuing behind the cutaway -->
+    <div class="ghost-canvas" aria-hidden="true">
+      <svg viewBox="0 0 1360 1080" fill="none">
+        <rect x="90" y="420" width="280" height="150" rx="18" fill="none" stroke="var(--ct-accent)" stroke-width="2"/>
+        <rect x="520" y="360" width="280" height="130" rx="18" fill="none" stroke="var(--ct-accent)" stroke-width="2"/>
+        <path d="M 370 495 L 520 430" stroke="var(--ct-line)" stroke-width="2"/>
+        <path d="M 800 400 C 920 400, 960 300, 1080 300" stroke="var(--ct-fixed)" stroke-width="2.5"/>
+        <path d="M 800 460 C 920 460, 960 620, 1080 620" stroke="var(--ct-break)" stroke-width="2.5"/>
+        <rect x="1090" y="240" width="230" height="120" rx="14" fill="none" stroke="var(--ct-fixed)" stroke-width="2"/>
+        <rect x="1090" y="560" width="230" height="120" rx="14" fill="none" stroke="var(--ct-break)" stroke-width="2"/>
+      </svg>
+    </div>
+
+    <div class="wrap">
+      <p class="kicker">Quick note &middot; break 11 of 25</p>
+      <h1 class="headline">Every rule we've earned is landing on <span class="em">one page</span></h1>
+      <p class="sub">Watch it fill up.</p>
+    </div>
+
+    <!-- right-edge checklist sidebar dock -->
+    <aside class="sidebar">
+      <div class="sb-head">
+        <span class="icon"><svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
+          <rect x="6" y="4" width="20" height="24" rx="2.5" stroke="var(--ct-text-muted)" stroke-width="2.2"/>
+          <path d="M11 11h10M11 16h10M11 21h6" stroke="var(--ct-text-muted)" stroke-width="2.2" stroke-linecap="round"/>
+        </svg></span>
+        <div>
+          <h1>Agent Pre-Launch Checklist</h1>
+          <div class="subtxt">building as we go &middot; one page</div>
+        </div>
+      </div>
+
+      <span class="free-badge"><span class="d"></span>free at the end</span>
+
+      <div class="rounds">
+        <div class="rrow done">
+          <span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4 10-11"/></svg></span>
+          <div><div class="num">Round 1</div><div class="name">Input &amp; scope</div></div>
+        </div>
+        <div class="rrow done">
+          <span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4 10-11"/></svg></span>
+          <div><div class="num">Round 2</div><div class="name">Errors &amp; retries</div></div>
+        </div>
+        <div class="rrow pending">
+          <span class="ck"></span>
+          <div><div class="num">Round 3</div><div class="name">Verification</div></div>
+        </div>
+        <div class="rrow pending">
+          <span class="ck"></span>
+          <div><div class="num">Round 4</div><div class="name">Guardrails &amp; cost</div></div>
+        </div>
+        <div class="rrow pending">
+          <span class="ck"></span>
+          <div><div class="num">Round 5</div><div class="name">Secrets &amp; permissions</div></div>
+        </div>
+        <div class="rrow pending">
+          <span class="ck"></span>
+          <div><div class="num">Final safety net</div><div class="name">Human gates</div></div>
+        </div>
+      </div>
+
+      <div class="sb-foot">
+        <span class="prog"><b>2</b> / 6 rounds locked</span>
+      </div>
+    </aside>
+  </div>
+</body>
+</html>
