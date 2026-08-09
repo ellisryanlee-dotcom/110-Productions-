@@ -3,8 +3,9 @@ title: "I Tried to Break This AI Agent 25 Ways (so yours won't die in production
 stage: screenplay
 source_script: production/scripts/crash-test-001-draft.md
 brief: production/briefs/brief-001.md
-status: draft
+status: approved
 episode: 1
+regate: "OPE-167 (2026-08-09): synced to Option-A 25-break structure. Kill-Counter HUD (BREAKS NN/25) speced globally + per-shot HUD states; the 25 [COUNTER: Break NN/25] cues in the approved script are source of truth. All 52 shots present, AI-GEN gating (S017/S035/S043) unchanged. Approved in lockstep with script re-gate PASS (crash-test-001-draft.md status: approved)."
 ---
 
 # Visual Screenplay — Crash Test #1 (Episode 1)
