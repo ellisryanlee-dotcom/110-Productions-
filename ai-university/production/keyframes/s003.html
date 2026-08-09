@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, initial-scale=1">
+<title>S003 — Title card "Crash Test Agents" · Crash Test Agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  /* ===== S003 — TITLE CARD (brand money-shot).
+     Wordmark CRASH TEST AGENTS + break/fix spine over a blurred,
+     desaturated freeze of the S002 failing dashboard. Bible §4.1, §7.1. ===== */
+
+  /* --- blurred, desaturated ghost of the failing dashboard behind --- */
+  .ghost {
+    position: absolute; inset: -60px; z-index: 0;
+    filter: blur(22px) saturate(0.35) brightness(0.55);
+    transform: scale(1.06);
+  }
+  .ghost .g-top { position: absolute; top: 0; left: 0; right: 0; height: 96px; background: var(--ct-surface); border-bottom: 2px solid var(--ct-line); }
+  .ghost .g-col-l { position: absolute; top: 96px; bottom: 0; left: 0; width: 320px; background: var(--ct-bg); border-right: 2px solid var(--ct-line); }
+  .ghost .g-col-r { position: absolute; top: 96px; bottom: 0; right: 0; width: 380px; background: var(--ct-bg); border-left: 2px solid var(--ct-line); }
+  .ghost .g-banner { position: absolute; top: 130px; right: 430px; width: 360px; height: 120px; border-radius: 12px; background: var(--ct-break-deep); box-shadow: 0 0 80px 20px rgba(255,59,48,0.5); }
+  .ghost .g-card { position: absolute; left: 360px; height: 90px; border-radius: 12px; background: var(--ct-surface); border-left: 6px solid var(--ct-break); width: 900px; }
+  .ghost .g-c1 { top: 300px; }
+  .ghost .g-c2 { top: 410px; left: 375px; opacity: 0.9; }
+  .ghost .g-c3 { top: 500px; left: 390px; opacity: 0.8; }
+  .ghost .g-c4 { top: 590px; left: 405px; opacity: 0.7; }
+  .ghost .g-run { position: absolute; top: 200px; right: 60px; width: 300px; height: 140px; border-radius: 12px; background: var(--ct-surface); border: 2px solid var(--ct-break); box-shadow: 0 0 60px rgba(255,59,48,0.4); }
+
+  /* dark scrim so the wordmark sits cleanly on top (bible §4.3) */
+  .scrim { position: absolute; inset: 0; z-index: 1;
+    background:
+      radial-gradient(120% 90% at 50% 46%, rgba(11,14,20,0.62) 0%, rgba(11,14,20,0.90) 60%, rgba(5,7,12,0.97) 100%); }
+
+  /* --- centered brand lockup --- */
+  .center { position: absolute; inset: 0; z-index: 2; display: grid; place-items: center; }
+  .lockup { width: 1180px; }
+
+  .umbrella-row { display: flex; align-items: center; gap: 20px; margin-left: 62px; margin-bottom: 22px; }
+  .umbrella-row .lab { font-size: var(--ct-kicker); }
+  .umbrella-row .rule { flex: 1; height: 1px; background: var(--ct-line); }
+
+  .wordmark { display: flex; align-items: stretch; gap: 34px; }
+  /* the break→fix spine: hard 50/50 split, no gradient (bible §4.1) */
+  .spine { width: 12px; border-radius: 2px; flex: 0 0 12px;
+    background: linear-gradient(to bottom, var(--ct-break) 0 50%, var(--ct-fixed) 50% 100%);
+    box-shadow: 0 0 26px rgba(255,59,48,0.35), 0 0 26px rgba(43,213,118,0.30); }
+  .wm-text { font-family: var(--ct-font-display); font-stretch: 125%; font-weight: 900;
+    text-transform: uppercase; letter-spacing: 0.03em; line-height: 0.92;
+    font-size: 176px; color: var(--ct-text); }
+
+  .tagline { margin: 44px 0 0 62px; font-family: var(--ct-font-body); font-weight: 500;
+    font-size: var(--ct-h3); color: var(--ct-text-muted); letter-spacing: 0.01em; }
+
+  /* promise line — mono, red before the pivot, green after; → sits on the pivot */
+  .promise { margin: 30px 0 0 62px; font-family: var(--ct-font-mono); font-weight: 500;
+    font-size: var(--ct-lower); letter-spacing: 0.02em; }
+  .promise .kill  { color: var(--ct-break-glow); }
+  .promise .pivot { color: var(--ct-text); margin: 0 10px; }
+  .promise .fix   { color: var(--ct-fixed-glow); }
+
+  /* stacked state badges on the pivot (bible §5.2: BROKEN → FIXED) */
+  .badges { position: absolute; z-index: 3; right: 120px; bottom: 120px; display: flex; flex-direction: column; gap: 16px; align-items: flex-end; }
+</style>
+</head>
+<body>
+  <div class="stage" role="img"
+       aria-label="Crash Test Agents title card: wordmark with red-over-green spine over a blurred failing dashboard, tagline we break AI agents so yours don't">
+
+    <div class="ghost" aria-hidden="true">
+      <div class="g-top"></div>
+      <div class="g-col-l"></div>
+      <div class="g-col-r"></div>
+      <div class="g-banner"></div>
+      <div class="g-card g-c1"></div>
+      <div class="g-card g-c2"></div>
+      <div class="g-card g-c3"></div>
+      <div class="g-card g-c4"></div>
+      <div class="g-run"></div>
+    </div>
+
+    <div class="scrim"></div>
+
+    <div class="center">
+      <div class="lockup">
+        <div class="umbrella-row">
+          <span class="umbrella lab">AI UNIVERSITY</span>
+          <span class="rule"></span>
+        </div>
+
+        <div class="wordmark">
+          <span class="spine"></span>
+          <span class="wm-text">Crash&nbsp;Test<br>Agents</span>
+        </div>
+
+        <div class="tagline">We break AI agents so yours don't.</div>
+
+        <div class="promise">
+          <span class="kill">25 ways to kill an agent</span><span class="pivot">&rarr;</span><span class="fix">25 fixes.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="badges" aria-hidden="true">
+      <span class="badge badge--break">[ BROKEN ]</span>
+      <span class="badge badge--fixed">[ &#10003; FIXED ]</span>
+    </div>
+  </div>
+</body>
+</html>
