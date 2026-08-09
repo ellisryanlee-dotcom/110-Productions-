@@ -9,7 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="tokens.css">
 <style>
-  /* ===== S027 — SVG motion-graphic (rested state). ROUND 2, break 11.
+  /* ===== S027 — SVG motion-graphic (rested state). ROUND 2, break 10.
      The fragile chain: "Draft reply" calls a flaky external writing
      service. A faded ghost node in the back shows the OLD behavior —
      it just dead-ends (stalled, grayed) when the service hiccups. In
@@ -35,7 +35,7 @@
   <div class="stage" role="img"
        aria-label="A faded ghost of the old draft-reply node dead-ends when the external writing service is overloaded; in front, the new draft-reply node calling the same flaky external writing service has split into two labeled outgoing branches, success and error">
     <div class="grid-bg"></div>
-    <!-- Kill-Counter HUD (global overlay) — Round 2 ticking, break 11 -->
+    <!-- Kill-Counter HUD (global overlay) — Round 2 ticking → 10 / 25 (break 10 "flaky tool, no error branch stalls the run" — the draft node splits). Break 11 ticks at S028. -->
     <div class="ct-killcounter" data-state="ticking" aria-label="Kill counter: 10 of 25 breaks">
       <span class="kc-dot"></span>
       <span class="kc-label">Breaks</span>
@@ -43,7 +43,7 @@
     </div>
 
     <div class="wrap">
-      <p class="kicker">Fix &middot; break 11 of 25</p>
+      <p class="kicker">Fix &middot; break 10 of 25</p>
       <h1 class="headline">The fragile chain — split into <span class="em">success / error</span> exits</h1>
 
       <div class="canvas">

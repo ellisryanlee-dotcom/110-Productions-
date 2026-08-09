@@ -93,6 +93,15 @@ Final safety net "24–25"). Sequence is monotonic with **no skipped resting val
    so Round 4 ticks 16→17→18→19→20 cleanly. *(S034 fixed in a prior heartbeat.)*
 6. **S050–S052 state.** Left `locked` while the clean-rerun shots S047–S049 were `fixed` (green).
    → S050–S052 set to `fixed` for a consistent green survivor state across the whole rerun+outro.
+7. **On-card kicker prose lagged the Round-2 HUD fix (found in pre-EXPORT QA, this pass).** The
+   HUD-tally reconciliation (Defect #2) corrected the `kc-n`/`aria-label`/`data-state` on S026/S027
+   but left the *visible* kicker text at the pre-fix numbers — S026 read `Proof · break 10 of 25`
+   and S027 read `Fix · break 11 of 25`. That text renders into the exported frame, so the counter
+   said 09/10 while the caption said 10/11. → S026 kicker `break 9`, S027 kicker `break 10`; stale
+   HTML build-comments in both files also corrected. Now every visible break-number on-frame
+   (HUD tally + kicker + tag) agrees with this map. **Downstream:** S026/S027 were already in the
+   stale-frame re-render list below, so the animatic re-render already scheduled also carries this
+   caption fix — no new frames added.
 
 ## Reconciliation status
 - **Keyframes:** all 52 reconciled; monotonic; `kc-n`, `aria-label`, and `data-state` consistent ✔.
