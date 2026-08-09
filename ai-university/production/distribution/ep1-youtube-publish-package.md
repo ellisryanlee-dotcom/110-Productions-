@@ -1,6 +1,6 @@
 # EP1 Distribution — YouTube Publish Package (Crash Test #1)
 
-**Status:** STAGED — awaiting Ryan greenlight + YouTube OAuth (OPE-179). NOT yet uploaded.
+**Status:** GREENLIT (Ryan accepted interaction `61cf3b6c`, 2026-08-09) — metadata approved. Captions + thumbnail now built ($0). Package is Public-ready; **only the manual YouTube upload remains (Ryan's OAuth + click).** NOT yet uploaded.
 **Asset:** `production/animatic/crash-test-001-finished.mp4` — 1020.000s (17:00), 1920×1080, H.264 yuv420p 30fps, AAC 192k, 41 MB, committed `85e8be1`.
 **Channel:** AI University ▸ series **Crash Test Agents** ▸ Episode 1.
 
@@ -58,12 +58,15 @@ AI agents, LLM agents, AI engineering, production AI, agent reliability, prompt 
 | **Altered/synthetic content disclosure** | **YES — set the "Altered content" flag.** Narration is TTS (synthetic voice). Visuals are original graphics (not realistic depictions of real people/events), but the synthetic-voice disclosure is the honest, safe setting and matches the S052 compliance note in the screenplay. |
 | Comments | On (default) |
 | License | Standard YouTube License |
-| Thumbnail | ⚠️ **MISSING — see below** |
+| Thumbnail | ✅ **`production/distribution/ep1-thumbnail.png`** (1280×720, on-brand, $0) — upload as custom thumbnail |
+| Captions | ✅ **`production/distribution/crash-test-001.en.srt`** (235 cues, English, verbatim to VO) — upload in Subtitles |
 | End screen / cards | Optional; can add subscribe + "Episode 2" placeholder later |
 
-## ⚠️ Open gaps before Public
-1. **Thumbnail** — no custom thumbnail asset exists yet. Options: (a) ship Unlisted now with an auto-frame and add a thumbnail before going Public; (b) ADAM generates a Tier-0 ($0) thumbnail from the brand system (`production/branding/brand-system.md`, "→ 25 FIXES" lockup) on request. Recommend (b) — cheap and on-brand.
-2. **Captions** — TTS script is verbatim from the screenplay `VO` lines; a clean `.srt` can be generated $0 from those timecodes for accessibility + watch-time. Not blocking upload; nice-to-have before Public.
+## ✅ Pre-Public gaps — CLOSED ($0)
+1. **Thumbnail — DONE.** `production/distribution/ep1-thumbnail.png` (1280×720, H×W valid, ~268 KB). Built from the brand system (`thumbnail.html` → Chrome headless, deterministic, repeatable via that HTML). Hazard chrome + Signal-Cyan "AI AGENT" + kill-counter HUD `BREAKS 25/25 → FIXES 25/25`. Regenerate: re-screenshot `thumbnail.html`.
+2. **Captions — DONE.** `production/distribution/crash-test-001.en.srt` (235 cues, English, ends 00:17:00). Generated $0 by `production/build/render-captions.mjs`, which parses the **same** screenplay VO/timecode blocks the audio render uses — captions are verbatim to the spoken narration. Re-run after any screenplay edit to stay in sync.
+
+Nothing else blocks Public. Upload the `.srt` under Subtitles and the `.png` as the custom thumbnail during the same upload.
 
 ---
 

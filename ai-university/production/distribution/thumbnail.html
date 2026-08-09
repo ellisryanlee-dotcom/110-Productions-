@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+  /* Crash Test Agents — EP1 YouTube thumbnail (1280×720). Brand tokens from
+     production/branding/brand-system.md. $0 / deterministic (Chrome headless). */
+  :root{
+    --bg:#0B0E14; --bg-deep:#070910; --surface:#12161F; --surface-2:#1A1F2B;
+    --border-strong:#3A4354; --text:#E6E9EF; --text-muted:#9AA4B2;
+    --hazard:#FFD21E; --hazard-ink:#0B0E14;
+    --cyan:#45C8FF; --cyan-glow:rgba(69,200,255,0.55);
+    --error:#F85149; --error-text:#FF7B72;
+    --success:#3FB950; --success-text:#56D364;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1280px;height:720px;overflow:hidden}
+  body{
+    background:
+      radial-gradient(120% 90% at 78% 18%, rgba(69,200,255,0.10), transparent 55%),
+      radial-gradient(140% 120% at 15% 120%, rgba(248,81,73,0.10), transparent 50%),
+      var(--bg);
+    font-family:"Helvetica Neue",Arial,system-ui,sans-serif;
+    color:var(--text); position:relative;
+  }
+  /* corner vignette for punch */
+  body::after{content:"";position:absolute;inset:0;
+    box-shadow:inset 0 0 220px 40px rgba(7,9,16,0.85);pointer-events:none}
+  /* hazard chrome stripe, top */
+  .hazard{position:absolute;left:0;right:0;height:14px;
+    background:repeating-linear-gradient(45deg,var(--hazard) 0 22px,var(--hazard-ink) 22px 44px)}
+  .hazard.top{top:0}.hazard.bot{bottom:0}
+
+  .wrap{position:absolute;inset:0;padding:64px 72px;display:flex;flex-direction:column;justify-content:space-between}
+
+  .kicker{display:flex;align-items:center;gap:14px;font-weight:800;letter-spacing:.14em;font-size:24px}
+  .kicker .dot{width:12px;height:12px;border-radius:50%;background:var(--error);box-shadow:0 0 16px var(--error)}
+  .kicker .mut{color:var(--text-muted);font-weight:700;letter-spacing:.10em}
+
+  .head{margin-top:6px}
+  .line{font-weight:900;line-height:.94;letter-spacing:-.01em}
+  .l1{font-size:96px}
+  .l2{font-size:150px;display:flex;align-items:baseline;gap:22px}
+  .num{color:var(--hazard);text-shadow:0 6px 0 rgba(0,0,0,.35)}
+  .ai{color:var(--cyan);text-shadow:0 0 32px var(--cyan-glow);
+    border-bottom:8px solid var(--cyan);padding-bottom:2px}
+  .l3{font-size:62px;color:var(--text-muted);font-weight:800;margin-top:14px}
+
+  /* kill-counter HUD: breaks -> fixes */
+  .hud{display:flex;align-items:center;gap:22px}
+  .chip{display:flex;align-items:center;gap:14px;padding:16px 26px;border-radius:14px;
+    background:var(--surface);border:2px solid var(--border-strong);font-weight:900;font-size:40px}
+  .chip .tag{font-size:22px;letter-spacing:.12em;font-weight:800;color:var(--text-muted)}
+  .chip.break{border-color:var(--error)}
+  .chip.break .n{color:var(--error-text)}
+  .chip.fix{border-color:var(--success)}
+  .chip.fix .n{color:var(--success-text)}
+  .arrow{font-size:56px;font-weight:900;color:var(--hazard)}
+  .brand{margin-left:auto;text-align:right;font-weight:900;font-size:30px;letter-spacing:.06em}
+  .brand .u{color:var(--hazard)}
+  .brand .s{display:block;font-size:19px;letter-spacing:.16em;color:var(--text-muted);font-weight:800;margin-top:4px}
+</style>
+</head>
+<body>
+  <div class="hazard top"></div>
+  <div class="hazard bot"></div>
+  <div class="wrap">
+    <div class="kicker"><span class="dot"></span>AGENT UNDER TEST<span class="mut">— NO STOCK FOOTAGE. EVERYTHING ORIGINAL.</span></div>
+
+    <div class="head">
+      <div class="line l1">I TRIED TO BREAK</div>
+      <div class="line l2"><span>MY <span class="ai">AI&nbsp;AGENT</span></span><span class="num">25 WAYS</span></div>
+      <div class="line l3">…then fixed every single one.</div>
+    </div>
+
+    <div class="hud">
+      <div class="chip break"><span class="tag">BREAKS</span><span class="n">25 / 25</span></div>
+      <div class="arrow">→</div>
+      <div class="chip fix"><span class="tag">FIXES</span><span class="n">25 / 25</span></div>
+      <div class="brand"><span class="u">AI</span> UNIVERSITY<span class="s">CRASH TEST&nbsp;#1</span></div>
+    </div>
+  </div>
+</body>
+</html>
