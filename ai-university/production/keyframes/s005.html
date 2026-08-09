@@ -46,15 +46,17 @@
   .moon { position: absolute; top: 40px; right: 46px; width: 74px; height: 74px; border-radius: 50%;
     background: radial-gradient(circle at 36% 34%, #2b3446, #171d28);
     box-shadow: 0 0 40px rgba(148,163,184,0.20), inset -10px -8px 0 rgba(11,14,20,0.55); }
+  /* the node = the active/autonomous actor → cyan (bible: red is reserved for the
+     broke ACTIONS it fires, never for the agent itself) */
   .agent-node { display: inline-flex; align-items: center; gap: 16px; align-self: flex-start;
-    background: var(--ct-surface-raised); border: 1px solid var(--ct-break);
-    border-radius: var(--ct-r-md); padding: 16px 22px; box-shadow: 0 0 26px rgba(255,59,48,0.30); }
+    background: var(--ct-surface-raised); border: 1px solid var(--ct-accent);
+    border-radius: var(--ct-r-md); padding: 16px 22px; box-shadow: 0 0 26px rgba(56,189,248,0.28); }
   .agent-node .g { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 9px;
-    background: var(--ct-bg); border: 1px solid var(--ct-break); }
+    background: var(--ct-bg); border: 1px solid var(--ct-accent); }
   .agent-node .g svg { width: 26px; height: 26px; }
   .agent-node .nm { font-family: var(--ct-font-display); font-stretch: 125%; font-weight: 800;
     font-size: var(--ct-ui-2xl); color: var(--ct-text); }
-  .agent-node .st { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); color: var(--ct-break-glow);
+  .agent-node .st { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); color: var(--ct-accent-glow);
     text-transform: uppercase; letter-spacing: 0.08em; }
 
   .tally { position: absolute; top: 128px; right: 46px; text-align: right; }
@@ -117,9 +119,9 @@
 
         <span class="agent-node">
           <span class="g"><svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
-            <rect x="8" y="10" width="16" height="12" rx="3" stroke="var(--ct-break)" stroke-width="2.4"/>
-            <path d="M16 6v4M12 16h.01M20 16h.01" stroke="var(--ct-break)" stroke-width="2.4" stroke-linecap="round"/>
-            <path d="M6 15v4M26 15v4" stroke="var(--ct-break)" stroke-width="2.4" stroke-linecap="round"/>
+            <rect x="8" y="10" width="16" height="12" rx="3" stroke="var(--ct-accent)" stroke-width="2.4"/>
+            <path d="M16 6v4M12 16h.01M20 16h.01" stroke="var(--ct-accent)" stroke-width="2.4" stroke-linecap="round"/>
+            <path d="M6 15v4M26 15v4" stroke="var(--ct-accent)" stroke-width="2.4" stroke-linecap="round"/>
           </svg></span>
           <span>
             <span class="nm">autonomous agent</span><br>
