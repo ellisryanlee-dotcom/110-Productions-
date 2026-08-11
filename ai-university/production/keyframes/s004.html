@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, initial-scale=1">
+<title>S004 — Agenda: five failure rounds · Crash Test Agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  /* ===== S004 — AGENDA panel. Five failure-round rows + Final safety net +
+     highlighted free-download row. Dark motion-graphic list. ===== */
+  .wrap { position: absolute; inset: 0; z-index: 2; display: grid;
+    grid-template-columns: 1fr; align-content: center; justify-items: center; }
+
+  .header { width: 1360px; margin-bottom: 40px; }
+  .header .umb-row { display: flex; align-items: center; gap: 18px; margin-bottom: 18px; }
+  .header .umb-row .rule { flex: 1; height: 1px; background: var(--ct-line); }
+  .header h1 { margin: 0; font-family: var(--ct-font-display); font-stretch: 125%; font-weight: 900;
+    text-transform: uppercase; letter-spacing: 0.02em; font-size: var(--ct-h2); color: var(--ct-text); line-height: 0.98; }
+  .header h1 .em { color: var(--ct-break-glow); }
+
+  .list { width: 1360px; display: flex; flex-direction: column; gap: 14px; }
+
+  .row {
+    display: grid; grid-template-columns: 84px 60px 1fr auto; align-items: center; gap: 24px;
+    background: var(--ct-surface); border: 1px solid var(--ct-line);
+    border-left: 5px solid var(--ct-break); border-radius: var(--ct-r-lg);
+    padding: 22px 30px; box-shadow: var(--ct-shadow-1);
+  }
+  .row .num { font-family: var(--ct-font-display); font-stretch: 125%; font-weight: 900;
+    font-size: 56px; color: var(--ct-break); line-height: 1; text-align: center; }
+  .row .icon { width: 52px; height: 52px; display: grid; place-items: center; }
+  .row .icon svg { width: 46px; height: 46px; }
+  .row .icon svg [stroke] { stroke: var(--ct-break-glow); }
+  .row .title { font-family: var(--ct-font-body); font-weight: 600; font-size: var(--ct-h3); color: var(--ct-text); }
+  .row .sub { font-family: var(--ct-font-mono); font-size: var(--ct-ui-md); color: var(--ct-text-muted); justify-self: end; }
+
+  /* final safety net — green, the composed counterpoint */
+  .row.net { border-left-color: var(--ct-fixed); }
+  .row.net .num { color: var(--ct-fixed); font-family: var(--ct-font-mono); font-size: 40px; }
+  .row.net .icon svg [stroke] { stroke: var(--ct-fixed-glow); }
+  .row.net .sub { color: var(--ct-fixed-glow); }
+
+  /* highlighted free-download row — the CTA, accent cyan */
+  .row.download {
+    grid-template-columns: 84px 1fr auto;
+    background: linear-gradient(180deg, var(--ct-surface-raised), color-mix(in srgb, var(--ct-accent) 8%, var(--ct-surface-raised)));
+    border: 1px solid var(--ct-accent); border-left: 5px solid var(--ct-accent);
+    box-shadow: 0 0 34px rgba(56,189,248,0.28), var(--ct-shadow-2); margin-top: 12px;
+  }
+  .row.download .icon { grid-column: 1; }
+  .row.download .icon svg [stroke] { stroke: var(--ct-accent); }
+  .row.download .body-cell { grid-column: 2; }
+  .row.download .free-tag { font-family: var(--ct-font-mono); font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.1em; font-size: var(--ct-ui-sm); color: var(--ct-accent);
+    display: inline-block; padding: 5px 12px; border: 1px solid var(--ct-accent);
+    border-radius: var(--ct-r-pill); background: var(--ct-accent-wash); margin-bottom: 10px; }
+  .row.download .title { font-weight: 700; }
+  .row.download .dl-cell { grid-column: 3; }
+  .row.download .dl-btn {
+    display: inline-flex; align-items: center; gap: 12px;
+    padding: 14px 26px; border-radius: var(--ct-r-md);
+    background: var(--ct-accent); color: #041017;
+    font-family: var(--ct-font-mono); font-weight: 700; font-size: var(--ct-ui-md);
+    box-shadow: 0 0 22px rgba(56,189,248,0.5); }
+  .row.download .dl-btn svg { width: 20px; height: 20px; }
+</style>
+</head>
+<body>
+  <div class="stage" role="img"
+       aria-label="Agenda panel: five agent-failure rounds with icons, a final safety net row, and a highlighted free Agent Pre-Launch Checklist download">
+    <div class="grid-bg"></div>
+    <!-- Kill-Counter HUD (global overlay) — Option A: armed at 00/25 through the hook -->
+    <div class="ct-killcounter" data-state="armed" aria-label="Kill counter: 0 of 25 breaks">
+      <span class="kc-dot"></span>
+      <span class="kc-label">Breaks</span>
+      <span class="kc-tally"><span class="kc-n">00</span><span class="kc-of">/ 25</span></span>
+    </div>
+
+    <div class="wrap">
+      <div class="header">
+        <div class="umb-row"><span class="umbrella">CRASH TEST #1 · THE PLAN</span><span class="rule"></span></div>
+        <h1>25 ways to <span class="em">kill an agent</span> &mdash;<br>five rounds, every break gets a fix.</h1>
+      </div>
+
+      <div class="list">
+        <!-- 1 · bad inputs -->
+        <div class="row">
+          <span class="num">1</span>
+          <span class="icon">
+            <svg viewBox="0 0 48 48" fill="none"><rect x="7" y="12" width="34" height="24" rx="3" stroke-width="3"/><path d="M14 20l8 8m0-8l-8 8" stroke-width="3" stroke-linecap="round"/></svg>
+          </span>
+          <span class="title">Bad inputs</span>
+          <span class="sub">malformed data &middot; 400</span>
+        </div>
+        <!-- 2 · dead APIs -->
+        <div class="row">
+          <span class="num">2</span>
+          <span class="icon">
+            <svg viewBox="0 0 48 48" fill="none"><path d="M20 14l-6 6a7 7 0 000 10l2 2m12-18l6-6a7 7 0 000 0" stroke-width="3" stroke-linecap="round"/><path d="M18 30l6-6m6-6l-4 4" stroke-width="3" stroke-linecap="round"/><path d="M34 22l4 4m0-4l-4 4" stroke-width="3" stroke-linecap="round"/></svg>
+          </span>
+          <span class="title">Dead APIs</span>
+          <span class="sub">expired keys &middot; fragile chains</span>
+        </div>
+        <!-- 3 · the lying model -->
+        <div class="row">
+          <span class="num">3</span>
+          <span class="icon">
+            <svg viewBox="0 0 48 48" fill="none"><path d="M8 26c6-4 26-4 32 0-2 6-6 9-16 9S10 32 8 26z" stroke-width="3" stroke-linejoin="round"/><circle cx="18" cy="26" r="2.5" stroke-width="2.5"/><circle cx="30" cy="26" r="2.5" stroke-width="2.5"/><path d="M14 16l6 4m14-4l-6 4" stroke-width="3" stroke-linecap="round"/></svg>
+          </span>
+          <span class="title">The lying model</span>
+          <span class="sub">hallucinated facts</span>
+        </div>
+        <!-- 4 · runaway loop -->
+        <div class="row">
+          <span class="num">4</span>
+          <span class="icon">
+            <svg viewBox="0 0 48 48" fill="none"><path d="M34 18a13 13 0 10.5 12" stroke-width="3" stroke-linecap="round"/><path d="M34 10v9h-9" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="title">Runaway loop</span>
+          <span class="sub">duplicate sends &middot; cost blowup</span>
+        </div>
+        <!-- 5 · leaky secrets -->
+        <div class="row">
+          <span class="num">5</span>
+          <span class="icon">
+            <svg viewBox="0 0 48 48" fill="none"><circle cx="17" cy="20" r="7" stroke-width="3"/><path d="M22 24l16 16m-6 0h6v-6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 34l-3 3m7-1l-2 2" stroke-width="2.5" stroke-linecap="round"/></svg>
+          </span>
+          <span class="title">Leaky secrets</span>
+          <span class="sub">plaintext keys &middot; over-privilege</span>
+        </div>
+
+        <!-- final safety net -->
+        <div class="row net">
+          <span class="num">&#9670;</span>
+          <span class="icon">
+            <svg viewBox="0 0 48 48" fill="none"><path d="M8 16h32M8 24h32M8 32h32M14 12v28M24 12v28M34 12v28" stroke-width="2.5" stroke-linecap="round"/><path d="M24 40l7-7" stroke-width="3" stroke-linecap="round"/></svg>
+          </span>
+          <span class="title">Final safety net &mdash; human in the loop</span>
+          <span class="sub">approve before it acts</span>
+        </div>
+
+        <!-- highlighted free download -->
+        <div class="row download">
+          <span class="icon">
+            <svg viewBox="0 0 48 48" fill="none"><path d="M24 10v20m0 0l-8-8m8 8l8-8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 36h24" stroke-width="3" stroke-linecap="round"/></svg>
+          </span>
+          <span class="body-cell">
+            <span class="free-tag">FREE</span>
+            <span class="title" style="display:block">Agent Pre-Launch Checklist</span>
+          </span>
+          <span class="dl-cell">
+            <span class="dl-btn">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M12 4v11m0 0l-4-4m4 4l4-4" stroke="#041017" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 19h12" stroke="#041017" stroke-width="2.4" stroke-linecap="round"/></svg>
+              Download
+            </span>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

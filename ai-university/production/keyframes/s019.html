@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, initial-scale=1">
+<title>S019 — ROUND 1 / Break 6: garbage input piped into Rolodash → 400 Bad Request · Crash Test Agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  /* ===== S019 — SCREEN-SIM (Round 1, break 6 "garbage input passed straight
+     to a tool"). LEFT: a malformed inbound email whose body is a raw broken
+     form-data dump (stray brackets, key:value fragments, no structure). A wire
+     shoves that raw mess straight into the "Rolodash lookup" node (RIGHT), which
+     flares RED and throws a "400 Bad Request" banner + parse-error detail.
+     Semantic law: red = broke (the only saturated color here). Reuses the
+     harbor mail-card + flow-diagram node/wire kit, re-tokenized to --ct-*. ===== */
+  .app { display: grid; grid-template-rows: 96px 60px 1fr 44px; height: 100%; }
+
+  /* ---- topbar (shared Sift chrome) ---- */
+  .topbar { display: flex; align-items: center; gap: var(--s5);
+    padding: 0 var(--s7); border-bottom: 1px solid var(--ct-line); background: var(--ct-surface); }
+  .brandchip { display: flex; align-items: center; gap: var(--s3); }
+  .brandchip .glyph { width: 40px; height: 40px; border-radius: 9px; display: grid; place-items: center;
+    background: var(--ct-surface-raised); border: 1px solid var(--ct-line); }
+  .brandchip .name { font-weight: 700; font-size: var(--ct-ui-2xl); letter-spacing: -0.01em; }
+  .topbar .sub { color: var(--ct-text-muted); font-size: var(--ct-ui-lg); }
+  .topbar .spacer { flex: 1; }
+  .status-pill { display: inline-flex; align-items: center; gap: 10px; padding: 9px 18px;
+    border-radius: var(--ct-r-pill); background: var(--ct-break-wash); color: var(--ct-break-glow);
+    font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); font-weight: 700;
+    border: 1px solid color-mix(in srgb, var(--ct-break) 50%, transparent); }
+  .status-pill .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--ct-break); box-shadow: 0 0 10px var(--ct-break); }
+
+  /* ---- round marker strip ---- */
+  .roundbar { display: flex; align-items: center; gap: 20px; padding: 0 var(--s7);
+    background: var(--ct-bg); border-bottom: 1px solid var(--ct-line); }
+  .roundbar .tag { font-family: var(--ct-font-mono); font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.14em; font-size: var(--ct-ui-sm); color: var(--ct-break-glow);
+    padding: 6px 16px; border: 1px solid color-mix(in srgb, var(--ct-break) 45%, var(--ct-line));
+    border-radius: var(--ct-r-pill); background: var(--ct-break-wash); }
+  .roundbar .tag b { color: var(--ct-text); }
+  .roundbar .cap { font-family: var(--ct-font-body); color: var(--ct-text-muted); font-size: var(--ct-ui-md); }
+  .roundbar .rule { flex: 1; height: 1px; background: var(--ct-line); }
+
+  /* ---- body: email  →  pipe  →  Rolodash node ---- */
+  .body { display: grid; grid-template-columns: 900px 168px 1fr;
+    align-items: center; padding: var(--s6) var(--s7); gap: 0; min-height: 0; }
+
+  .pane-title { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs);
+    text-transform: uppercase; letter-spacing: 0.12em; color: var(--ct-text-muted);
+    font-weight: 500; margin: 0 0 var(--s4); display: flex; align-items: center; gap: 12px; }
+  .pane-title .dotmark { width: 9px; height: 9px; border-radius: 50%; }
+
+  /* LEFT — the malformed inbound email */
+  .mail { background: var(--ct-surface); border: 1px solid var(--ct-line); border-radius: var(--ct-r-lg);
+    box-shadow: var(--ct-shadow-2); overflow: hidden; display: flex; flex-direction: column; }
+  .mail .mhead { padding: 22px 30px 20px; border-bottom: 1px solid var(--ct-line); }
+  .mail .subj { font-family: var(--ct-font-body); font-weight: 700; font-size: var(--ct-ui-2xl); color: var(--ct-text); }
+  .mail .fromrow { display: flex; align-items: center; gap: 15px; margin-top: 15px; }
+  .mail .avatar { width: 46px; height: 46px; flex: 0 0 46px; border-radius: 9px; display: grid; place-items: center;
+    background: var(--ct-surface-raised); border: 1px solid var(--ct-line);
+    font-family: var(--ct-font-mono); font-weight: 700; font-size: var(--ct-ui-md); color: var(--ct-text-muted); }
+  .mail .who { display: flex; flex-direction: column; }
+  .mail .who b { font-size: var(--ct-ui-md); font-weight: 600; color: var(--ct-text); }
+  .mail .who span { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); color: var(--ct-text-muted); }
+  .mail .stamp { margin-left: auto; font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); color: var(--ct-text-muted); }
+
+  .mail .malchip { display: inline-flex; align-items: center; gap: 9px; padding: 6px 14px; border-radius: var(--ct-r-pill);
+    font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); color: var(--ct-break-glow); margin-top: 16px;
+    background: var(--ct-break-wash); border: 1px solid color-mix(in srgb, var(--ct-break) 45%, transparent); }
+  .mail .malchip .tick { width: 8px; height: 8px; border-radius: 50%; background: var(--ct-break); box-shadow: 0 0 8px var(--ct-break); }
+
+  /* the raw broken form-data dump */
+  .dump { padding: 20px 0; background:
+      linear-gradient(180deg, var(--ct-bg), var(--ct-break-wash));
+    display: flex; box-shadow: inset 0 0 60px rgba(255,59,48,0.05); }
+  .dump .gutter { width: 66px; flex: 0 0 66px; border-right: 1px solid var(--ct-line); text-align: right;
+    padding-right: 16px; font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); color: var(--ct-text-muted);
+    line-height: 1.95; opacity: 0.55; }
+  .dump .raw { padding: 0 22px; font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm);
+    line-height: 1.95; color: var(--ct-text-muted); flex: 1; white-space: pre-wrap; word-break: break-all; }
+  .dump .raw .k { color: var(--ct-text); }
+  .dump .raw .bad { color: var(--ct-break-glow); font-weight: 700; }
+  .dump .raw .blk { color: var(--ct-break); }
+
+  .mail .foot-note { padding: 14px 30px; border-top: 1px solid var(--ct-line);
+    font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); color: var(--ct-break-glow);
+    display: flex; align-items: center; gap: 12px; }
+  .mail .foot-note .x { width: 20px; height: 20px; flex: 0 0 20px; border-radius: 50%; display: grid; place-items: center;
+    background: var(--ct-break-deep); color: var(--ct-text); font-weight: 800; font-size: 12px; }
+
+  /* MIDDLE — the wire shoving raw mess straight into the node */
+  .pipe { position: relative; height: 120px; display: flex; align-items: center; }
+  .pipe .wire { position: absolute; left: 0; right: 22px; top: 50%; height: 4px; transform: translateY(-50%);
+    background: repeating-linear-gradient(90deg, var(--ct-break) 0 16px, transparent 16px 30px);
+    background-size: 30px 4px; animation: flow 0.9s linear infinite; opacity: 0.9; }
+  @keyframes flow { to { background-position: 30px 0; } }
+  .pipe .arrow { position: absolute; right: 0; top: 50%; transform: translateY(-50%);
+    width: 0; height: 0; border-left: 22px solid var(--ct-break);
+    border-top: 14px solid transparent; border-bottom: 14px solid transparent;
+    filter: drop-shadow(0 0 8px rgba(255,59,48,0.6)); }
+  .pipe .pipe-lab { position: absolute; left: 50%; top: 8px; transform: translateX(-50%);
+    font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--ct-break-glow); white-space: nowrap; }
+
+  /* RIGHT — the Rolodash lookup node in error + the 400 banner */
+  .nodecol { display: flex; flex-direction: column; align-items: stretch; padding-left: var(--s2); }
+
+  .node { position: relative; background: color-mix(in srgb, var(--ct-break) 12%, var(--ct-surface));
+    border: 1px solid var(--ct-break); border-radius: var(--ct-r-lg);
+    box-shadow: 0 0 40px rgba(255,59,48,0.30), var(--ct-shadow-2);
+    padding: 26px 28px; animation: redflash 1.4s ease-in-out infinite; }
+  @keyframes redflash {
+    0%,100% { box-shadow: 0 0 30px rgba(255,59,48,0.24), var(--ct-shadow-2); }
+    50%     { box-shadow: 0 0 52px rgba(255,59,48,0.48), var(--ct-shadow-2); } }
+  .node .nrow { display: flex; align-items: center; gap: 16px; }
+  .node .glyph { width: 58px; height: 58px; flex: 0 0 58px; border-radius: var(--ct-r-md); display: grid; place-items: center;
+    background: var(--ct-break-wash); border: 1px solid color-mix(in srgb, var(--ct-break) 55%, transparent); }
+  .node .glyph svg { width: 32px; height: 32px; }
+  .node .glyph svg [stroke] { stroke: var(--ct-break-glow); }
+  .node .meta { display: flex; flex-direction: column; }
+  .node .meta .nm { font-family: var(--ct-font-display); font-stretch: 125%; font-weight: 900;
+    font-size: var(--ct-ui-2xl); color: var(--ct-text); letter-spacing: 0.01em; }
+  .node .meta .sd { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); color: var(--ct-text-muted); margin-top: 4px; }
+  .node .state-badge { margin-left: auto; }
+
+  /* the request/response transcript inside the node */
+  .txn { margin-top: 22px; border-top: 1px solid color-mix(in srgb, var(--ct-break) 30%, var(--ct-line)); padding-top: 18px;
+    font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); line-height: 1.75; }
+  .txn .req { color: var(--ct-text-muted); }
+  .txn .req .m { color: var(--ct-text); }
+  .txn .res { color: var(--ct-break-glow); font-weight: 700; }
+  .txn .det { color: var(--ct-text-muted); margin-top: 6px; }
+  .txn .det b { color: var(--ct-text); }
+
+  /* the big 400 error banner */
+  .banner { margin-top: 22px; display: flex; align-items: center; gap: 20px;
+    background: var(--ct-break-deep); border: 1px solid var(--ct-break); border-radius: var(--ct-r-md);
+    padding: 22px 26px; box-shadow: 0 0 34px rgba(255,59,48,0.40); }
+  .banner .bi { width: 54px; height: 54px; flex: 0 0 54px; border-radius: 12px; display: grid; place-items: center;
+    background: rgba(0,0,0,0.28); border: 1px solid var(--ct-break-glow); }
+  .banner .bi svg { width: 32px; height: 32px; }
+  .banner .btxt { display: flex; flex-direction: column; }
+  .banner .btxt .code { font-family: var(--ct-font-display); font-stretch: 125%; font-weight: 900;
+    font-size: var(--ct-h3); line-height: 1; color: var(--ct-text); letter-spacing: 0.01em; }
+  .banner .btxt .msg { font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); color: color-mix(in srgb, var(--ct-text) 88%, transparent); margin-top: 8px; }
+
+  .lesson { margin-top: 20px; font-family: var(--ct-font-body); font-size: var(--ct-ui-md); color: var(--ct-text-muted); }
+  .lesson b { color: var(--ct-text); }
+
+  .disclaimer { display: flex; align-items: center; justify-content: center; background: var(--ct-surface);
+    border-top: 1px solid var(--ct-line); color: var(--ct-text-muted);
+    font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); letter-spacing: 0.03em; }
+</style>
+</head>
+<body>
+  <div class="stage" role="img"
+       aria-label="Sift agent run, Round 1 break 6: a malformed inbound web-form email whose body is a raw broken form-data dump of stray brackets and key-value fragments is piped straight down a red wire into the Rolodash lookup node, which flares red and throws a 400 Bad Request banner: malformed request body, could not parse field email. Break 6 of 25.">
+    <div class="grid-bg"></div>
+
+    <!-- Kill-Counter HUD (global overlay) — Round 1, ticking at 06/25 -->
+    <div class="ct-killcounter" data-state="ticking" aria-label="Kill counter: 6 of 25 breaks">
+      <span class="kc-dot"></span>
+      <span class="kc-label">Breaks</span>
+      <span class="kc-tally"><span class="kc-n">06</span><span class="kc-of">/ 25</span></span>
+    </div>
+
+    <div class="app">
+      <header class="topbar">
+        <div class="brandchip">
+          <span class="glyph">
+            <svg width="26" height="26" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+              <path d="M12 16h40M18 32h28M26 48h12" stroke="var(--ct-accent)" stroke-width="5" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <span class="name">Sift</span>
+        </div>
+        <span class="sub">agent run &middot; Harbor Supply Co.</span>
+        <div class="spacer"></div>
+        <span class="status-pill"><span class="dot"></span> Run halted &middot; tool error</span>
+      </header>
+
+      <div class="roundbar">
+        <span class="tag">ROUND <b>1</b> &middot; Break 6</span>
+        <span class="cap">The ugly input &mdash; garbage passed straight to a tool with no clean-up.</span>
+        <span class="rule"></span>
+      </div>
+
+      <div class="body">
+        <!-- LEFT — malformed inbound email, raw broken form dump -->
+        <section class="mailwrap">
+          <p class="pane-title"><span class="dotmark" style="background:var(--ct-break)"></span>Inbound &middot; malformed web-form submission</p>
+          <article class="mail">
+            <div class="mhead">
+              <div class="subj">Contact form submission</div>
+              <div class="fromrow">
+                <span class="avatar">?!</span>
+                <span class="who"><b>webform-bot</b><span>forms@harbor-galley.example</span></span>
+                <span class="stamp">today &middot; 9:47 AM</span>
+              </div>
+              <span class="malchip"><span class="tick"></span> malformed body &middot; no structure &middot; fields broken</span>
+            </div>
+
+            <div class="dump" aria-label="Raw broken form-data body">
+              <div class="gutter">1<br>2<br>3<br>4<br>5<br>6<br>7</div>
+              <div class="raw">{<span class="k">"form"</span>:submission,,, <span class="bad">{{</span>cust_name<span class="bad">:::</span> <span class="k">order#</span>=%%$$
+<span class="k">email</span>:"dana.okafor@harbor-galley<span class="bad">[at]</span>example"<span class="bad">,,,</span>
+message=<span class="blk">&#9618;&#9618;&#9618;</span> raw<span class="bad">=&lt;&lt;&lt;&gt;&gt;&gt;</span> &amp;#65533; <span class="k">qty</span>: sku:
+[address]<span class="bad">=||NULL||</span> phone: <span class="blk">&#9608;&#9608;</span> %0A%0A
+--boundary_9931 Content-Disposition: form-data; name=<span class="bad">"</span>
+&lt;div&gt;&lt;/div&gt;&nbsp; <span class="bad">}}</span> total<span class="bad">::</span> &#8383;&#8383; &#65533;&#65533;
+&lt;EOF unexpected &mdash; unterminated string&gt;</div>
+            </div>
+
+            <p class="foot-note"><span class="x">!</span> no validation ran &middot; this went to the tool exactly as received</p>
+          </article>
+        </section>
+
+        <!-- MIDDLE — wire shoving raw mess into the node -->
+        <div class="pipe" aria-hidden="true">
+          <span class="pipe-lab">raw dump &rarr;</span>
+          <span class="wire"></span>
+          <span class="arrow"></span>
+        </div>
+
+        <!-- RIGHT — Rolodash lookup node flaring red + 400 banner -->
+        <section class="nodecol">
+          <p class="pane-title"><span class="dotmark" style="background:var(--ct-break)"></span>Pipeline &middot; tool call</p>
+          <div class="node">
+            <div class="nrow">
+              <span class="glyph">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2" stroke-width="2"/><circle cx="11" cy="11" r="3" stroke-width="2"/><path d="M15.5 15.5L19 19" stroke-width="2" stroke-linecap="round"/></svg>
+              </span>
+              <span class="meta">
+                <span class="nm">Rolodash lookup</span>
+                <span class="sd">CRM contact lookup &middot; POST /rolodash/v1/contacts:find</span>
+              </span>
+              <span class="state-badge badge badge--break">Error</span>
+            </div>
+
+            <div class="txn">
+              <div class="req"><span class="m">POST</span> rolodash/v1/contacts:find &nbsp;&larr; raw form body</div>
+              <div class="res">&larr; 400 Bad Request</div>
+              <div class="det">malformed request body &mdash; could not parse field <b>"email"</b>; unterminated string at line&nbsp;7.</div>
+            </div>
+
+            <div class="banner">
+              <span class="bi">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3l9 16H3z" stroke="var(--ct-text)" stroke-width="2" stroke-linejoin="round"/><path d="M12 10v4" stroke="var(--ct-text)" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="16.6" r="1.1" fill="var(--ct-text)"/></svg>
+              </span>
+              <span class="btxt">
+                <span class="code">400 Bad Request</span>
+                <span class="msg">the connection screamed back &middot; the request never reached the CRM</span>
+              </span>
+            </div>
+
+            <p class="lesson">Garbage in, <b>400</b> out. The agent shoved unvalidated form data straight into a tool call &mdash; and it broke.</p>
+          </div>
+        </section>
+      </div>
+
+      <div class="disclaimer">FICTIONAL DEMO &middot; Harbor Supply Co., Sift, Rolodash and the webform submission are invented for Crash Test Agents</div>
+    </div>
+  </div>
+</body>
+</html>

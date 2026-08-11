@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, initial-scale=1">
+<title>S020 — Read the status codes: request/response + families chart frame · Crash Test Agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  /* ===== S020 — ROUND 1 explainer MOTION-GRAPHIC (Tier-0 SVG/CSS).
+     "Time to read status codes." A clean instrument diagram: the agent
+     (Sift) fires a request across a wire to a web service, the service
+     answers with a numbered badge — a 3-digit verdict. Below, the
+     status-families chart FRAME draws in: three columns 2xx / 4xx / 5xx,
+     still mostly blank, ready to fill in S021. Plain-language HTTP
+     definition sits up top. Kill-counter holds at 04/25 after the S019
+     400 break. Restrained: this is the frame FORMING, not populated. ===== */
+  .wrap { position: absolute; inset: 0; z-index: 2;
+    display: grid; grid-template-rows: auto auto 1fr; align-content: start;
+    padding: 88px 120px 72px; gap: var(--s7); }
+
+  /* ---- header: umbrella + plain-language definition ---- */
+  .head .umb-row { display: flex; align-items: center; gap: 18px; margin-bottom: 22px; }
+  .head .umb-row .rule { flex: 1; height: 1px; background: var(--ct-line); }
+  .head .umb-row .tag { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs);
+    text-transform: uppercase; letter-spacing: 0.14em; color: var(--ct-text-muted);
+    padding: 7px 15px; border: 1px solid var(--ct-line); border-radius: var(--ct-r-pill);
+    background: var(--ct-surface); }
+  .head h1 { margin: 0; font-family: var(--ct-font-display); font-stretch: 125%; font-weight: 900;
+    text-transform: uppercase; letter-spacing: 0.02em; font-size: var(--ct-h2); color: var(--ct-text); line-height: 0.98; }
+  .head h1 .num { color: var(--ct-accent-glow); }
+  .head .def { margin-top: 20px; display: inline-flex; align-items: center; gap: 16px;
+    font-family: var(--ct-font-mono); font-size: var(--ct-ui-xl); color: var(--ct-text-muted);
+    padding: 12px 20px; border-radius: var(--ct-r-md); background: var(--ct-surface);
+    border: 1px solid var(--ct-line); }
+  .head .def b { color: var(--ct-accent-glow); font-weight: 700; }
+  .head .def .sep { width: 1px; height: 26px; background: var(--ct-line); }
+
+  /* ---- request / response diagram ---- */
+  .flow { display: grid; grid-template-columns: 360px 1fr 360px; align-items: center; gap: 0;
+    padding: 12px 0 4px; }
+  .node { background: var(--ct-surface); border: 1px solid var(--ct-line); border-radius: var(--ct-r-lg);
+    box-shadow: var(--ct-shadow-2); padding: 26px 30px; display: flex; align-items: center; gap: 20px; }
+  .node .ico { width: 66px; height: 66px; flex: 0 0 66px; border-radius: 14px; display: grid; place-items: center;
+    background: var(--ct-surface-raised); border: 1px solid var(--ct-line); }
+  .node .ico svg { width: 38px; height: 38px; fill: none; }
+  .node .meta { display: flex; flex-direction: column; gap: 6px; }
+  .node .meta .nm { font-family: var(--ct-font-body); font-weight: 700; font-size: var(--ct-ui-2xl); color: var(--ct-text); }
+  .node .meta .sub { font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); color: var(--ct-text-muted); }
+  .node.agent { border-color: color-mix(in srgb, var(--ct-accent) 45%, var(--ct-line));
+    box-shadow: 0 0 30px rgba(56,189,248,0.18), var(--ct-shadow-2); }
+  .node.agent .ico { border-color: var(--ct-accent); box-shadow: inset 0 0 14px rgba(56,189,248,0.22); }
+  .node.agent .ico svg [stroke] { stroke: var(--ct-accent); }
+  .node.service .ico svg [stroke] { stroke: var(--ct-text-muted); }
+
+  /* the wire between the two nodes, with request out + response back */
+  .wire { position: relative; height: 210px; }
+  .wire .lane { position: absolute; left: 0; right: 0; display: flex; align-items: center; gap: 0; }
+  .wire .lane.req { top: 52px; }
+  .wire .lane.res { bottom: 52px; }
+  .wire .track { flex: 1; height: 3px; border-radius: 2px; position: relative; }
+  .wire .lane.req .track { background: linear-gradient(90deg, color-mix(in srgb, var(--ct-accent) 20%, transparent), var(--ct-accent)); }
+  .wire .lane.res .track { background: linear-gradient(90deg, var(--ct-text-muted), color-mix(in srgb, var(--ct-text-muted) 20%, transparent)); }
+  .wire .arw { width: 0; height: 0; }
+  .wire .lane.req .arw { border-top: 9px solid transparent; border-bottom: 9px solid transparent; border-left: 15px solid var(--ct-accent); }
+  .wire .lane.res .arw { border-top: 9px solid transparent; border-bottom: 9px solid transparent; border-right: 15px solid var(--ct-text-muted); }
+  .wire .pip { position: absolute; top: -3px; width: 9px; height: 9px; border-radius: 50%;
+    background: var(--ct-accent); box-shadow: 0 0 10px var(--ct-accent); animation: pipReq 2.4s linear infinite; }
+  @keyframes pipReq { from { left: 4%; } to { left: 92%; } }
+  .wire .lbl { position: absolute; font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm);
+    letter-spacing: 0.04em; padding: 6px 14px; border-radius: var(--ct-r-pill); white-space: nowrap; }
+  .wire .lane.req .lbl { top: -20px; left: 50%; transform: translateX(-50%);
+    color: var(--ct-accent-glow); border: 1px solid color-mix(in srgb, var(--ct-accent) 45%, var(--ct-line));
+    background: var(--ct-accent-wash); }
+  .wire .lane.res .lbl { bottom: -20px; left: 50%; transform: translateX(-50%);
+    color: var(--ct-text-muted); border: 1px solid var(--ct-line); background: var(--ct-surface); }
+
+  /* the returned numbered badge — the "3-digit verdict" */
+  .verdict { position: absolute; left: 50%; bottom: -2px; transform: translate(-50%, 60%); z-index: 4;
+    display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .verdict .badge3 { display: flex; align-items: center; gap: 8px; padding: 12px 16px; border-radius: var(--ct-r-md);
+    background: var(--ct-surface-raised); border: 1px solid var(--ct-line); box-shadow: var(--ct-shadow-2); }
+  .verdict .slot { width: 46px; height: 58px; border-radius: 8px; display: grid; place-items: center;
+    background: var(--ct-bg); border: 1px solid var(--ct-line);
+    font-family: var(--ct-font-mono); font-weight: 700; font-size: var(--ct-ui-3xl); color: var(--ct-text-muted); }
+  .verdict .cap { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); text-transform: uppercase;
+    letter-spacing: 0.12em; color: var(--ct-text-muted); }
+
+  /* ---- status-families chart frame (forming) ---- */
+  .chart { align-self: end; background: var(--ct-surface); border: 1px solid var(--ct-line);
+    border-radius: var(--ct-r-lg); box-shadow: var(--ct-shadow-2); overflow: hidden; }
+  .chart .ch-head { display: flex; align-items: baseline; gap: 16px; padding: 20px 30px;
+    border-bottom: 1px solid var(--ct-line); background: var(--ct-surface-raised); }
+  .chart .ch-head .k { font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); text-transform: uppercase;
+    letter-spacing: 0.12em; color: var(--ct-text); font-weight: 700; }
+  .chart .ch-head .s { font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); color: var(--ct-text-muted); }
+  .chart .ch-head .forming { margin-left: auto; font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs);
+    text-transform: uppercase; letter-spacing: 0.1em; color: var(--ct-text-muted);
+    padding: 6px 14px; border: 1px dashed var(--ct-line); border-radius: var(--ct-r-pill); }
+  .cols { display: grid; grid-template-columns: repeat(3, 1fr); }
+  .col { padding: 24px 28px 28px; border-right: 1px solid var(--ct-line); }
+  .col:last-child { border-right: 0; }
+  .col .fam { display: flex; align-items: center; gap: 14px; margin-bottom: 6px; }
+  .col .fam .dot { width: 14px; height: 14px; border-radius: 50%; flex: 0 0 14px; }
+  .col .fam .code { font-family: var(--ct-font-display); font-stretch: 125%; font-weight: 900;
+    font-size: 56px; letter-spacing: 0.01em; line-height: 1; }
+  .col .fam .gloss { margin-left: auto; font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs);
+    text-transform: uppercase; letter-spacing: 0.08em; color: var(--ct-text-muted); }
+  .col.ok .code { color: var(--ct-fixed); } .col.ok .dot { background: var(--ct-fixed); box-shadow: 0 0 12px rgba(43,213,118,0.55); }
+  .col.cli .code { color: var(--ct-break-glow); } .col.cli .dot { background: var(--ct-break); box-shadow: 0 0 12px rgba(255,59,48,0.55); }
+  .col.srv .code { color: var(--ct-break); } .col.srv .dot { background: var(--ct-break-deep); box-shadow: 0 0 10px rgba(178,31,22,0.6); }
+  /* blank rows, ready to fill in S021 */
+  .col .rows { margin-top: 18px; display: flex; flex-direction: column; gap: 12px; }
+  .col .ghost { height: 40px; border-radius: var(--ct-r-sm); border: 1px dashed var(--ct-line);
+    background: repeating-linear-gradient(90deg, transparent 0 22px, color-mix(in srgb, var(--ct-line) 55%, transparent) 22px 23px);
+    display: flex; align-items: center; padding: 0 16px; }
+  .col .ghost .slotn { font-family: var(--ct-font-mono); font-size: var(--ct-ui-md); color: color-mix(in srgb, var(--ct-text-muted) 60%, transparent);
+    letter-spacing: 0.14em; }
+
+  .disclaimer { position: absolute; left: 0; right: 0; bottom: 0; height: 44px; z-index: 3;
+    display: flex; align-items: center; justify-content: center; background: var(--ct-surface);
+    border-top: 1px solid var(--ct-line); color: var(--ct-text-muted); font-family: var(--ct-font-mono);
+    font-size: var(--ct-ui-xs); letter-spacing: 0.03em; }
+</style>
+</head>
+<body>
+  <div class="stage" role="img"
+       aria-label="Explainer: the Sift agent sends a request across a wire to a web service, and the service returns a numbered status badge — a three-digit verdict. A plain-language definition reads: an HTTP status code is a three-digit verdict, and HTTP is the language web services speak. Below, the status-families chart frame is drawing in with three columns headed 2xx, 4xx and 5xx, still mostly blank and ready to fill. Kill counter holds at four of twenty-five.">
+    <div class="grid-bg"></div>
+
+    <!-- Kill-Counter HUD (global overlay) — Round 1, ticking, holds at 06/25 after the S019 break-6 garbage-input 400 -->
+    <div class="ct-killcounter" data-state="ticking" aria-label="Kill counter: 6 of 25 breaks">
+      <span class="kc-dot"></span>
+      <span class="kc-label">Breaks</span>
+      <span class="kc-tally"><span class="kc-n">06</span><span class="kc-of">/ 25</span></span>
+    </div>
+
+    <div class="wrap">
+      <!-- header + plain-language definition -->
+      <div class="head">
+        <div class="umb-row">
+          <span class="tag">Round 1 · Read the status codes</span>
+          <span class="rule"></span>
+          <span class="tag">Every web call answers with a code</span>
+        </div>
+        <h1>An HTTP status code = a <span class="num">3-digit</span> verdict</h1>
+        <div class="def">
+          <span>HTTP = the language web services speak</span>
+          <span class="sep"></span>
+          <span>the code is a <b>3-digit verdict</b> on what happened</span>
+        </div>
+      </div>
+
+      <!-- request / response diagram -->
+      <div class="flow">
+        <div class="node agent">
+          <span class="ico"><svg viewBox="0 0 40 40"><rect x="9" y="11" width="22" height="17" rx="4" stroke-width="2.6"/><path d="M20 6v5M13 19h.01M27 19h.01" stroke-width="2.6" stroke-linecap="round"/><path d="M15 24c1.6 1.6 8.4 1.6 10 0" stroke-width="2.6" stroke-linecap="round"/></svg></span>
+          <span class="meta"><span class="nm">Sift</span><span class="sub">your agent · the caller</span></span>
+        </div>
+
+        <div class="wire">
+          <div class="lane req">
+            <span class="track"><span class="pip"></span></span>
+            <span class="arw"></span>
+            <span class="lbl">request &nbsp;·&nbsp; GET /rolodash/lookup</span>
+          </div>
+          <div class="lane res">
+            <span class="arw"></span>
+            <span class="track"></span>
+            <span class="lbl">response &nbsp;·&nbsp; a status code comes back</span>
+          </div>
+          <div class="verdict">
+            <div class="badge3">
+              <span class="slot">2</span><span class="slot">0</span><span class="slot">0</span>
+            </div>
+            <span class="cap">the 3-digit verdict</span>
+          </div>
+        </div>
+
+        <div class="node service">
+          <span class="ico"><svg viewBox="0 0 40 40"><rect x="7" y="8" width="26" height="9" rx="2.5" stroke-width="2.6"/><rect x="7" y="22" width="26" height="9" rx="2.5" stroke-width="2.6"/><path d="M12 12.5h.01M12 26.5h.01" stroke-width="3" stroke-linecap="round"/></svg></span>
+          <span class="meta"><span class="nm">Web service</span><span class="sub">the other end · Rolodash API</span></span>
+        </div>
+      </div>
+
+      <!-- status-families chart frame, forming -->
+      <div class="chart">
+        <div class="ch-head">
+          <span class="k">Status families</span>
+          <span class="s">group by the first digit — learn the families, save yourself hours</span>
+          <span class="forming">frame forming…</span>
+        </div>
+        <div class="cols">
+          <div class="col ok">
+            <div class="fam"><span class="dot"></span><span class="code">2xx</span><span class="gloss">success</span></div>
+            <div class="rows">
+              <div class="ghost"><span class="slotn">2 _ _</span></div>
+              <div class="ghost"><span class="slotn">2 _ _</span></div>
+            </div>
+          </div>
+          <div class="col cli">
+            <div class="fam"><span class="dot"></span><span class="code">4xx</span><span class="gloss">you messed up</span></div>
+            <div class="rows">
+              <div class="ghost"><span class="slotn">4 _ _</span></div>
+              <div class="ghost"><span class="slotn">4 _ _</span></div>
+            </div>
+          </div>
+          <div class="col srv">
+            <div class="fam"><span class="dot"></span><span class="code">5xx</span><span class="gloss">they broke</span></div>
+            <div class="rows">
+              <div class="ghost"><span class="slotn">5 _ _</span></div>
+              <div class="ghost"><span class="slotn">5 _ _</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="disclaimer">FICTIONAL DEMO · Sift and the Rolodash API are invented for Crash Test Agents</div>
+  </div>
+</body>
+</html>

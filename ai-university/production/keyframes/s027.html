@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, initial-scale=1">
+<title>S027 — Draft reply node splits into success/error branches · Crash Test Agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  /* ===== S027 — SVG motion-graphic (rested state). ROUND 2, break 10.
+     The fragile chain: "Draft reply" calls a flaky external writing
+     service. A faded ghost node in the back shows the OLD behavior —
+     it just dead-ends (stalled, grayed) when the service hiccups. In
+     front, the NEW "Draft reply" node has split into two labeled
+     outgoing branches: success / error. ===== */
+  .wrap { position: relative; height: 100%; padding: var(--s7) var(--s8) var(--s8); display: flex; flex-direction: column; }
+  .kicker { font-family: var(--ct-font-mono); text-transform: uppercase; letter-spacing: 0.14em;
+    font-size: var(--ct-kicker); color: var(--ct-text-muted); font-weight: 500; }
+  .headline { margin: 10px 0 0; font-family: var(--ct-font-display); font-stretch: 125%; font-weight: 800;
+    font-size: var(--ct-h2); color: var(--ct-text); letter-spacing: 0.005em; }
+  .headline .em { color: var(--ct-break-glow); }
+
+  .canvas { flex: 1; margin-top: var(--s5); position: relative; }
+  svg text { font-family: var(--ct-font-mono); }
+
+  .disclaimer { position: absolute; left: 0; right: 0; bottom: 0; height: 44px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--ct-surface); border-top: 1px solid var(--ct-line);
+    color: var(--ct-text-muted); font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); letter-spacing: 0.03em; z-index: 20; }
+</style>
+</head>
+<body>
+  <div class="stage" role="img"
+       aria-label="A faded ghost of the old draft-reply node dead-ends when the external writing service is overloaded; in front, the new draft-reply node calling the same flaky external writing service has split into two labeled outgoing branches, success and error">
+    <div class="grid-bg"></div>
+    <!-- Kill-Counter HUD (global overlay) — Round 2 ticking → 10 / 25 (break 10 "flaky tool, no error branch stalls the run" — the draft node splits). Break 11 ticks at S028. -->
+    <div class="ct-killcounter" data-state="ticking" aria-label="Kill counter: 10 of 25 breaks">
+      <span class="kc-dot"></span>
+      <span class="kc-label">Breaks</span>
+      <span class="kc-tally"><span class="kc-n">10</span><span class="kc-of">/ 25</span></span>
+    </div>
+
+    <div class="wrap">
+      <p class="kicker">Fix &middot; break 10 of 25</p>
+      <h1 class="headline">The fragile chain — split into <span class="em">success / error</span> exits</h1>
+
+      <div class="canvas">
+        <svg viewBox="0 0 1760 700" width="1760" height="700" fill="none">
+          <!-- ghost: OLD behavior, faded, background -->
+          <g opacity="0.34">
+            <text x="60" y="70" fill="var(--ct-text-muted)" font-size="16" letter-spacing="0.1em">OLD BEHAVIOR</text>
+            <rect x="60" y="90" width="260" height="90" rx="14" fill="none" stroke="var(--ct-text-muted)" stroke-width="1.5" stroke-dasharray="5 6"/>
+            <text x="90" y="128" fill="var(--ct-text-muted)" font-size="20" font-weight="700">Draft reply</text>
+            <text x="90" y="154" fill="var(--ct-text-muted)" font-size="14">v1 &middot; single exit</text>
+            <path d="M 320 135 L 420 135" stroke="var(--ct-text-muted)" stroke-width="2" stroke-dasharray="4 6"/>
+            <circle cx="470" cy="135" r="46" fill="none" stroke="var(--ct-text-muted)" stroke-width="2" stroke-dasharray="4 6"/>
+            <text x="440" y="130" fill="var(--ct-text-muted)" font-size="14">stalled</text>
+            <text x="436" y="148" fill="var(--ct-text-muted)" font-size="14">run dies</text>
+          </g>
+
+          <!-- external writing service, overloaded/flickering -->
+          <g>
+            <rect x="720" y="40" width="300" height="120" rx="16" fill="var(--ct-surface)" stroke="var(--ct-warn)" stroke-width="2" stroke-dasharray="3 5" style="filter:drop-shadow(0 0 20px rgba(255,176,32,0.28))"/>
+            <text x="748" y="80" fill="var(--ct-text)" font-size="21" font-weight="700">External writing service</text>
+            <text x="748" y="108" fill="var(--ct-warn)" font-size="16" letter-spacing="0.04em">&#9889; overloaded &middot; flaky under load</text>
+            <circle cx="990" cy="70" r="8" fill="var(--ct-warn)" style="filter:drop-shadow(0 0 8px var(--ct-warn))"/>
+          </g>
+
+          <!-- wire: draft node -> external service -->
+          <path d="M 350 300 L 720 110" stroke="var(--ct-line)" stroke-width="2"/>
+          <path d="M 706 116 l 20 -14 l 4 20 z" fill="var(--ct-line)"/>
+
+          <!-- NEW Draft reply node, foreground -->
+          <g>
+            <rect x="130" y="260" width="320" height="150" rx="18" fill="var(--ct-surface-raised)" stroke="var(--ct-accent)" stroke-width="2.5" style="filter:drop-shadow(0 0 26px rgba(56,189,248,0.25))"/>
+            <text x="160" y="305" fill="var(--ct-text-muted)" font-size="15" letter-spacing="0.1em">NODE &middot; v2</text>
+            <text x="160" y="340" fill="var(--ct-text)" font-size="28" font-weight="800" font-family="var(--ct-font-display)">Draft reply</text>
+            <text x="160" y="372" fill="var(--ct-accent-glow)" font-size="16">two exits now, not one</text>
+          </g>
+
+          <!-- split into two branches -->
+          <path d="M 450 300 C 620 300, 700 150, 900 150" stroke="var(--ct-fixed)" stroke-width="3" stroke-linecap="round"/>
+          <path d="M 450 380 C 620 380, 700 560, 900 560" stroke="var(--ct-break)" stroke-width="3" stroke-linecap="round"/>
+          <path d="M 886 143 l 20 6 l -8 20 z" fill="var(--ct-fixed)"/>
+          <path d="M 886 552 l 20 -6 l -8 -20 z" fill="var(--ct-break)"/>
+
+          <!-- success branch output -->
+          <g>
+            <rect x="910" y="90" width="300" height="120" rx="16" fill="var(--ct-surface)" stroke="var(--ct-fixed)" stroke-width="2" style="filter:drop-shadow(0 0 20px rgba(43,213,118,0.3))"/>
+            <text x="938" y="128" fill="var(--ct-fixed-glow)" font-size="18" font-weight="700" letter-spacing="0.06em">SUCCESS</text>
+            <text x="938" y="160" fill="var(--ct-text)" font-size="19">finished draft returned</text>
+            <text x="938" y="186" fill="var(--ct-text-muted)" font-size="14">normal, as ever</text>
+          </g>
+
+          <!-- error branch output -->
+          <g>
+            <rect x="910" y="500" width="300" height="120" rx="16" fill="var(--ct-surface)" stroke="var(--ct-break)" stroke-width="2" style="filter:drop-shadow(0 0 20px rgba(255,59,48,0.3))"/>
+            <text x="938" y="538" fill="var(--ct-break-glow)" font-size="18" font-weight="700" letter-spacing="0.06em">ERROR</text>
+            <text x="938" y="570" fill="var(--ct-text)" font-size="19">plain-English message</text>
+            <text x="938" y="596" fill="var(--ct-text-muted)" font-size="14">instead of dying silently</text>
+          </g>
+
+          <!-- labels near the split point -->
+          <text x="640" y="220" fill="var(--ct-fixed-glow)" font-size="16" letter-spacing="0.05em">success &rarr;</text>
+          <text x="640" y="480" fill="var(--ct-break-glow)" font-size="16" letter-spacing="0.05em">error &rarr;</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="disclaimer">FICTIONAL DEMO &middot; Harbor Supply Co., Sift and the external writing service are invented for Crash Test Agents</div>
+  </div>
+</body>
+</html>

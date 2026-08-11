@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, initial-scale=1">
+<title>S048 — Five rounds replay green · duplicate counter reads 1 · Crash Test Agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  /* ===== S048 — MOTION-GRAPHIC. Rapid montage rested on its final frame:
+     each of the five rounds has replayed and PASSED green, ending on the
+     duplicate-send counter now reading "1". Triumphant, green-forward. ===== */
+  .wrap { position: absolute; inset: 0; z-index: 2; display: grid;
+    grid-template-rows: auto 1fr auto; align-content: center; justify-items: center;
+    padding: 64px 80px; gap: 40px; }
+  .feed-glow { position: absolute; inset: 0; z-index: 1; pointer-events: none;
+    box-shadow: inset 0 0 220px rgba(43,213,118,0.12); }
+
+  .header { width: 1760px; }
+  .header .umb-row { display: flex; align-items: center; gap: 18px; margin-bottom: 16px; }
+  .header .umb-row .rule { flex: 1; height: 1px; background: var(--ct-line); }
+  .header h1 { margin: 0; font-family: var(--ct-font-display); font-stretch: 125%; font-weight: 900;
+    text-transform: uppercase; letter-spacing: 0.02em; font-size: var(--ct-h2); color: var(--ct-text); line-height: 0.98; }
+  .header h1 .em { color: var(--ct-fixed-glow); }
+
+  /* five round-pass tiles */
+  .grid { width: 1760px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 22px; }
+  .tile {
+    display: flex; flex-direction: column; gap: 16px;
+    background: linear-gradient(180deg, var(--ct-surface), color-mix(in srgb, var(--ct-fixed) 8%, var(--ct-surface)));
+    border: 1px solid color-mix(in srgb, var(--ct-fixed) 40%, var(--ct-line));
+    border-left: 5px solid var(--ct-fixed); border-radius: var(--ct-r-lg);
+    padding: 24px 24px 26px; box-shadow: var(--ct-shadow-2), 0 0 30px rgba(43,213,118,0.14); }
+  .tile .thead { display: flex; align-items: center; gap: 14px; }
+  .tile .num { font-family: var(--ct-font-display); font-stretch: 125%; font-weight: 900;
+    font-size: 46px; line-height: 1; color: var(--ct-text-muted); }
+  .tile .check { width: 44px; height: 44px; border-radius: 50%; flex: 0 0 44px; margin-left: auto;
+    background: var(--ct-fixed-wash); border: 1px solid var(--ct-fixed); display: grid; place-items: center;
+    box-shadow: 0 0 16px rgba(43,213,118,0.35); }
+  .tile .check svg { width: 26px; height: 26px; }
+  .tile .check path { stroke: var(--ct-fixed-glow); stroke-width: 3; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+  .tile .rname { font-family: var(--ct-font-body); font-weight: 700; font-size: var(--ct-ui-2xl); color: var(--ct-text); }
+  .tile .chips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+  .pass { display: inline-flex; align-items: center; gap: 8px; font-family: var(--ct-font-mono);
+    font-size: var(--ct-ui-sm); font-weight: 500; color: var(--ct-fixed-glow);
+    background: var(--ct-fixed-wash); border: 1px solid color-mix(in srgb, var(--ct-fixed) 45%, transparent);
+    border-radius: var(--ct-r-pill); padding: 8px 14px; }
+  .pass .fromto { color: var(--ct-text-muted); }
+  .pass .arr { color: var(--ct-fixed); }
+
+  /* bottom bar — human-approval gate + the duplicate-send counter now at 1 */
+  .footer { width: 1760px; display: grid; grid-template-columns: 1fr auto; gap: 26px; align-items: stretch; }
+  .gate {
+    display: flex; align-items: center; gap: 22px;
+    background: var(--ct-surface); border: 1px solid color-mix(in srgb, var(--ct-fixed) 40%, var(--ct-line));
+    border-radius: var(--ct-r-lg); padding: 24px 30px; box-shadow: var(--ct-shadow-2); }
+  .gate .ico { width: 58px; height: 58px; flex: 0 0 58px; display: grid; place-items: center;
+    border-radius: 12px; background: var(--ct-fixed-wash); border: 1px solid var(--ct-fixed); }
+  .gate .ico svg { width: 34px; height: 34px; }
+  .gate .g-txt .g-k { font-family: var(--ct-font-mono); text-transform: uppercase; letter-spacing: 0.12em;
+    font-size: var(--ct-ui-xs); color: var(--ct-text-muted); }
+  .gate .g-txt .g-v { font-family: var(--ct-font-body); font-weight: 700; font-size: var(--ct-ui-2xl); color: var(--ct-text); margin-top: 4px; }
+  .gate .g-txt .g-v b { color: var(--ct-fixed-glow); }
+
+  .counter {
+    display: flex; align-items: center; gap: 26px; min-width: 560px;
+    background: linear-gradient(180deg, var(--ct-surface-raised), color-mix(in srgb, var(--ct-fixed) 10%, var(--ct-surface)));
+    border: 1px solid var(--ct-fixed); border-radius: var(--ct-r-lg);
+    padding: 24px 34px; box-shadow: var(--ct-shadow-2), 0 0 40px rgba(43,213,118,0.24); }
+  .counter .ring { width: 92px; height: 92px; flex: 0 0 92px; position: relative; display: grid; place-items: center; }
+  .counter .ring svg { position: absolute; inset: 0; width: 92px; height: 92px; transform: rotate(-90deg); }
+  .counter .ring circle.track { stroke: var(--ct-surface-raised); }
+  .counter .ring circle.arc { stroke: var(--ct-fixed); stroke-linecap: round; stroke-dasharray: 210 300; }
+  .counter .ring .big { font-family: var(--ct-font-mono); font-weight: 700; font-size: 56px; color: var(--ct-fixed-glow); line-height: 1; }
+  .counter .c-txt .c-num { font-family: var(--ct-font-mono); font-weight: 700; font-size: 60px; color: var(--ct-fixed-glow); line-height: 1; }
+  .counter .c-txt .c-lbl { font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--ct-text-muted); margin-top: 8px; }
+  .counter .c-txt .c-lbl b { color: var(--ct-text); }
+  .counter .was { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); color: var(--ct-text-muted);
+    text-decoration: line-through; opacity: 0.7; }
+</style>
+</head>
+<body>
+  <div class="stage" role="img"
+       aria-label="Montage final frame: all five failure rounds replay and pass green — 400 to 200, alert caught, retry recovered, let me check, capped at 1, env and scoped, human approval — and the duplicate-send counter now reads one">
+    <div class="grid-bg"></div>
+    <div class="feed-glow" aria-hidden="true"></div>
+
+    <!-- Kill-Counter HUD — clean rerun: flipped green, 25 broken → 25 fixed -->
+    <div class="ct-killcounter" data-state="fixed" aria-label="Kill counter: 25 of 25 breaks fixed">
+      <span class="kc-dot"></span>
+      <span class="kc-label">Fixed</span>
+      <span class="kc-tally"><span class="kc-n">25</span><span class="kc-of">/ 25</span></span>
+    </div>
+
+    <div class="wrap">
+      <div class="header">
+        <div class="umb-row"><span class="umbrella">CRASH TEST #1 · REPLAY</span><span class="rule"></span></div>
+        <h1>Every round runs again &mdash; <span class="em">and passes.</span></h1>
+      </div>
+
+      <div class="grid">
+        <!-- 1 · bad inputs -->
+        <div class="tile">
+          <div class="thead"><span class="num">1</span>
+            <span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l4 4 10-11"/></svg></span></div>
+          <div class="rname">Bad inputs</div>
+          <div class="chips"><span class="pass"><span class="fromto">400</span><span class="arr">&rarr;</span>200</span></div>
+        </div>
+        <!-- 2 · dead APIs -->
+        <div class="tile">
+          <div class="thead"><span class="num">2</span>
+            <span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l4 4 10-11"/></svg></span></div>
+          <div class="rname">Dead APIs</div>
+          <div class="chips"><span class="pass">alert caught</span><span class="pass">retry recovered</span></div>
+        </div>
+        <!-- 3 · lying model -->
+        <div class="tile">
+          <div class="thead"><span class="num">3</span>
+            <span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l4 4 10-11"/></svg></span></div>
+          <div class="rname">Lying model</div>
+          <div class="chips"><span class="pass">&ldquo;let me check&rdquo;</span></div>
+        </div>
+        <!-- 4 · runaway loop -->
+        <div class="tile">
+          <div class="thead"><span class="num">4</span>
+            <span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l4 4 10-11"/></svg></span></div>
+          <div class="rname">Runaway loop</div>
+          <div class="chips"><span class="pass">capped at 1</span></div>
+        </div>
+        <!-- 5 · leaky secrets -->
+        <div class="tile">
+          <div class="thead"><span class="num">5</span>
+            <span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l4 4 10-11"/></svg></span></div>
+          <div class="rname">Leaky secrets</div>
+          <div class="chips"><span class="pass">.env + scoped</span></div>
+        </div>
+      </div>
+
+      <div class="footer">
+        <div class="gate">
+          <span class="ico"><svg viewBox="0 0 34 34" fill="none">
+            <path d="M17 3l11 4v8c0 9-6 14-11 16-5-2-11-7-11-16V7z" stroke="var(--ct-fixed)" stroke-width="2.4" stroke-linejoin="round"/>
+            <path d="M11 17l4.5 4.5L24 12" stroke="var(--ct-fixed-glow)" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <div class="g-txt">
+            <div class="g-k">final gate</div>
+            <div class="g-v">Nothing customer-facing ships without <b>human approval</b></div>
+          </div>
+        </div>
+
+        <div class="counter">
+          <span class="ring">
+            <svg viewBox="0 0 92 92" fill="none">
+              <circle class="track" cx="46" cy="46" r="38" stroke-width="8"/>
+              <circle class="arc" cx="46" cy="46" r="38" stroke-width="8"/>
+            </svg>
+            <span class="big">1</span>
+          </span>
+          <div class="c-txt">
+            <div class="c-num">1</div>
+            <div class="c-lbl">duplicate sends &middot; <b>per customer</b> &nbsp;<span class="was">was 40+</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

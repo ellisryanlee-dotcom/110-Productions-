@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, initial-scale=1">
+<title>S002 — Sift inbox triage (failure / duplicate-send) · Crash Test Agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  /* ===== S002 — FAILURE state. Same dashboard, now glitching.
+     Corrupted email card · four stacked duplicate "sent" cards ·
+     red API-error banner · spinning run counter. Tension / red. ===== */
+  .app { display: grid; grid-template-rows: 96px 1fr 44px; height: 100%; }
+
+  .topbar {
+    display: flex; align-items: center; gap: var(--s5);
+    padding: 0 var(--s7); border-bottom: 1px solid var(--ct-line);
+    background: var(--ct-surface);
+  }
+  .brandchip { display: flex; align-items: center; gap: var(--s3); }
+  .brandchip .glyph { width: 40px; height: 40px; border-radius: 9px; display: grid; place-items: center;
+    background: var(--ct-surface-raised); border: 1px solid var(--ct-line); }
+  .brandchip .name { font-weight: 700; font-size: var(--ct-ui-2xl); letter-spacing: -0.01em;
+    /* RGB / glitch split */
+    text-shadow: -2px 0 var(--ct-break), 2px 0 var(--ct-accent); }
+  .topbar .sub { color: var(--ct-text-muted); font-size: var(--ct-ui-lg); }
+  .topbar .spacer { flex: 1; }
+  .status-pill {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 9px 18px; border-radius: var(--ct-r-pill);
+    background: var(--ct-break-deep); color: var(--ct-text);
+    font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); font-weight: 700;
+    border: 1px solid var(--ct-break); box-shadow: 0 0 20px rgba(255,59,48,0.5);
+  }
+  .status-pill .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--ct-break-glow); box-shadow: 0 0 10px var(--ct-break); }
+
+  .cols { display: grid; grid-template-columns: 320px 1fr 380px; min-height: 0; }
+  .col { padding: var(--s6); overflow: hidden; position: relative; }
+  .col.left  { border-right: 1px solid var(--ct-line); background: var(--ct-bg); }
+  .col.right { border-left: 1px solid var(--ct-line); background: var(--ct-bg); }
+  .col.feed  { background: var(--ct-bg); box-shadow: inset 0 0 160px rgba(255,59,48,0.10); }
+  .col-title { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs);
+    text-transform: uppercase; letter-spacing: 0.12em; color: var(--ct-text-muted);
+    font-weight: 500; margin: 0 0 var(--s5); }
+
+  .navrow { display: flex; align-items: center; justify-content: space-between;
+    padding: 15px 16px; border-radius: var(--ct-r-md); margin-bottom: 8px;
+    color: var(--ct-text-muted); font-size: var(--ct-ui-md); }
+  .navrow.active { background: var(--ct-surface-raised); color: var(--ct-text); }
+  .navrow .lhs { display: flex; align-items: center; gap: 12px; }
+  .navrow .count { font-family: var(--ct-font-mono); color: var(--ct-text); }
+  .swatch { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+  .sw-sales { background: var(--ct-accent); } .sw-support { background: #6E8BB8; }
+  .sw-billing { background: #8B7FB8; } .sw-urgent { background: var(--ct-break); } .sw-spam { background: var(--ct-text-muted); }
+
+  /* red API error banner — stacks top-right of the feed */
+  .error-banner {
+    position: absolute; top: 20px; right: 24px; z-index: 5;
+    width: 360px; background: var(--ct-break-deep);
+    border: 1px solid var(--ct-break); border-radius: var(--ct-r-md);
+    box-shadow: 0 0 30px rgba(255,59,48,0.45), var(--ct-shadow-2);
+  }
+  .error-banner .row { display: flex; align-items: center; gap: 12px; padding: 14px 18px; }
+  .error-banner .row + .row { border-top: 1px solid rgba(255,255,255,0.12); opacity: 0.85; }
+  .error-banner .ico { width: 26px; height: 26px; flex: 0 0 26px; display: grid; place-items: center;
+    border-radius: 50%; background: var(--ct-break); color: var(--ct-text); font-weight: 800; font-family: var(--ct-font-mono); }
+  .error-banner .txt { font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); color: var(--ct-text); }
+  .error-banner .txt b { display: block; font-weight: 700; }
+  .error-banner .txt span { color: color-mix(in srgb, var(--ct-text) 78%, transparent); font-size: var(--ct-ui-xs); }
+
+  .feed-head { display: flex; align-items: baseline; gap: 16px; margin-bottom: var(--s5); }
+  .feed-head h2 { margin: 0; font-family: var(--ct-font-display); font-stretch: 125%; font-weight: 800; font-size: var(--ct-ui-3xl);
+    color: var(--ct-break-glow); text-shadow: -2px 0 rgba(56,189,248,0.7); }
+  .feed-head .throughput { font-family: var(--ct-font-mono); color: var(--ct-break-glow); font-size: var(--ct-ui-sm); }
+
+  .card {
+    position: relative;
+    display: grid; grid-template-columns: 1fr auto; gap: 8px var(--s4); align-items: center;
+    background: var(--ct-surface); border: 1px solid var(--ct-line);
+    border-left: 4px solid var(--pill, var(--ct-line));
+    border-radius: var(--ct-r-md); padding: 20px 24px; margin-bottom: 14px;
+    box-shadow: var(--ct-shadow-1);
+  }
+  .card .from { font-weight: 600; font-size: var(--ct-ui-lg); }
+  .card .subject { color: var(--ct-text-muted); font-size: var(--ct-ui-md); grid-column: 1 / 2; }
+  .card .meta { grid-row: 1 / 3; grid-column: 2; display: flex; align-items: center; gap: 14px; }
+
+  /* corrupted / malformed email card */
+  .card.corrupt { border-color: var(--ct-break); border-left-color: var(--ct-break);
+    background: linear-gradient(180deg, var(--ct-surface), var(--ct-break-wash));
+    box-shadow: 0 0 26px rgba(255,59,48,0.30); }
+  .card.corrupt .from { color: var(--ct-break-glow); letter-spacing: 0.5px; text-shadow: 1px 0 rgba(56,189,248,0.6); }
+  .card.corrupt .garble { grid-column: 1 / 2; margin-top: 6px; font-family: var(--ct-font-mono);
+    font-size: var(--ct-ui-sm); color: var(--ct-text-muted); word-break: break-all; line-height: 1.5; }
+  .card.corrupt .garble .glyphs { color: var(--ct-break-glow); }
+  .frozen-pill { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px;
+    border-radius: var(--ct-r-pill); font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs);
+    background: var(--ct-warn-deep); color: var(--ct-text); border: 1px solid var(--ct-warn); }
+
+  /* four stacked duplicate SENT cards */
+  .dupe-stack { position: relative; margin: 6px 0 14px 0; }
+  .sent {
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--ct-surface-raised); border: 1px solid var(--ct-break);
+    border-left: 4px solid var(--ct-break);
+    border-radius: var(--ct-r-md); padding: 16px 22px; margin-bottom: -30px;
+    box-shadow: 0 -6px 20px rgba(0,0,0,0.5);
+  }
+  .sent:nth-child(1) { transform: translateX(0);   opacity: 1;    z-index: 4; }
+  .sent:nth-child(2) { transform: translateX(14px); opacity: 0.9; z-index: 3; }
+  .sent:nth-child(3) { transform: translateX(28px); opacity: 0.78; z-index: 2; }
+  .sent:nth-child(4) { transform: translateX(42px); opacity: 0.66; z-index: 1; margin-bottom: 14px; }
+  .sent .who { font-size: var(--ct-ui-md); }
+  .sent .who b { color: var(--ct-break-glow); }
+  .sent .tag { display: inline-flex; align-items: center; gap: 8px; font-family: var(--ct-font-mono);
+    font-size: var(--ct-ui-xs); color: var(--ct-break-glow); text-transform: uppercase; letter-spacing: 0.08em; }
+  .sent .tag .arrow { color: var(--ct-break); }
+
+  .label { display: inline-flex; align-items: center; gap: 9px; padding: 8px 16px; border-radius: var(--ct-r-pill);
+    font-size: var(--ct-ui-sm); font-weight: 600; color: var(--cat, var(--ct-text));
+    background: color-mix(in srgb, var(--cat, var(--ct-text)) 15%, transparent);
+    border: 1px solid color-mix(in srgb, var(--cat, var(--ct-text)) 45%, transparent); }
+  .label[data-cat="support"] { --cat: #8AA6D6; }
+
+  .check { width: 34px; height: 34px; border-radius: 50%; flex: 0 0 34px;
+    background: var(--ct-fixed-wash); border: 1px solid var(--ct-fixed); display: grid; place-items: center; }
+  .check svg { width: 20px; height: 20px; }
+  .check path { stroke: var(--ct-fixed-glow); stroke-width: 3; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* right column — run summary, degraded + spinning run counter */
+  .runcounter { background: var(--ct-surface); border: 1px solid var(--ct-break);
+    border-radius: var(--ct-r-md); padding: var(--s5); margin-bottom: var(--s4);
+    box-shadow: 0 0 26px rgba(255,59,48,0.22); display: flex; align-items: center; gap: 20px; }
+  .spinner { width: 64px; height: 64px; flex: 0 0 64px; position: relative; }
+  .spinner svg { width: 64px; height: 64px; transform: rotate(-42deg); }
+  .spinner circle.track { stroke: var(--ct-surface-raised); }
+  .spinner circle.arc { stroke: var(--ct-break); stroke-linecap: round;
+    stroke-dasharray: 150 200; }
+  .runcounter .rc-num { font-family: var(--ct-font-mono); font-weight: 700; font-size: 56px; color: var(--ct-break-glow); line-height: 1; }
+  .runcounter .rc-lbl { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); text-transform: uppercase; letter-spacing: 0.1em; color: var(--ct-text-muted); margin-top: 4px; }
+
+  .stat { background: var(--ct-surface); border: 1px solid var(--ct-line); border-radius: var(--ct-r-md); padding: var(--s5); margin-bottom: var(--s4); }
+  .stat .k { color: var(--ct-text-muted); font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); text-transform: uppercase; letter-spacing: 0.1em; }
+  .stat .v { font-family: var(--ct-font-mono); font-size: var(--ct-ui-3xl); font-weight: 700; margin-top: 6px; }
+  .stat .v.bad { color: var(--ct-break-glow); }
+  .healthbar { height: 8px; border-radius: var(--ct-r-pill); background: var(--ct-surface-raised); overflow: hidden; margin-top: 16px; }
+  .healthbar > i { display: block; height: 100%; width: 88%; background: linear-gradient(90deg, var(--ct-break-deep), var(--ct-break)); }
+
+  .disclaimer { display: flex; align-items: center; justify-content: center;
+    background: var(--ct-surface); border-top: 1px solid var(--ct-line);
+    color: var(--ct-text-muted); font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); letter-spacing: 0.03em; }
+</style>
+</head>
+<body>
+  <div class="stage" role="img"
+       aria-label="Sift dashboard glitching: one corrupted email, four duplicate sent replies stacking, red API error banner, spinning run counter">
+    <div class="grid-bg"></div>
+    <!-- Kill-Counter HUD (global overlay) — Option A: armed at 00/25 through the hook -->
+    <div class="ct-killcounter" data-state="armed" aria-label="Kill counter: 0 of 25 breaks">
+      <span class="kc-dot"></span>
+      <span class="kc-label">Breaks</span>
+      <span class="kc-tally"><span class="kc-n">00</span><span class="kc-of">/ 25</span></span>
+    </div>
+    <div class="app">
+      <header class="topbar">
+        <div class="brandchip">
+          <span class="glyph">
+            <svg width="26" height="26" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+              <path d="M12 16h40M18 32h28M26 48h12" stroke="var(--ct-break)" stroke-width="5" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <span class="name">Sift</span>
+        </div>
+        <span class="sub">inbox triage for Harbor Supply Co.</span>
+        <div class="spacer"></div>
+        <span class="status-pill"><span class="dot"></span> DEGRADED · retrying</span>
+      </header>
+
+      <div class="cols">
+        <aside class="col left">
+          <p class="col-title">Labels</p>
+          <div class="navrow active"><span class="lhs"><span class="swatch sw-sales"></span>Sales</span><span class="count">38</span></div>
+          <div class="navrow"><span class="lhs"><span class="swatch sw-support"></span>Support</span><span class="count">64</span></div>
+          <div class="navrow"><span class="lhs"><span class="swatch sw-billing"></span>Billing</span><span class="count">21</span></div>
+          <div class="navrow"><span class="lhs"><span class="swatch sw-urgent"></span>Urgent</span><span class="count">3</span></div>
+          <div class="navrow"><span class="lhs"><span class="swatch sw-spam"></span>Spam</span><span class="count">74</span></div>
+        </aside>
+
+        <main class="col feed">
+          <div class="error-banner">
+            <div class="row"><span class="ico">!</span><span class="txt"><b>API error</b><span>Rolodash lookup · 400 Bad Request</span></span></div>
+            <div class="row"><span class="ico">!</span><span class="txt"><b>API error</b><span>send-reply · retried ×4</span></span></div>
+          </div>
+
+          <div class="feed-head">
+            <h2 class="display">Live triage</h2>
+            <span class="throughput">▼ stalled · 4 errors</span>
+          </div>
+
+          <!-- corrupted / malformed inbound -->
+          <article class="card corrupt">
+            <div class="from">&#9608;&#9608;form-intake@&#9608;&#9608;&#9608;.example</div>
+            <div class="garble"><span class="glyphs">&lt;&lt;{{ }}[ &#9618;&#9618; ]</span> name%3D&amp;&amp;order_id=%00%00 addr:&#9608;&#9608;&#9608; qty=&#65533;&#65533; <span class="glyphs">\x1b[31m &#9618;&#9618;&#9618;&#9618; NUL NUL &#9618;&#9618;</span> total==== &amp;submit</div>
+            <div class="meta"><span class="frozen-pill">&#9633; classifying… frozen</span></div>
+          </article>
+
+          <!-- four stacked duplicate SENT cards -->
+          <div class="dupe-stack">
+            <div class="sent"><span class="who">Re: <b>Where's my order? — Dana Okafor</b></span><span class="tag"><span class="arrow">&#8599;</span> sent · dup 1</span></div>
+            <div class="sent"><span class="who">Re: <b>Where's my order? — Dana Okafor</b></span><span class="tag"><span class="arrow">&#8599;</span> sent · dup 2</span></div>
+            <div class="sent"><span class="who">Re: <b>Where's my order? — Dana Okafor</b></span><span class="tag"><span class="arrow">&#8599;</span> sent · dup 3</span></div>
+            <div class="sent"><span class="who">Re: <b>Where's my order? — Dana Okafor</b></span><span class="tag"><span class="arrow">&#8599;</span> sent · dup 4</span></div>
+          </div>
+
+          <article class="card" style="--pill:#8AA6D6">
+            <div class="from">marcus.lindqvist@northsea-catering.example</div>
+            <div class="subject">Missing lids on the mixing-bowls shipment</div>
+            <div class="meta"><span class="label" data-cat="support">Support</span>
+              <span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l4 4 10-11"/></svg></span></div>
+          </article>
+        </main>
+
+        <aside class="col right">
+          <p class="col-title">This run</p>
+          <div class="runcounter">
+            <span class="spinner">
+              <svg viewBox="0 0 64 64" fill="none">
+                <circle class="track" cx="32" cy="32" r="26" stroke-width="7"/>
+                <circle class="arc" cx="32" cy="32" r="26" stroke-width="7"/>
+              </svg>
+            </span>
+            <span>
+              <div class="rc-num">4&times;</div>
+              <div class="rc-lbl">duplicate sends · same customer</div>
+            </span>
+          </div>
+          <div class="stat"><div class="k">Errors</div><div class="v bad">4</div>
+            <div class="healthbar"><i></i></div></div>
+          <div class="stat"><div class="k">Status</div><div class="v bad" style="font-size:var(--ct-ui-xl)">Loop not converging</div></div>
+        </aside>
+      </div>
+
+      <div class="disclaimer">FICTIONAL DEMO · Harbor Supply Co., Sift, Rolodash and all senders are invented for Crash Test Agents</div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, initial-scale=1">
+<title>Sift — inbox triage (healthy) · Crash Test Agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  /* ---- sift-dashboard: state="healthy" (S001 / S049 clean rerun) ---- */
+  .stage[data-state="healthy"] { --rail: var(--success); }
+
+  .app { display: grid; grid-template-rows: 92px 1fr; height: 100%; }
+
+  /* top bar */
+  .topbar {
+    display: flex; align-items: center; gap: var(--s-4);
+    padding: 0 var(--s-7); border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .brandchip { display: flex; align-items: center; gap: var(--s-3); }
+  .brandchip .name { font-weight: 700; font-size: var(--ui-2xl); letter-spacing: var(--tracking-tight); }
+  .brandchip .name b { color: var(--cta-accent); }
+  .topbar .sub { color: var(--text-muted); font-size: var(--ui-lg); }
+  .topbar .spacer { flex: 1; }
+  .status-pill {
+    display: inline-flex; align-items: center; gap: var(--s-2);
+    padding: 8px 16px; border-radius: var(--r-pill);
+    background: var(--success-bg); color: var(--success-text);
+    font-size: var(--ui-md); font-weight: 600; border: 1px solid color-mix(in srgb, var(--success) 40%, transparent);
+  }
+  .status-pill .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--success); animation: breathe 1.6s var(--ease-standard) infinite; }
+  @keyframes breathe { 0%,100%{ opacity: 1; } 50%{ opacity: .35; } }
+
+  /* body columns */
+  .body { display: grid; grid-template-columns: 300px 1fr 360px; min-height: 0; }
+  .col { padding: var(--s-6) var(--s-6); overflow: hidden; }
+  .col.left  { border-right: 1px solid var(--border); background: var(--bg); }
+  .col.right { border-left: 1px solid var(--border); background: var(--bg); }
+  .col.feed  { background: var(--bg); }
+
+  .col-title { font-size: var(--ui-sm); text-transform: uppercase; letter-spacing: var(--tracking-caps); color: var(--text-subtle); font-weight: 600; margin: 0 0 var(--s-5); }
+
+  /* left nav counts */
+  .navrow { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border-radius: var(--r-md); margin-bottom: 8px; color: var(--text-muted); font-size: var(--ui-lg); }
+  .navrow.active { background: var(--surface-2); color: var(--text); }
+  .navrow .count { font-family: var(--font-mono); font-feature-settings: var(--font-feature-mono); color: var(--text); }
+  .navrow .swatch { width: 12px; height: 12px; border-radius: 3px; display: inline-block; margin-right: 12px; }
+
+  /* feed */
+  .feed-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: var(--s-5); }
+  .feed-head h2 { margin: 0; font-family: var(--font-display); font-weight: 700; font-size: var(--ui-3xl); }
+  .feed-head .throughput { font-family: var(--font-mono); font-feature-settings: var(--font-feature-mono); color: var(--success-text); font-size: var(--ui-md); }
+
+  .cards { position: relative; }
+  .card {
+    display: grid; grid-template-columns: 1fr auto; gap: var(--s-3) var(--s-4);
+    align-items: center;
+    background: var(--surface); border: 1px solid var(--border);
+    border-left: 4px solid var(--pill, var(--border));
+    border-radius: var(--r-md); padding: 18px 22px; margin-bottom: 14px;
+    box-shadow: var(--shadow-1);
+    opacity: 0; transform: translateY(16px);
+    animation: cardin var(--dur-base) var(--ease-out) forwards;
+  }
+  .card .from { font-weight: 600; font-size: var(--ui-lg); }
+  .card .subject { color: var(--text-muted); font-size: var(--ui-md); grid-column: 1 / 2; }
+  .card .meta { grid-row: 1 / 3; grid-column: 2; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+  @keyframes cardin { to { opacity: 1; transform: translateY(0); } }
+
+  .label {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 14px; border-radius: var(--r-pill);
+    font-size: var(--ui-sm); font-weight: 600; letter-spacing: .01em;
+    color: var(--cat, var(--text));
+    background: color-mix(in srgb, var(--cat, var(--text)) 16%, transparent);
+    border: 1px solid color-mix(in srgb, var(--cat, var(--text)) 45%, transparent);
+    transform: scale(.8); opacity: 0;
+    animation: labelsnap var(--dur-instant) var(--ease-snap) forwards;
+  }
+  @keyframes labelsnap { to { transform: scale(1); opacity: 1; } }
+  .label[data-cat="sales"]   { --cat: var(--label-sales); }
+  .label[data-cat="support"] { --cat: var(--label-support); }
+  .label[data-cat="billing"] { --cat: var(--label-billing); }
+  .label[data-cat="urgent"]  { --cat: var(--label-urgent); }
+
+  .check {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: var(--success-bg); border: 1px solid var(--success);
+    display: grid; place-items: center; opacity: 0;
+    animation: checkpop var(--dur-fast) var(--ease-snap) forwards;
+  }
+  .check svg { width: 18px; height: 18px; }
+  .check path { stroke: var(--success-text); stroke-width: 3; fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 22; stroke-dashoffset: 22; animation: draw var(--dur-fast) var(--ease-out) forwards; }
+  @keyframes checkpop { to { opacity: 1; } }
+  @keyframes draw { to { stroke-dashoffset: 0; } }
+
+  /* stagger the whole card + its inner pieces */
+  .card:nth-child(1){ animation-delay:.15s } .card:nth-child(1) .label{ animation-delay:.55s } .card:nth-child(1) .check{ animation-delay:.75s }
+  .card:nth-child(2){ animation-delay:.45s } .card:nth-child(2) .label{ animation-delay:.85s } .card:nth-child(2) .check{ animation-delay:1.05s }
+  .card:nth-child(3){ animation-delay:.75s } .card:nth-child(3) .label{ animation-delay:1.15s } .card:nth-child(3) .check{ animation-delay:1.35s }
+  .card:nth-child(4){ animation-delay:1.05s } .card:nth-child(4) .label{ animation-delay:1.45s } .card:nth-child(4) .check{ animation-delay:1.65s }
+  .card:nth-child(5){ animation-delay:1.35s } .card:nth-child(5) .label{ animation-delay:1.75s } .card:nth-child(5) .check{ animation-delay:1.95s }
+  .card:nth-child(6){ animation-delay:1.65s } .card:nth-child(6) .label{ animation-delay:2.05s } .card:nth-child(6) .check{ animation-delay:2.25s }
+
+  /* right column — run summary */
+  .stat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-md); padding: var(--s-5); margin-bottom: var(--s-4); }
+  .stat .k { color: var(--text-subtle); font-size: var(--ui-sm); text-transform: uppercase; letter-spacing: var(--tracking-caps); }
+  .stat .v { font-family: var(--font-mono); font-feature-settings: var(--font-feature-mono); font-size: var(--ui-3xl); font-weight: 700; margin-top: 6px; }
+  .stat .v.ok { color: var(--success-text); }
+  .healthbar { height: 8px; border-radius: var(--r-pill); background: var(--meter-track); overflow: hidden; margin-top: 14px; }
+  .healthbar > i { display: block; height: 100%; width: 100%; background: var(--success); }
+
+  /* footer disclaimer */
+  .disclaimer {
+    position: absolute; left: 0; right: 0; bottom: 0; height: 40px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--surface); border-top: 1px solid var(--border);
+    color: var(--text-subtle); font-size: var(--ui-sm); letter-spacing: .04em;
+  }
+</style>
+</head>
+<body>
+  <!-- Toggle state via the data-state attribute: "healthy" is the only state
+       this file ships; the failure state lives in sift-failure.html. Classes
+       .card/.label/.check are shared so a single stylesheet drives both. -->
+  <div class="stage" data-state="healthy" role="img"
+       aria-label="Sift inbox-triage dashboard, healthy state, auto-labeling emails with green checks">
+    <div class="app">
+      <header class="topbar">
+        <div class="brandchip">
+          <svg width="40" height="40" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+            <circle cx="32" cy="32" r="22" stroke="var(--cta-accent)" stroke-width="3"/>
+            <g stroke="var(--cta-accent)" stroke-width="3" stroke-linecap="round">
+              <line x1="32" y1="4" x2="32" y2="16"/><line x1="32" y1="48" x2="32" y2="60"/>
+              <line x1="4" y1="32" x2="16" y2="32"/><line x1="48" y1="32" x2="60" y2="32"/>
+            </g>
+            <circle cx="32" cy="32" r="3.5" fill="var(--cta-accent)"/>
+          </svg>
+          <span class="name"><b>Sift</b></span>
+        </div>
+        <span class="sub">inbox triage for Harbor Supply Co.</span>
+        <div class="spacer"></div>
+        <span class="status-pill"><span class="dot"></span> Live · classifying</span>
+      </header>
+
+      <div class="body">
+        <aside class="col left">
+          <p class="col-title">Labels</p>
+          <div class="navrow active"><span><span class="swatch" style="background:var(--label-sales)"></span>Sales</span><span class="count">38</span></div>
+          <div class="navrow"><span><span class="swatch" style="background:var(--label-support)"></span>Support</span><span class="count">64</span></div>
+          <div class="navrow"><span><span class="swatch" style="background:var(--label-billing)"></span>Billing</span><span class="count">21</span></div>
+          <div class="navrow"><span><span class="swatch" style="background:var(--label-urgent)"></span>Urgent</span><span class="count">3</span></div>
+          <div class="navrow"><span><span class="swatch" style="background:var(--label-spam)"></span>Spam</span><span class="count">74</span></div>
+        </aside>
+
+        <main class="col feed">
+          <div class="feed-head">
+            <h2>Live triage</h2>
+            <span class="throughput">▲ 6 classified / min · 0 errors</span>
+          </div>
+          <div class="cards">
+            <article class="card" style="--pill:var(--label-support)">
+              <div class="from">Dana Okafor</div>
+              <div class="subject">Where's my order? — following up on #4471</div>
+              <div class="meta"><span class="label" data-cat="support">Support</span>
+                <span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l4 4 10-11"/></svg></span></div>
+            </article>
+            <article class="card" style="--pill:var(--label-sales)">
+              <div class="from">priya@vendorline.co</div>
+              <div class="subject">Wholesale pricing for 500 units — new account</div>
+              <div class="meta"><span class="label" data-cat="sales">Sales</span>
+                <span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l4 4 10-11"/></svg></span></div>
+            </article>
+            <article class="card" style="--pill:var(--label-billing)">
+              <div class="from">accounts@meridian-foods.example</div>
+              <div class="subject">Refund on invoice INV-2231 — duplicate charge</div>
+              <div class="meta"><span class="label" data-cat="billing">Billing</span>
+                <span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l4 4 10-11"/></svg></span></div>
+            </article>
+            <article class="card" style="--pill:var(--label-support)">
+              <div class="from">marcus.lindqvist@northsea-catering.example</div>
+              <div class="subject">Missing lids on the mixing bowls shipment</div>
+              <div class="meta"><span class="label" data-cat="support">Support</span>
+                <span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l4 4 10-11"/></svg></span></div>
+            </article>
+            <article class="card" style="--pill:var(--label-urgent)">
+              <div class="from">chef@thebrassladle.example</div>
+              <div class="subject">URGENT: walk-in cooler order for tomorrow service</div>
+              <div class="meta"><span class="label" data-cat="urgent">Urgent</span>
+                <span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l4 4 10-11"/></svg></span></div>
+            </article>
+            <article class="card" style="--pill:var(--label-sales)">
+              <div class="from">Tomiko Ashford</div>
+              <div class="subject">Restock: 24 half-sheet pans + rack — quote please</div>
+              <div class="meta"><span class="label" data-cat="sales">Sales</span>
+                <span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l4 4 10-11"/></svg></span></div>
+            </article>
+          </div>
+        </main>
+
+        <aside class="col right">
+          <p class="col-title">This run</p>
+          <div class="stat"><div class="k">Emails classified</div><div class="v ok">127</div></div>
+          <div class="stat"><div class="k">Replies drafted</div><div class="v">64</div></div>
+          <div class="stat"><div class="k">Errors</div><div class="v ok">0</div>
+            <div class="healthbar"><i></i></div></div>
+          <div class="stat"><div class="k">Status</div><div class="v ok" style="font-size:var(--ui-xl)">All systems nominal</div></div>
+        </aside>
+      </div>
+    </div>
+    <div class="disclaimer">Fictional demo · Harbor Supply Co., Sift, and all senders are invented for Crash Test Agents</div>
+  </div>
+</body>
+</html>

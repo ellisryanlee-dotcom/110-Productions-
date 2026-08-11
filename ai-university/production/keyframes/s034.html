@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, initial-scale=1">
+<title>S034 — ROUND 4 slate + duplicate-send runaway (counter past 40) · Crash Test Agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  /* ===== S034 — ROUND 4 opens on the hook callback, escalated. Reuses the
+     S002 "failure dashboard" language (brand chip, error banner, dupe-stack,
+     run-counter) but with the duplicate-send counter now climbing PAST 40 and
+     the fan-out visibly uncontrolled. A "ROUND 4" tag stands in for the round
+     slate beat before the frame settles on the escalated dashboard. ===== */
+  .app { display: grid; grid-template-rows: 96px 64px 1fr 44px; height: 100%; }
+
+  .topbar { display: flex; align-items: center; gap: var(--s5);
+    padding: 0 var(--s7); border-bottom: 1px solid var(--ct-line); background: var(--ct-surface); }
+  .brandchip { display: flex; align-items: center; gap: var(--s3); }
+  .brandchip .glyph { width: 40px; height: 40px; border-radius: 9px; display: grid; place-items: center;
+    background: var(--ct-surface-raised); border: 1px solid var(--ct-line); }
+  .brandchip .name { font-weight: 700; font-size: var(--ct-ui-2xl); letter-spacing: -0.01em;
+    text-shadow: -2px 0 var(--ct-break), 2px 0 var(--ct-accent); }
+  .topbar .sub { color: var(--ct-text-muted); font-size: var(--ct-ui-lg); }
+  .topbar .spacer { flex: 1; }
+  .status-pill { display: inline-flex; align-items: center; gap: 10px; padding: 9px 18px;
+    border-radius: var(--ct-r-pill); background: var(--ct-break-deep); color: var(--ct-text);
+    font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); font-weight: 700;
+    border: 1px solid var(--ct-break); box-shadow: 0 0 20px rgba(255,59,48,0.5); }
+  .status-pill .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--ct-break-glow); box-shadow: 0 0 10px var(--ct-break); }
+
+  /* round marker strip — stand-in for the "ROUND 4" slate beat */
+  .roundbar { display: flex; align-items: center; gap: 20px; padding: 0 var(--s7);
+    background: var(--ct-bg); border-bottom: 1px solid var(--ct-line); }
+  .roundbar .tag { font-family: var(--ct-font-mono); font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.14em; font-size: var(--ct-ui-md); color: var(--ct-break-glow);
+    padding: 8px 20px; border: 1px solid color-mix(in srgb, var(--ct-break) 45%, var(--ct-line));
+    border-radius: var(--ct-r-pill); background: var(--ct-break-wash); }
+  .roundbar .tag b { color: var(--ct-break-glow); }
+  .roundbar .cap { font-family: var(--ct-font-body); color: var(--ct-text-muted); font-size: var(--ct-ui-md); }
+  .roundbar .rule { flex: 1; height: 1px; background: var(--ct-line); }
+
+  .cols { display: grid; grid-template-columns: 1fr 420px; min-height: 0; }
+  .col { padding: var(--s6); overflow: hidden; position: relative; }
+  .col.feed { background: var(--ct-bg); box-shadow: inset 0 0 180px rgba(255,59,48,0.12); }
+  .col.side { border-left: 1px solid var(--ct-line); background: var(--ct-bg); }
+  .col-title { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs);
+    text-transform: uppercase; letter-spacing: 0.12em; color: var(--ct-text-muted);
+    font-weight: 500; margin: 0 0 var(--s5); }
+
+  .error-banner { position: relative; width: 100%; margin-bottom: var(--s5);
+    background: var(--ct-break-deep); border: 1px solid var(--ct-break); border-radius: var(--ct-r-md);
+    box-shadow: 0 0 30px rgba(255,59,48,0.45), var(--ct-shadow-2); }
+  .error-banner .row { display: flex; align-items: center; gap: 12px; padding: 14px 18px; }
+  .error-banner .ico { width: 26px; height: 26px; flex: 0 0 26px; display: grid; place-items: center;
+    border-radius: 50%; background: var(--ct-break); color: var(--ct-text); font-weight: 800; font-family: var(--ct-font-mono); }
+  .error-banner .txt { font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); color: var(--ct-text); }
+  .error-banner .txt b { display: block; font-weight: 700; }
+  .error-banner .txt span { color: color-mix(in srgb, var(--ct-text) 78%, transparent); font-size: var(--ct-ui-xs); }
+
+  /* the climbing counter — blurred ascending numbers */
+  .ticker { display: flex; align-items: baseline; gap: 18px; margin: 6px 0 8px; }
+  .ticker .lead { font-family: var(--ct-font-mono); font-size: var(--ct-h3); color: var(--ct-text-muted); opacity: 0.5; }
+  .ticker .n { font-family: var(--ct-font-mono); font-weight: 700; line-height: 1; }
+  .ticker .n1 { font-size: 52px; color: color-mix(in srgb, var(--ct-break-glow) 55%, transparent); filter: blur(1px); }
+  .ticker .n2 { font-size: 66px; color: color-mix(in srgb, var(--ct-break-glow) 80%, transparent); filter: blur(0.5px); }
+  .ticker .n3 { font-size: 84px; color: var(--ct-break-glow); text-shadow: 0 0 30px rgba(255,59,48,0.55); }
+  .ticker-label { font-family: var(--ct-font-mono); font-size: var(--ct-ui-md); color: var(--ct-text-muted);
+    text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: var(--s5); }
+  .ticker-label b { color: var(--ct-break-glow); font-weight: 700; }
+
+  /* fanned duplicate SENT cards — escalated past four, uncontrolled */
+  .dupe-stack { position: relative; margin: 4px 0 8px 0; }
+  .sent { display: flex; align-items: center; justify-content: space-between;
+    background: var(--ct-surface-raised); border: 1px solid var(--ct-break);
+    border-left: 4px solid var(--ct-break); border-radius: var(--ct-r-md);
+    padding: 13px 22px; margin-bottom: -26px; box-shadow: 0 -6px 20px rgba(0,0,0,0.5); }
+  .sent:nth-child(1) { transform: translateX(0) rotate(0deg);      opacity: 1;    z-index: 7; }
+  .sent:nth-child(2) { transform: translateX(16px) rotate(0.4deg); opacity: 0.92; z-index: 6; }
+  .sent:nth-child(3) { transform: translateX(32px) rotate(-0.4deg);opacity: 0.84; z-index: 5; }
+  .sent:nth-child(4) { transform: translateX(48px) rotate(0.5deg); opacity: 0.76; z-index: 4; }
+  .sent:nth-child(5) { transform: translateX(64px) rotate(-0.5deg);opacity: 0.68; z-index: 3; }
+  .sent:nth-child(6) { transform: translateX(80px) rotate(0.6deg); opacity: 0.60; z-index: 2; }
+  .sent:nth-child(7) { transform: translateX(96px) rotate(-0.6deg);opacity: 0.52; z-index: 1; margin-bottom: 30px; }
+  .sent .who { font-size: var(--ct-ui-sm); }
+  .sent .who b { color: var(--ct-break-glow); }
+  .sent .tag { display: inline-flex; align-items: center; gap: 8px; font-family: var(--ct-font-mono);
+    font-size: var(--ct-ui-xs); color: var(--ct-break-glow); text-transform: uppercase; letter-spacing: 0.08em; }
+  .sent .tag .arrow { color: var(--ct-break); }
+
+  .more-chip { display: inline-flex; align-items: center; gap: 10px; margin-top: 8px; padding: 8px 16px;
+    border-radius: var(--ct-r-pill); font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm);
+    color: var(--ct-break-glow); background: var(--ct-break-wash); border: 1px solid color-mix(in srgb, var(--ct-break) 45%, transparent); }
+
+  /* right column — run summary, escalated */
+  .runcounter { background: var(--ct-surface); border: 1px solid var(--ct-break);
+    border-radius: var(--ct-r-md); padding: var(--s5); margin-bottom: var(--s4);
+    box-shadow: 0 0 26px rgba(255,59,48,0.25); display: flex; align-items: center; gap: 20px; }
+  .spinner { width: 64px; height: 64px; flex: 0 0 64px; }
+  .spinner svg { width: 64px; height: 64px; transform: rotate(-42deg); }
+  .spinner circle.track { stroke: var(--ct-surface-raised); }
+  .spinner circle.arc { stroke: var(--ct-break); stroke-linecap: round; stroke-dasharray: 175 200; }
+  .runcounter .rc-num { font-family: var(--ct-font-mono); font-weight: 700; font-size: 56px; color: var(--ct-break-glow); line-height: 1; }
+  .runcounter .rc-lbl { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); text-transform: uppercase; letter-spacing: 0.1em; color: var(--ct-text-muted); margin-top: 4px; }
+
+  .stat { background: var(--ct-surface); border: 1px solid var(--ct-line); border-radius: var(--ct-r-md); padding: var(--s5); margin-bottom: var(--s4); }
+  .stat .k { color: var(--ct-text-muted); font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); text-transform: uppercase; letter-spacing: 0.1em; }
+  .stat .v { font-family: var(--ct-font-mono); font-size: var(--ct-ui-2xl); font-weight: 700; margin-top: 6px; }
+  .stat .v.bad { color: var(--ct-break-glow); }
+
+  .disclaimer { display: flex; align-items: center; justify-content: center;
+    background: var(--ct-surface); border-top: 1px solid var(--ct-line);
+    color: var(--ct-text-muted); font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); letter-spacing: 0.03em; }
+</style>
+</head>
+<body>
+  <div class="stage" role="img"
+       aria-label="Round 4 tag over the Sift dashboard, now escalated: the duplicate-send counter climbs past forty as outbound reply cards fan out uncontrollably at the same customer, label same customer again and again">
+    <div class="grid-bg"></div>
+    <!-- Kill-Counter HUD (global overlay) — Round 4 opens: ticks to 16 (break 16 "went live, no paper mode"); S035 ticks to 17 (the runaway) -->
+    <div class="ct-killcounter" data-state="ticking" aria-label="Kill counter: 16 of 25 breaks">
+      <span class="kc-dot"></span>
+      <span class="kc-label">Breaks</span>
+      <span class="kc-tally"><span class="kc-n">16</span><span class="kc-of">/ 25</span></span>
+    </div>
+
+    <div class="app">
+      <header class="topbar">
+        <div class="brandchip">
+          <span class="glyph">
+            <svg width="26" height="26" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+              <path d="M12 16h40M18 32h28M26 48h12" stroke="var(--ct-break)" stroke-width="5" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <span class="name">Sift</span>
+        </div>
+        <span class="sub">inbox triage for Harbor Supply Co.</span>
+        <div class="spacer"></div>
+        <span class="status-pill"><span class="dot"></span> RUNAWAY · still sending</span>
+      </header>
+
+      <div class="roundbar">
+        <span class="tag">ROUND <b>4</b></span>
+        <span class="cap">Give an agent no limits, and it will act &mdash; a lot. Remember the cold open?</span>
+        <span class="rule"></span>
+      </div>
+
+      <div class="cols">
+        <main class="col feed">
+          <div class="error-banner">
+            <div class="row"><span class="ico">!</span><span class="txt"><b>No rate limit set</b><span>send-reply &middot; retried &times;43 this run</span></span></div>
+          </div>
+
+          <div class="ticker" aria-hidden="true">
+            <span class="lead">&hellip;</span>
+            <span class="n n1">41</span><span class="n n2">42</span><span class="n n3">43</span>
+          </div>
+          <p class="ticker-label"><b>same customer, again and again</b></p>
+
+          <div class="dupe-stack">
+            <div class="sent"><span class="who">Re: <b>Where's my order? — Dana Okafor</b></span><span class="tag"><span class="arrow">&#8599;</span> sent &middot; dup 43</span></div>
+            <div class="sent"><span class="who">Re: <b>Where's my order? — Dana Okafor</b></span><span class="tag"><span class="arrow">&#8599;</span> sent &middot; dup 42</span></div>
+            <div class="sent"><span class="who">Re: <b>Where's my order? — Dana Okafor</b></span><span class="tag"><span class="arrow">&#8599;</span> sent &middot; dup 41</span></div>
+            <div class="sent"><span class="who">Re: <b>Where's my order? — Dana Okafor</b></span><span class="tag"><span class="arrow">&#8599;</span> sent &middot; dup 40</span></div>
+            <div class="sent"><span class="who">Re: <b>Where's my order? — Dana Okafor</b></span><span class="tag"><span class="arrow">&#8599;</span> sent &middot; dup 39</span></div>
+            <div class="sent"><span class="who">Re: <b>Where's my order? — Dana Okafor</b></span><span class="tag"><span class="arrow">&#8599;</span> sent &middot; dup 38</span></div>
+            <div class="sent"><span class="who">Re: <b>Where's my order? — Dana Okafor</b></span><span class="tag"><span class="arrow">&#8599;</span> sent &middot; dup 37</span></div>
+          </div>
+          <span class="more-chip">+ 36 more this run &middot; fan-out accelerating</span>
+        </main>
+
+        <aside class="col side">
+          <p class="col-title">This run</p>
+          <div class="runcounter">
+            <span class="spinner">
+              <svg viewBox="0 0 64 64" fill="none">
+                <circle class="track" cx="32" cy="32" r="26" stroke-width="7"/>
+                <circle class="arc" cx="32" cy="32" r="26" stroke-width="7"/>
+              </svg>
+            </span>
+            <span>
+              <div class="rc-num">43&times;</div>
+              <div class="rc-lbl">duplicate sends &middot; same customer</div>
+            </span>
+          </div>
+          <div class="stat"><div class="k">Customer</div><div class="v bad">Dana Okafor (same one)</div></div>
+          <div class="stat"><div class="k">Status</div><div class="v bad" style="font-size:var(--ct-ui-xl)">Fan-out uncontrolled</div></div>
+        </aside>
+      </div>
+
+      <div class="disclaimer">FICTIONAL DEMO · Harbor Supply Co., Sift and Dana Okafor are invented for Crash Test Agents</div>
+    </div>
+  </div>
+</body>
+</html>

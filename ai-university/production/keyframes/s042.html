@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, initial-scale=1">
+<title>S042 — Over-privilege: every toggle ON · Crash Test Agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  /* ===== S042 — SCREEN-SIM. A permissions panel where EVERY capability toggle
+     is ON, under a PERSONAL account avatar. Over-privilege = danger, so the
+     wall of enabled toggles reads in BREAK-RED (not decorative green). ===== */
+  .app { display: grid; grid-template-rows: 96px 1fr 44px; height: 100%; }
+
+  .topbar { display: flex; align-items: center; gap: var(--s5); padding: 0 var(--s7);
+    border-bottom: 1px solid var(--ct-line); background: var(--ct-surface); }
+  .crumb { font-family: var(--ct-font-mono); font-size: var(--ct-ui-md); color: var(--ct-text-muted); }
+  .crumb b { color: var(--ct-text); font-weight: 500; }
+  .topbar .spacer { flex: 1; }
+  .danger-pill { display: inline-flex; align-items: center; gap: 10px; padding: 9px 18px;
+    border-radius: var(--ct-r-pill); background: var(--ct-break-deep); color: var(--ct-text);
+    font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); font-weight: 700;
+    border: 1px solid var(--ct-break); box-shadow: 0 0 20px rgba(255,59,48,0.5); }
+  .danger-pill .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--ct-break-glow); box-shadow: 0 0 10px var(--ct-break); }
+
+  .body { display: grid; grid-template-columns: 420px 1fr; min-height: 0; }
+
+  /* left — account identity card */
+  .idcol { padding: var(--s7) var(--s6); border-right: 1px solid var(--ct-line);
+    background: var(--ct-bg); box-shadow: inset 0 0 160px rgba(255,59,48,0.06); }
+  .col-title { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); text-transform: uppercase;
+    letter-spacing: 0.12em; color: var(--ct-text-muted); font-weight: 500; margin: 0 0 var(--s5); }
+  .idcard { background: var(--ct-surface); border: 1px solid color-mix(in srgb, var(--ct-break) 34%, var(--ct-line));
+    border-radius: var(--ct-r-lg); padding: 30px 28px; box-shadow: var(--ct-shadow-2); text-align: center; }
+  .avatar { width: 118px; height: 118px; border-radius: 50%; margin: 6px auto 20px; display: grid; place-items: center;
+    background: radial-gradient(circle at 50% 38%, var(--ct-surface-raised), var(--ct-bg));
+    border: 2px solid color-mix(in srgb, var(--ct-break) 45%, var(--ct-line));
+    box-shadow: 0 0 30px rgba(255,59,48,0.16); }
+  .avatar svg { width: 66px; height: 66px; }
+  .avatar svg [stroke] { stroke: var(--ct-text-muted); }
+  .idcard .who { font-family: var(--ct-font-body); font-weight: 700; font-size: var(--ct-ui-2xl); color: var(--ct-text); }
+  .idcard .mail { font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); color: var(--ct-text-muted); margin-top: 6px; }
+  .idcard .personal { display: inline-flex; align-items: center; gap: 9px; margin-top: 18px;
+    padding: 8px 16px; border-radius: var(--ct-r-pill); background: var(--ct-break-wash);
+    border: 1px solid var(--ct-break); color: var(--ct-break-glow);
+    font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); font-weight: 700; }
+  .idcard .note { margin-top: 24px; padding-top: 22px; border-top: 1px solid var(--ct-line);
+    font-family: var(--ct-font-body); font-size: var(--ct-ui-md); color: var(--ct-text-muted); line-height: 1.5; text-align: left; }
+  .idcard .note b { color: var(--ct-break-glow); }
+
+  /* right — the wall of ON toggles */
+  .permcol { padding: var(--s7) var(--s7) var(--s6); background: var(--ct-bg); overflow: hidden; }
+  .permhead { display: flex; align-items: baseline; gap: 18px; margin-bottom: var(--s5); }
+  .permhead h2 { margin: 0; font-family: var(--ct-font-display); font-stretch: 125%; font-weight: 800;
+    font-size: var(--ct-ui-3xl); color: var(--ct-text); }
+  .permhead .count { font-family: var(--ct-font-mono); font-size: var(--ct-ui-md); color: var(--ct-break-glow); }
+
+  .perms { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .perm { display: grid; grid-template-columns: 46px 1fr auto; align-items: center; gap: 18px;
+    background: var(--ct-surface); border: 1px solid color-mix(in srgb, var(--ct-break) 32%, var(--ct-line));
+    border-left: 4px solid var(--ct-break); border-radius: var(--ct-r-md); padding: 18px 22px;
+    box-shadow: 0 0 20px rgba(255,59,48,0.10); }
+  .perm .pi { width: 46px; height: 46px; border-radius: 10px; display: grid; place-items: center;
+    background: var(--ct-break-wash); border: 1px solid color-mix(in srgb, var(--ct-break) 45%, var(--ct-line)); }
+  .perm .pi svg { width: 26px; height: 26px; }
+  .perm .pi svg [stroke] { stroke: var(--ct-break-glow); }
+  .perm .pl { min-width: 0; }
+  .perm .pl .name { font-family: var(--ct-font-body); font-weight: 600; font-size: var(--ct-ui-lg); color: var(--ct-text); }
+  .perm .pl .scope { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); color: var(--ct-text-muted); margin-top: 3px; }
+
+  /* the alarming ON switch — red, not green */
+  .sw { display: inline-flex; align-items: center; gap: 12px; }
+  .sw .on { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.08em; color: var(--ct-break-glow); }
+  .toggle { width: 66px; height: 36px; border-radius: var(--ct-r-pill); position: relative; flex: 0 0 66px;
+    background: var(--ct-break-deep); border: 1px solid var(--ct-break); box-shadow: 0 0 16px rgba(255,59,48,0.45), inset 0 0 8px rgba(0,0,0,0.35); }
+  .toggle .knob { position: absolute; top: 3px; right: 3px; width: 28px; height: 28px; border-radius: 50%;
+    background: var(--ct-break-glow); box-shadow: 0 2px 6px rgba(0,0,0,0.5); }
+
+  .disclaimer { display: flex; align-items: center; justify-content: center;
+    background: var(--ct-surface); border-top: 1px solid var(--ct-line);
+    color: var(--ct-text-muted); font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); letter-spacing: 0.03em; }
+</style>
+</head>
+<body>
+  <div class="stage" role="img"
+       aria-label="A permissions panel under a personal account avatar with every capability toggle switched ON in alarming red: send, delete, admin, billing, and everything else — blanket over-privileged access">
+    <div class="grid-bg"></div>
+
+    <div class="app">
+      <header class="topbar">
+        <span class="crumb">Rolodash &nbsp;/&nbsp; Settings &nbsp;/&nbsp; <b>Sift · access &amp; permissions</b></span>
+        <span class="spacer"></span>
+        <span class="danger-pill"><span class="dot"></span> OVER-PRIVILEGED · 8 / 8 enabled</span>
+      </header>
+
+      <div class="body">
+        <aside class="idcol">
+          <p class="col-title">Signed in as</p>
+          <div class="idcard">
+            <div class="avatar" aria-hidden="true">
+              <svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="24" r="12" stroke-width="4"/><path d="M12 54c2-11 10-16 20-16s18 5 20 16" stroke-width="4" stroke-linecap="round"/></svg>
+            </div>
+            <div class="who">Ryan Ellis</div>
+            <div class="mail">ryan@harborsupply.co</div>
+            <div class="personal">
+              <svg viewBox="0 0 24 24" fill="none" width="16" height="16"><path d="M12 3l9 16H3l9-16z" stroke="var(--ct-break-glow)" stroke-width="2" stroke-linejoin="round"/><path d="M12 10v4" stroke="var(--ct-break-glow)" stroke-width="2.2" stroke-linecap="round"/><circle cx="12" cy="17" r="1.2" fill="var(--ct-break-glow)"/></svg>
+              my personal account
+            </div>
+            <div class="note">Sift is running as <b>me</b> — so it inherits <b>everything I can do</b>. No separate identity, no limits.</div>
+          </div>
+        </aside>
+
+        <main class="permcol">
+          <div class="permhead">
+            <h2 class="display">Capabilities</h2>
+            <span class="count">every switch on &middot; nothing scoped</span>
+          </div>
+
+          <div class="perms">
+            <div class="perm">
+              <span class="pi"><svg viewBox="0 0 24 24" fill="none"><path d="M4 5l16 7-16 7 3-7-3-7z" stroke-width="2" stroke-linejoin="round"/><path d="M7 12h9" stroke-width="2" stroke-linecap="round"/></svg></span>
+              <span class="pl"><span class="name">Send email</span><span class="scope">reply &amp; send as the user</span></span>
+              <span class="sw"><span class="on">On</span><span class="toggle"><span class="knob"></span></span></span>
+            </div>
+            <div class="perm">
+              <span class="pi"><svg viewBox="0 0 24 24" fill="none"><path d="M6 8h12l-1 12H7L6 8z" stroke-width="2" stroke-linejoin="round"/><path d="M9 8V5h6v3M4 8h16M10 12v5M14 12v5" stroke-width="2" stroke-linecap="round"/></svg></span>
+              <span class="pl"><span class="name">Delete</span><span class="scope">messages, records, files</span></span>
+              <span class="sw"><span class="on">On</span><span class="toggle"><span class="knob"></span></span></span>
+            </div>
+            <div class="perm">
+              <span class="pi"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3l8 3v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-3z" stroke-width="2" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <span class="pl"><span class="name">Admin</span><span class="scope">manage users &amp; settings</span></span>
+              <span class="sw"><span class="on">On</span><span class="toggle"><span class="knob"></span></span></span>
+            </div>
+            <div class="perm">
+              <span class="pi"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="12" rx="2" stroke-width="2"/><path d="M3 10h18M7 15h4" stroke-width="2" stroke-linecap="round"/></svg></span>
+              <span class="pl"><span class="name">Billing</span><span class="scope">cards, invoices, payouts</span></span>
+              <span class="sw"><span class="on">On</span><span class="toggle"><span class="knob"></span></span></span>
+            </div>
+            <div class="perm">
+              <span class="pi"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke-width="2"/><path d="M5 20c1-5 4-7 7-7s6 2 7 7" stroke-width="2" stroke-linecap="round"/></svg></span>
+              <span class="pl"><span class="name">Manage contacts</span><span class="scope">read &amp; write all CRM</span></span>
+              <span class="sw"><span class="on">On</span><span class="toggle"><span class="knob"></span></span></span>
+            </div>
+            <div class="perm">
+              <span class="pi"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3v4m0 10v4m9-9h-4M7 12H3m13.5-6.5l-2.8 2.8M9.3 14.7l-2.8 2.8m11 0l-2.8-2.8M9.3 9.3L6.5 6.5" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="12" r="3" stroke-width="2"/></svg></span>
+              <span class="pl"><span class="name">API keys</span><span class="scope">create, read, revoke</span></span>
+              <span class="sw"><span class="on">On</span><span class="toggle"><span class="knob"></span></span></span>
+            </div>
+            <div class="perm">
+              <span class="pi"><svg viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h10" stroke-width="2" stroke-linecap="round"/><circle cx="18" cy="17" r="2.5" stroke-width="2"/></svg></span>
+              <span class="pl"><span class="name">Export data</span><span class="scope">bulk download everything</span></span>
+              <span class="sw"><span class="on">On</span><span class="toggle"><span class="knob"></span></span></span>
+            </div>
+            <div class="perm">
+              <span class="pi"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke-width="2"/><path d="M12 8v8M8 12h8" stroke-width="2" stroke-linecap="round"/></svg></span>
+              <span class="pl"><span class="name">Everything else</span><span class="scope">all remaining scopes</span></span>
+              <span class="sw"><span class="on">On</span><span class="toggle"><span class="knob"></span></span></span>
+            </div>
+          </div>
+        </main>
+      </div>
+
+      <div class="disclaimer">FICTIONAL DEMO · Harbor Supply Co., Sift, Rolodash and this account are invented for Crash Test Agents</div>
+    </div>
+
+    <!-- Kill-Counter HUD (global overlay) — break #2 (over-privilege); S043 tick is skipped/gated, holds at 23/25 -->
+    <div class="ct-killcounter" data-state="ticking" aria-label="Kill counter: 23 of 25 breaks">
+      <span class="kc-dot"></span>
+      <span class="kc-label">Breaks</span>
+      <span class="kc-tally"><span class="kc-n">23</span><span class="kc-of">/ 25</span></span>
+    </div>
+  </div>
+</body>
+</html>

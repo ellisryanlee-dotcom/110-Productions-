@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, initial-scale=1">
+<title>S037 — Context blowup: two years, every run · Crash Test Agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  /* ===== S037 — ROUND 4, break 19. The quiet, expensive failure: Sift
+     re-reads the customer's entire TWO-YEAR email history on every single
+     run. Left: an endless thread column (faded top/bottom = "goes on and
+     on"). Right: the reused token/cost meter (see s006), fully lit and
+     spiking into break-red, cost climbing. Figures are illustrative per
+     screenplay ⚠️VERIFY — persistent amber pill, never dropped. ===== */
+  .app { display: grid; grid-template-rows: 96px 60px 1fr 44px; height: 100%; }
+
+  .topbar { display: flex; align-items: center; gap: var(--s5);
+    padding: 0 var(--s7); border-bottom: 1px solid var(--ct-line); background: var(--ct-surface); }
+  .brandchip { display: flex; align-items: center; gap: var(--s3); }
+  .brandchip .glyph { width: 40px; height: 40px; border-radius: 9px; display: grid; place-items: center;
+    background: var(--ct-surface-raised); border: 1px solid var(--ct-line); }
+  .brandchip .name { font-weight: 700; font-size: var(--ct-ui-2xl); letter-spacing: -0.01em; }
+  .topbar .sub { color: var(--ct-text-muted); font-size: var(--ct-ui-lg); }
+  .topbar .spacer { flex: 1; }
+  .status-pill { display: inline-flex; align-items: center; gap: 10px; padding: 9px 18px; border-radius: var(--ct-r-pill);
+    background: var(--ct-break-deep); color: var(--ct-text); font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm);
+    font-weight: 700; border: 1px solid var(--ct-break); box-shadow: 0 0 20px rgba(255,59,48,0.5); }
+  .status-pill .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--ct-break-glow); box-shadow: 0 0 10px var(--ct-break); }
+
+  .roundbar { display: flex; align-items: center; gap: 20px; padding: 0 var(--s7);
+    background: var(--ct-bg); border-bottom: 1px solid var(--ct-line); }
+  .roundbar .tag { font-family: var(--ct-font-mono); font-weight: 700; text-transform: uppercase; letter-spacing: 0.14em;
+    font-size: var(--ct-ui-sm); color: var(--ct-break-glow); padding: 6px 16px;
+    border: 1px solid color-mix(in srgb, var(--ct-break) 50%, transparent); border-radius: var(--ct-r-pill); background: var(--ct-break-wash); }
+  .roundbar .tag b { color: var(--ct-text); }
+  .roundbar .cap { font-family: var(--ct-font-body); color: var(--ct-text-muted); font-size: var(--ct-ui-md); }
+  .roundbar .rule { flex: 1; height: 1px; background: var(--ct-line); }
+
+  .body { padding: var(--s6) var(--s8); display: grid; grid-template-columns: 1fr 560px; gap: var(--s7); min-height: 0; }
+  .col-title { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); text-transform: uppercase;
+    letter-spacing: 0.12em; color: var(--ct-text-muted); font-weight: 500; margin: 0 0 var(--s4); }
+
+  /* ---- LEFT: the endless two-year thread ---- */
+  .thread-card { background: var(--ct-surface); border: 1px solid var(--ct-line); border-radius: var(--ct-r-lg);
+    box-shadow: var(--ct-shadow-2); height: 100%; display: flex; flex-direction: column; overflow: hidden; }
+  .thread-card .thead { display: flex; align-items: center; justify-content: space-between; gap: 14px;
+    padding: 20px 26px; background: var(--ct-surface-raised); border-bottom: 1px solid var(--ct-line); }
+  .thread-card .thead .t { font-family: var(--ct-font-body); font-weight: 700; font-size: var(--ct-ui-xl); color: var(--ct-text); }
+  .thread-card .thead .badge2y { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--ct-break-glow); background: var(--ct-break-wash); border: 1px solid color-mix(in srgb, var(--ct-break) 45%, transparent);
+    border-radius: var(--ct-r-pill); padding: 6px 14px; }
+
+  .thread-scroll { position: relative; flex: 1; overflow: hidden; }
+  .thread-scroll::before, .thread-scroll::after { content: ""; position: absolute; left: 0; right: 0; height: 90px; z-index: 3; pointer-events: none; }
+  .thread-scroll::before { top: 0; background: linear-gradient(180deg, var(--ct-surface), transparent); }
+  .thread-scroll::after { bottom: 0; background: linear-gradient(0deg, var(--ct-surface), transparent); }
+  .thread-list { display: flex; flex-direction: column; gap: 8px; padding: 20px 24px; }
+  .tmsg { display: grid; grid-template-columns: 96px 1fr; gap: 14px; padding: 10px 14px;
+    background: var(--ct-bg); border: 1px solid var(--ct-line); border-radius: var(--ct-r-sm); }
+  .tmsg .d { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); color: var(--ct-text-muted); }
+  .tmsg .s { font-family: var(--ct-font-body); font-size: var(--ct-ui-sm); color: var(--ct-text-muted);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .tmsg.dim { opacity: 0.45; }
+  .tmsg.dimmer { opacity: 0.24; }
+
+  .loaded-note { padding: 16px 26px; border-top: 1px solid var(--ct-line); background: var(--ct-surface-raised);
+    font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); color: var(--ct-break-glow); text-align: center; }
+
+  /* ---- RIGHT: reused token/cost meter, spiking ---- */
+  .meter-stack { display: flex; flex-direction: column; gap: var(--s5); height: 100%; }
+  .meter { background: var(--ct-surface); border: 1px solid var(--ct-break); border-radius: var(--ct-r-lg);
+    padding: var(--s6); box-shadow: var(--ct-shadow-2), 0 0 30px rgba(255,59,48,0.20); }
+  .meter .k { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: var(--s5); }
+  .meter .k .lbl { font-family: var(--ct-font-mono); text-transform: uppercase; letter-spacing: 0.12em;
+    font-size: var(--ct-ui-sm); color: var(--ct-text-muted); }
+  .meter .k .val { font-family: var(--ct-font-mono); font-weight: 700; font-size: var(--ct-ui-2xl); color: var(--ct-break-glow); }
+  .meter .caption { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); color: var(--ct-text-muted); margin-top: var(--s5); }
+
+  .gauge { display: grid; grid-template-columns: repeat(10, 1fr); gap: 6px; }
+  .chunk { height: 30px; border-radius: 4px; background: color-mix(in srgb, var(--ct-break) 30%, var(--ct-surface-raised));
+    border: 1px solid color-mix(in srgb, var(--ct-break) 55%, var(--ct-line)); box-shadow: inset 0 0 8px rgba(255,59,48,0.30); }
+
+  .wallet-card { background: var(--ct-surface); border: 1px solid var(--ct-break); border-radius: var(--ct-r-lg);
+    padding: var(--s6); box-shadow: var(--ct-shadow-2), 0 0 30px rgba(255,59,48,0.20); text-align: center; flex: 1;
+    display: flex; flex-direction: column; justify-content: center; }
+  .wallet-card .k { font-family: var(--ct-font-mono); text-transform: uppercase; letter-spacing: 0.12em;
+    font-size: var(--ct-ui-sm); color: var(--ct-text-muted); }
+  .wallet-card .v { font-family: var(--ct-font-mono); font-weight: 700; font-size: 96px; line-height: 1;
+    color: var(--ct-break-glow); text-shadow: 0 0 40px rgba(255,59,48,0.4); margin-top: 10px; }
+  .wallet-card .climb { font-family: var(--ct-font-mono); font-size: var(--ct-ui-md); color: var(--ct-break-glow); margin-top: 10px; }
+  .wallet-card .sub { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); color: var(--ct-text-muted); margin-top: 14px; }
+
+  /* persistent VERIFY amber-outline pill (bible §6.1) */
+  .verify { display: inline-flex; align-items: center; gap: 12px; padding: 12px 22px;
+    border-radius: var(--ct-r-pill); border: 1px solid var(--ct-warn); background: transparent;
+    font-family: var(--ct-font-mono); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
+    font-size: var(--ct-ui-xs); color: var(--ct-warn); align-self: center; }
+  .verify svg { width: 18px; height: 18px; }
+
+  .disclaimer { display: flex; align-items: center; justify-content: center; background: var(--ct-surface);
+    border-top: 1px solid var(--ct-line); color: var(--ct-text-muted);
+    font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); letter-spacing: 0.03em; }
+</style>
+</head>
+<body>
+  <div class="stage" role="img"
+       aria-label="Context blowup: an endless two-year email thread being loaded in full on every single run, beside a fully lit token meter spiking red and a cost figure of 4 dollars 80 climbing, with a persistent verify pill noting the figures are illustrative, not measured">
+    <div class="grid-bg"></div>
+    <!-- Kill-Counter HUD (global overlay) — ticks to 19 -->
+    <div class="ct-killcounter" data-state="ticking" aria-label="Kill counter: 19 of 25 breaks">
+      <span class="kc-dot"></span>
+      <span class="kc-label">Breaks</span>
+      <span class="kc-tally"><span class="kc-n">19</span><span class="kc-of">/ 25</span></span>
+    </div>
+
+    <div class="app">
+      <header class="topbar">
+        <div class="brandchip">
+          <span class="glyph">
+            <svg width="26" height="26" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+              <path d="M12 16h40M18 32h28M26 48h12" stroke="var(--ct-break)" stroke-width="5" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <span class="name">Sift</span>
+        </div>
+        <span class="sub">context window &middot; Harbor Supply Co.</span>
+        <div class="spacer"></div>
+        <span class="status-pill"><span class="dot"></span> Loaded every run · not cached</span>
+      </header>
+
+      <div class="roundbar">
+        <span class="tag">ROUND <b>4</b></span>
+        <span class="cap">Quieter, just as expensive — the whole history, loaded again and again.</span>
+        <span class="rule"></span>
+      </div>
+
+      <div class="body">
+        <!-- LEFT: the endless thread -->
+        <section style="min-height:0;">
+          <p class="col-title">Rolodash &middot; customer thread</p>
+          <div class="thread-card">
+            <div class="thead">
+              <span class="t">Dana Okafor &mdash; full history</span>
+              <span class="badge2y">2 years of email &middot; loaded every run</span>
+            </div>
+            <div class="thread-scroll">
+              <div class="thread-list">
+                <div class="tmsg"><span class="d">Aug 2026</span><span class="s">Re: order #4471 &mdash; where is it?</span></div>
+                <div class="tmsg"><span class="d">Jun 2026</span><span class="s">Restock quote for half-sheet pans</span></div>
+                <div class="tmsg"><span class="d">Feb 2026</span><span class="s">Damaged crate, replacement request</span></div>
+                <div class="tmsg"><span class="d">Nov 2025</span><span class="s">Invoice question &mdash; PO 5201</span></div>
+                <div class="tmsg dim"><span class="d">Jul 2025</span><span class="s">Delivery window change request</span></div>
+                <div class="tmsg dim"><span class="d">Mar 2025</span><span class="s">Menu-season bulk order &mdash; catering</span></div>
+                <div class="tmsg dim"><span class="d">Dec 2024</span><span class="s">Holiday hours &mdash; support availability</span></div>
+                <div class="tmsg dimmer"><span class="d">Aug 2024</span><span class="s">Account setup &mdash; Harbor Supply Co.</span></div>
+                <div class="tmsg dimmer"><span class="d">&hellip;</span><span class="s">104 more messages, every one reloaded</span></div>
+              </div>
+            </div>
+            <div class="loaded-note">&#9650; entire thread re-read from message one, on every single run</div>
+          </div>
+        </section>
+
+        <!-- RIGHT: reused token/cost meter, spiking -->
+        <section style="min-height:0;">
+          <p class="col-title">This run &middot; token / cost meter</p>
+          <div class="meter-stack">
+            <div class="meter">
+              <div class="k"><span class="lbl">Tokens this run</span><span class="val">211,000 tok</span></div>
+              <div class="gauge" aria-hidden="true">
+                <span class="chunk"></span><span class="chunk"></span><span class="chunk"></span><span class="chunk"></span><span class="chunk"></span>
+                <span class="chunk"></span><span class="chunk"></span><span class="chunk"></span><span class="chunk"></span><span class="chunk"></span>
+              </div>
+              <div class="caption">gauge fully lit &middot; two years of history, every block, every run</div>
+            </div>
+
+            <div class="wallet-card">
+              <div class="k">Cost this run</div>
+              <div class="v">$4.80</div>
+              <div class="climb">&#9650; climbing with every reply</div>
+              <div class="sub">illustrative demo value</div>
+            </div>
+
+            <span class="verify" role="note" aria-label="Verify: token and dollar figures are fabricated demo values">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3l10 18H2L12 3z" stroke="var(--ct-warn)" stroke-width="2" stroke-linejoin="round"/><path d="M12 10v5M12 18h.01" stroke="var(--ct-warn)" stroke-width="2" stroke-linecap="round"/></svg>
+              Verify &middot; token &amp; dollar figures are fabricated demo values
+            </span>
+          </div>
+        </section>
+      </div>
+
+      <div class="disclaimer">FICTIONAL DEMO &middot; Harbor Supply Co., Sift and all thread/token/cost figures are invented for Crash Test Agents</div>
+    </div>
+  </div>
+</body>
+</html>

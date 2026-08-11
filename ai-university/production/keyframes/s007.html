@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, initial-scale=1">
+<title>S007 — Build-the-victim workflow canvas (Day 2) · Crash Test Agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  /* ===== S007 — CONTEXT→BUILD screen-sim. Node-based workflow / code canvas
+     editor, mostly-empty flow ready to build, "Day 2" sticky, workshop mood,
+     dark IDE aesthetic. Rested state: canvas revealed under the peeled dashboard. ===== */
+  .ide { display: grid; grid-template-rows: 72px 1fr 44px; height: 100%; }
+
+  /* IDE title bar */
+  .idebar { display: flex; align-items: center; gap: var(--s5); padding: 0 var(--s7);
+    background: var(--ct-surface); border-bottom: 1px solid var(--ct-line); }
+  .dots { display: flex; gap: 10px; }
+  .dots i { width: 13px; height: 13px; border-radius: 50%; display: inline-block; }
+  .dots i:nth-child(1) { background: #3a4150; } .dots i:nth-child(2) { background: #3a4150; } .dots i:nth-child(3) { background: #3a4150; }
+  .idebar .file { font-family: var(--ct-font-mono); font-size: var(--ct-ui-md); color: var(--ct-text-muted); }
+  .idebar .file b { color: var(--ct-text); font-weight: 500; }
+  .idebar .spacer { flex: 1; }
+  .idebar .mode { font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); color: var(--ct-accent);
+    border: 1px solid color-mix(in srgb, var(--ct-accent) 45%, transparent); background: var(--ct-accent-wash);
+    padding: 6px 16px; border-radius: var(--ct-r-pill); }
+
+  /* main = node canvas + code side panel */
+  .main { display: grid; grid-template-columns: 1fr 560px; min-height: 0; }
+
+  /* node canvas */
+  .canvas { position: relative; background:
+      radial-gradient(circle at 1px 1px, var(--ct-line) 1.5px, transparent 0) 0 0 / 40px 40px,
+      var(--ct-bg); overflow: hidden; padding: var(--s7); }
+  .canvas-title { position: absolute; top: 34px; left: 40px; }
+  .canvas-title .t { font-family: var(--ct-font-display); font-stretch: 125%; font-weight: 800;
+    font-size: var(--ct-ui-3xl); color: var(--ct-text); }
+  .canvas-title .s { font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); color: var(--ct-text-muted); margin-top: 6px; }
+
+  .flow { position: absolute; top: 300px; left: 60px; right: 60px; display: flex; align-items: center; gap: 0; }
+  .node { width: 220px; height: 118px; border-radius: var(--ct-r-md); background: var(--ct-surface);
+    border: 1px solid var(--ct-line); padding: 16px 18px; box-shadow: var(--ct-shadow-1); }
+  .node.start { border-color: color-mix(in srgb, var(--ct-accent) 45%, var(--ct-line)); }
+  .node .nk { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--ct-text-muted); }
+  .node .nt { font-family: var(--ct-font-body); font-weight: 600; font-size: var(--ct-ui-xl); color: var(--ct-text); margin-top: 8px; }
+  .node .np { display: inline-flex; align-items: center; gap: 8px; margin-top: 14px;
+    font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); color: var(--ct-accent); }
+  .node .np .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ct-accent); box-shadow: 0 0 8px var(--ct-accent); }
+
+  .wire { flex: 1; height: 2px; background: var(--ct-line); position: relative; }
+  .wire.dashed { background: repeating-linear-gradient(90deg, var(--ct-line) 0 10px, transparent 10px 20px); }
+
+  /* empty placeholder node, waiting to be built */
+  .ghostnode { width: 220px; height: 118px; border-radius: var(--ct-r-md);
+    border: 2px dashed color-mix(in srgb, var(--ct-text-muted) 40%, transparent); background: transparent;
+    display: grid; place-items: center; }
+  .ghostnode span { font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); color: var(--ct-text-muted);
+    display: inline-flex; align-items: center; gap: 8px; }
+  .ghostnode .plus { font-size: var(--ct-ui-2xl); line-height: 0.6; }
+
+  /* Day 2 sticky */
+  /* neutral paper sticky — amber is reserved for VERIFY/caveat, never a decorative
+     note color; keep the workshop feel with surface-raised + a faint accent edge */
+  .sticky { position: absolute; bottom: 60px; right: 56px; width: 210px; padding: 22px 20px 26px;
+    background: var(--ct-surface-raised);
+    border: 1px solid var(--ct-line); border-top: 3px solid color-mix(in srgb, var(--ct-accent) 60%, var(--ct-line));
+    border-radius: 4px; box-shadow: var(--ct-shadow-pop); transform: rotate(-3deg); }
+  .sticky .d { font-family: var(--ct-font-display); font-stretch: 125%; font-weight: 800; font-size: var(--ct-ui-3xl); color: var(--ct-text); }
+  .sticky .m { font-family: var(--ct-font-body); font-size: var(--ct-ui-sm); color: var(--ct-text-muted); margin-top: 6px; }
+
+  /* code / config side panel */
+  .code { background: var(--ct-surface); border-left: 1px solid var(--ct-line); padding: var(--s6) var(--s6) 0; overflow: hidden; }
+  .code .ct { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); text-transform: uppercase;
+    letter-spacing: 0.12em; color: var(--ct-text-muted); margin-bottom: var(--s5); }
+  .code pre { margin: 0; font-family: var(--ct-font-mono); font-size: var(--ct-ui-md); line-height: 1.55; color: var(--ct-text); }
+  .code .ln { display: block; }
+  .code .c { color: var(--ct-text-muted); }
+  .code .key { color: var(--ct-accent); }
+  /* string + TODO syntax stay off the reserved semantics: green = fixed/200 only,
+     amber = VERIFY only. Strings read neutral, pending work reads as muted comment. */
+  .code .str { color: var(--ct-text); }
+  .code .todo { color: var(--ct-text-muted); }
+  .code .caret { display: inline-block; width: 10px; height: 22px; background: var(--ct-accent);
+    vertical-align: -4px; margin-left: 2px; }
+</style>
+</head>
+<body>
+  <div class="stage" role="img"
+       aria-label="Node-based workflow canvas editor with a mostly empty flow ready to build, a Day 2 sticky note, a code panel, workshop mood, dark IDE aesthetic">
+    <div class="grid-bg"></div>
+    <!-- Kill-Counter HUD (global overlay) — Option A: armed at 00/25 through the hook -->
+    <div class="ct-killcounter" data-state="armed" aria-label="Kill counter: 0 of 25 breaks">
+      <span class="kc-dot"></span>
+      <span class="kc-label">Breaks</span>
+      <span class="kc-tally"><span class="kc-n">00</span><span class="kc-of">/ 25</span></span>
+    </div>
+
+    <div class="ide">
+      <header class="idebar">
+        <span class="dots"><i></i><i></i><i></i></span>
+        <span class="file">sift / <b>build-the-victim.flow</b></span>
+        <span class="spacer"></span>
+        <span class="mode">workshop · unsaved</span>
+      </header>
+
+      <div class="main">
+        <section class="canvas">
+          <div class="canvas-title">
+            <div class="t">Build the victim</div>
+            <div class="s">the honest version — not the demo, what happens on day two</div>
+          </div>
+
+          <div class="flow">
+            <div class="node start">
+              <div class="nk">Trigger</div>
+              <div class="nt">New email</div>
+              <div class="np"><span class="dot"></span> support@harborsupply.co</div>
+            </div>
+            <div class="wire"></div>
+            <div class="node">
+              <div class="nk">Step 1</div>
+              <div class="nt">Read message</div>
+            </div>
+            <div class="wire dashed"></div>
+            <div class="ghostnode"><span><span class="plus">+</span> add step</span></div>
+          </div>
+
+          <div class="sticky" aria-label="sticky note: Day 2">
+            <div class="d">Day 2</div>
+            <div class="m">when a real inbox throws garbage at it</div>
+          </div>
+        </section>
+
+        <aside class="code">
+          <div class="ct">flow config</div>
+          <pre><span class="ln"><span class="c"># sift — the victim agent</span></span>
+<span class="ln"><span class="key">agent</span>: <span class="str">"Sift"</span></span>
+<span class="ln"><span class="key">inbox</span>: <span class="str">"support@harborsupply.co"</span></span>
+<span class="ln"><span class="key">company</span>: <span class="str">"Harbor Supply Co."</span></span>
+<span class="ln"><span class="key">steps</span>:</span>
+<span class="ln">&nbsp;&nbsp;- read_message</span>
+<span class="ln">&nbsp;&nbsp;<span class="todo"># TODO: classify</span></span>
+<span class="ln">&nbsp;&nbsp;<span class="todo"># TODO: label</span></span>
+<span class="ln">&nbsp;&nbsp;<span class="todo"># TODO: rolodash_lookup</span></span>
+<span class="ln">&nbsp;&nbsp;<span class="todo"># TODO: draft_reply</span></span>
+<span class="ln">&nbsp;</span>
+<span class="ln"><span class="c"># let's build the victim,</span></span>
+<span class="ln"><span class="c"># go break it.</span><span class="caret"></span></span></pre>
+        </aside>
+      </div>
+
+      <div class="disclaimer" style="display:flex;align-items:center;justify-content:center;background:var(--ct-surface);border-top:1px solid var(--ct-line);color:var(--ct-text-muted);font-family:var(--ct-font-mono);font-size:var(--ct-ui-xs);letter-spacing:0.03em;">FICTIONAL DEMO · Harbor Supply Co., Sift, Rolodash and all senders are invented for Crash Test Agents</div>
+    </div>
+  </div>
+</body>
+</html>

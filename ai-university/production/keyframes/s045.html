@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, initial-scale=1">
+<title>S045 — Approval card, send-and-wait + typed feedback · Crash Test Agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  /* ===== S045 — SCREEN-SIM (rested). A GENERIC, invented approval-card
+     surface (NOT Slack — no external chat-app branding) inside Sift itself:
+     "Approvals" panel. Agent posts a draft + Approve/Send feedback actions,
+     then a plain-English revision note appears typed back, agent paused. ===== */
+  .app { display: grid; grid-template-rows: 92px 1fr 44px; height: 100%; }
+
+  .topbar { display: flex; align-items: center; gap: var(--s5);
+    padding: 0 var(--s7); border-bottom: 1px solid var(--ct-line); background: var(--ct-surface); }
+  .brandchip { display: flex; align-items: center; gap: var(--s3); }
+  .brandchip .glyph { width: 40px; height: 40px; border-radius: 9px; display: grid; place-items: center;
+    background: var(--ct-surface-raised); border: 1px solid var(--ct-line); }
+  .brandchip .name { font-weight: 700; font-size: var(--ct-ui-2xl); letter-spacing: -0.01em; }
+  .topbar .sub { color: var(--ct-text-muted); font-size: var(--ct-ui-lg); }
+  .topbar .spacer { flex: 1; }
+  .status-pill { display: inline-flex; align-items: center; gap: 10px; padding: 9px 18px; border-radius: var(--ct-r-pill);
+    background: var(--ct-accent-wash); color: var(--ct-accent-glow); font-family: var(--ct-font-mono);
+    font-size: var(--ct-ui-sm); font-weight: 600; border: 1px solid color-mix(in srgb, var(--ct-accent) 45%, transparent); }
+  .status-pill .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--ct-accent); box-shadow: 0 0 10px var(--ct-accent); }
+
+  .body { padding: var(--s8) 0; display: flex; flex-direction: column; align-items: center; gap: 20px; }
+  .thread { width: 1180px; display: flex; flex-direction: column; gap: 22px; }
+  .kicker { font-family: var(--ct-font-mono); text-transform: uppercase; letter-spacing: 0.12em;
+    font-size: var(--ct-ui-xs); color: var(--ct-text-muted); text-align: center; margin-bottom: 4px; }
+
+  /* ---------- agent bubble: draft + approve/feedback actions ---------- */
+  .bubble { display: flex; gap: 20px; }
+  .bubble .av { width: 54px; height: 54px; flex: 0 0 54px; border-radius: 14px; display: grid; place-items: center;
+    background: var(--ct-surface-raised); border: 1px solid var(--ct-line); }
+  .bubble .av svg { width: 30px; height: 30px; }
+  .card { flex: 1; background: var(--ct-surface); border: 1px solid var(--ct-line); border-radius: var(--ct-r-lg);
+    box-shadow: var(--ct-shadow-2); overflow: hidden; }
+  .card .chead { display: flex; align-items: center; gap: 14px; padding: 18px 26px; border-bottom: 1px solid var(--ct-line); }
+  .card .chead .who { font-weight: 700; font-size: var(--ct-ui-lg); color: var(--ct-text); }
+  .card .chead .ts { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); color: var(--ct-text-muted); }
+  .card .chead .spacer { flex: 1; }
+  .paused-tag { display: inline-flex; align-items: center; gap: 9px; padding: 7px 16px; border-radius: var(--ct-r-pill);
+    font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--ct-accent-glow); background: var(--ct-accent-wash);
+    border: 1px solid color-mix(in srgb, var(--ct-accent) 50%, transparent); }
+  .paused-tag .pd { width: 8px; height: 8px; border-radius: 50%; background: var(--ct-accent); box-shadow: 0 0 8px var(--ct-accent); }
+  .card .cmsg { padding: 20px 26px 6px; font-family: var(--ct-font-body); font-size: var(--ct-ui-lg); color: var(--ct-text); }
+  .card .draftbox { margin: 16px 26px 22px; padding: 20px 24px; border-radius: var(--ct-r-md);
+    background: var(--ct-bg); border-left: 3px solid var(--ct-line); font-family: var(--ct-font-body);
+    font-size: var(--ct-ui-md); line-height: 1.6; color: var(--ct-text-muted); }
+  .card .draftbox b { color: var(--ct-text); font-weight: 600; }
+  .card .actions { display: flex; align-items: center; gap: 16px; padding: 0 26px 24px; }
+  .btn { display: inline-flex; align-items: center; gap: 10px; padding: 13px 28px; border-radius: var(--ct-r-md);
+    font-family: var(--ct-font-mono); font-weight: 700; font-size: var(--ct-ui-md); }
+  .btn.primary { background: var(--ct-accent); color: #041017; box-shadow: 0 0 22px rgba(56,189,248,0.4); }
+  .btn.ghost { background: transparent; color: var(--ct-text); border: 1px solid var(--ct-line); }
+
+  /* ---------- human reply bubble: typed plain-English feedback ---------- */
+  .bubble.you { flex-direction: row-reverse; }
+  .bubble.you .av { background: var(--ct-accent-wash); border-color: color-mix(in srgb, var(--ct-accent) 45%, var(--ct-line)); }
+  .bubble.you .card { max-width: 640px; margin-left: auto; }
+  .bubble.you .chead { justify-content: flex-end; }
+  .bubble.you .cmsg { padding: 20px 26px 24px; font-size: var(--ct-ui-xl); color: var(--ct-text); }
+  .bubble.you .cmsg .caret { display: inline-block; width: 10px; height: 26px; background: var(--ct-accent);
+    vertical-align: -5px; margin-left: 3px; box-shadow: 0 0 10px var(--ct-accent); }
+
+  .footer-status { display: flex; align-items: center; gap: 12px; justify-content: center;
+    font-family: var(--ct-font-mono); font-size: var(--ct-ui-md); color: var(--ct-accent-glow); }
+  .footer-status .pd { width: 10px; height: 10px; border-radius: 50%; background: var(--ct-accent); box-shadow: 0 0 10px var(--ct-accent); }
+
+  .disclaimer { display: flex; align-items: center; justify-content: center; background: var(--ct-surface);
+    border-top: 1px solid var(--ct-line); color: var(--ct-text-muted); font-family: var(--ct-font-mono);
+    font-size: var(--ct-ui-xs); letter-spacing: 0.03em; }
+</style>
+</head>
+<body>
+  <div class="stage" role="img"
+       aria-label="A generic invented approval-card surface inside Sift: the agent posts a drafted reply with Approve and Send feedback buttons, then a typed plain-English note reading warmer and mention the reship appears back from the human, agent status reads paused waiting for you">
+    <div class="grid-bg"></div>
+
+    <!-- Kill-Counter HUD — Final safety net, ticking at 24/25 -->
+    <div class="ct-killcounter" data-state="ticking" aria-label="Kill counter: 24 of 25 breaks">
+      <span class="kc-dot"></span>
+      <span class="kc-label">Breaks</span>
+      <span class="kc-tally"><span class="kc-n">24</span><span class="kc-of">/ 25</span></span>
+    </div>
+
+    <div class="app">
+      <header class="topbar">
+        <div class="brandchip">
+          <span class="glyph">
+            <svg width="26" height="26" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+              <path d="M12 16h40M18 32h28M26 48h12" stroke="var(--ct-accent)" stroke-width="5" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <span class="name">Sift</span>
+        </div>
+        <span class="sub">approvals &middot; send-and-wait</span>
+        <div class="spacer"></div>
+        <span class="status-pill"><span class="dot"></span> paused &mdash; waiting for you</span>
+      </header>
+
+      <div class="body">
+        <div class="thread">
+          <p class="kicker">the pattern is send-and-wait</p>
+
+          <!-- agent bubble: draft + approve/feedback -->
+          <div class="bubble">
+            <span class="av">
+              <svg viewBox="0 0 64 64" fill="none" aria-hidden="true"><path d="M12 16h40M18 32h28M26 48h12" stroke="var(--ct-accent)" stroke-width="6" stroke-linecap="round"/></svg>
+            </span>
+            <article class="card">
+              <div class="chead">
+                <span class="who">Sift</span>
+                <span class="ts">9:42 AM</span>
+                <span class="spacer"></span>
+                <span class="paused-tag"><span class="pd"></span>paused &mdash; waiting for you</span>
+              </div>
+              <div class="cmsg">Ready to send this reply to Dana &mdash; take a look?</div>
+              <div class="draftbox">Hi Dana, thanks for checking in on order <b>#4471</b> &mdash; it's on its way and should land within a few business days. Sorry for the wait!</div>
+              <div class="actions">
+                <span class="btn primary">Approve</span>
+                <span class="btn ghost">Send feedback</span>
+              </div>
+            </article>
+          </div>
+
+          <!-- human bubble: typed plain-English feedback -->
+          <div class="bubble you">
+            <span class="av">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="8" r="4" stroke="var(--ct-accent)" stroke-width="2.2"/><path d="M4 20c.8-4.5 3.6-7 8-7s7.2 2.5 8 7" stroke="var(--ct-accent)" stroke-width="2.2" stroke-linecap="round"/></svg>
+            </span>
+            <article class="card">
+              <div class="chead"><span class="who">You</span><span class="ts">9:43 AM</span></div>
+              <div class="cmsg">warmer, and mention the reship<span class="caret"></span></div>
+            </article>
+          </div>
+
+          <div class="footer-status"><span class="pd"></span>agent status: paused &mdash; waiting for you</div>
+        </div>
+      </div>
+
+      <div class="disclaimer">FICTIONAL DEMO &middot; Harbor Supply Co., Sift, Rolodash and all senders are invented for Crash Test Agents</div>
+    </div>
+  </div>
+</body>
+</html>

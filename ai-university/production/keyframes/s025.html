@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, initial-scale=1">
+<title>S025 — One error handler, reused everywhere · Crash Test Agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  /* ===== S025 — ROUND 2 motion-graphic (rested state). Break 9: "no shared
+     error handler; failures vanish." The fix, drawn as a diagram: several
+     workflow nodes each route a dotted "on failure →" line into one central
+     Error Handler node (cyan = the active/new shared component). The handler
+     fans out to two solid outputs: a log-sheet row and an alert message with
+     a "view run" link. ===== */
+  .wrap { position: absolute; inset: 0; z-index: 2; display: grid;
+    grid-template-rows: 150px 1fr; padding: 44px 84px 34px; }
+
+  .head .umb-row { display: flex; align-items: center; gap: 18px; margin-bottom: 16px; }
+  .head .umb-row .rule { flex: 1; height: 1px; background: var(--ct-line); }
+  .head .umb-row .tag { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs);
+    font-weight: 700; text-transform: uppercase; letter-spacing: 0.14em; color: var(--ct-accent-glow);
+    padding: 8px 16px; border: 1px solid color-mix(in srgb, var(--ct-accent) 45%, var(--ct-line));
+    border-radius: var(--ct-r-pill); background: var(--ct-accent-wash); }
+  .head h1 { margin: 0; font-family: var(--ct-font-display); font-stretch: 125%; font-weight: 900;
+    text-transform: uppercase; letter-spacing: 0.02em; font-size: var(--ct-h2); color: var(--ct-text); line-height: 0.98; }
+  .head h1 .lit { color: var(--ct-accent); }
+
+  /* ---- diagram field ---- */
+  .diagram { position: relative; }
+
+  /* satellite workflow nodes across the top, each firing "on failure ->" */
+  .satellites { position: absolute; top: 6px; left: 0; right: 0; display: flex; justify-content: center; gap: 64px; }
+  .sat { position: relative; width: 254px; background: var(--ct-surface); border: 1px solid var(--ct-line);
+    border-radius: var(--ct-r-md); padding: 16px 18px; box-shadow: var(--ct-shadow-1); text-align: center; }
+  .sat .nm { font-family: var(--ct-font-body); font-weight: 700; font-size: var(--ct-ui-lg); color: var(--ct-text); }
+  .sat .sub { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); color: var(--ct-text-muted); margin-top: 6px; }
+  .sat .fail-lbl { position: absolute; left: 50%; top: 100%; transform: translateX(-50%);
+    margin-top: 10px; font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); color: var(--ct-text-muted);
+    white-space: nowrap; letter-spacing: 0.04em; }
+  .sat .drop { position: absolute; left: 50%; top: 100%; width: 0; border-left: 2px dashed var(--ct-line);
+    transform: translateX(-50%); }
+
+  /* horizontal bus the dotted lines gather onto */
+  .bus { position: absolute; top: 246px; left: 236px; right: 236px; height: 2px; border-top: 2px dashed var(--ct-line); }
+  .bus .lbl { position: absolute; left: 50%; top: -34px; transform: translateX(-50%);
+    background: var(--ct-bg); padding: 0 14px; font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm);
+    color: var(--ct-text-muted); text-transform: uppercase; letter-spacing: 0.1em; }
+
+  /* single feed from the bus down into the handler */
+  .feed { position: absolute; top: 248px; left: 50%; width: 2px; height: 96px; transform: translateX(-50%);
+    background: linear-gradient(var(--ct-line), var(--ct-accent)); }
+  .feed::after { content: ""; position: absolute; left: 50%; bottom: -2px; transform: translateX(-50%);
+    border: 8px solid transparent; border-top-color: var(--ct-accent); }
+
+  /* central handler node */
+  .handler { position: absolute; top: 344px; left: 50%; transform: translateX(-50%); width: 520px;
+    background: linear-gradient(180deg, var(--ct-surface-raised), color-mix(in srgb, var(--ct-accent) 8%, var(--ct-surface-raised)));
+    border: 1px solid var(--ct-accent); border-radius: var(--ct-r-lg);
+    box-shadow: 0 0 46px rgba(56,189,248,0.30), var(--ct-shadow-2); padding: 22px 30px; text-align: center; }
+  .handler .kicker { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); text-transform: uppercase;
+    letter-spacing: 0.12em; color: var(--ct-accent-glow); }
+  .handler .ico { width: 58px; height: 58px; margin: 12px auto 12px; border-radius: 14px; display: grid; place-items: center;
+    background: var(--ct-bg); border: 1px solid var(--ct-accent); }
+  .handler .ico svg { width: 32px; height: 32px; stroke: var(--ct-accent); fill: none; }
+  .handler .nm { font-family: var(--ct-font-display); font-stretch: 125%; font-weight: 800; font-size: var(--ct-ui-2xl); color: var(--ct-text); }
+  .handler .desc { margin-top: 6px; font-family: var(--ct-font-body); font-size: var(--ct-ui-md); color: var(--ct-text-muted); }
+
+  /* branch arrows down to log + alert */
+  .branches { position: absolute; top: 486px; left: 50%; width: 900px; height: 92px; transform: translateX(-50%); }
+  .branches svg { width: 100%; height: 100%; }
+  .branches path { stroke: var(--ct-fixed); stroke-width: 2.4; fill: none; }
+  .branches .arrow { fill: var(--ct-fixed); }
+
+  .outputs { position: absolute; top: 588px; left: 50%; transform: translateX(-50%);
+    width: 1400px; display: flex; justify-content: space-between; }
+
+  .outcard { width: 620px; background: var(--ct-surface); border: 1px solid color-mix(in srgb, var(--ct-fixed) 40%, var(--ct-line));
+    border-radius: var(--ct-r-lg); box-shadow: 0 0 26px rgba(43,213,118,0.12), var(--ct-shadow-2); overflow: hidden; }
+  .outcard .oh { display: flex; align-items: center; gap: 12px; padding: 16px 24px;
+    background: var(--ct-surface-raised); border-bottom: 1px solid var(--ct-line); }
+  .outcard .oh .g { width: 32px; height: 32px; border-radius: 8px; display: grid; place-items: center;
+    background: var(--ct-fixed-wash); border: 1px solid var(--ct-fixed); }
+  .outcard .oh .g svg { width: 18px; height: 18px; stroke: var(--ct-fixed-glow); fill: none; }
+  .outcard .oh .t { font-family: var(--ct-font-body); font-weight: 700; font-size: var(--ct-ui-xl); color: var(--ct-text); }
+
+  .outcard .ob { padding: 22px 24px; }
+
+  /* log sheet columns */
+  .logrow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); }
+  .logrow .col-h { color: var(--ct-text-muted); text-transform: uppercase; letter-spacing: 0.08em; font-size: var(--ct-ui-xs); }
+  .logrow .col-v { color: var(--ct-text); margin-top: 8px; }
+  .logrow .col-v.err { color: var(--ct-break-glow); }
+
+  /* alert message */
+  .alertmsg { display: flex; align-items: center; gap: 16px; background: var(--ct-bg); border: 1px solid var(--ct-line);
+    border-radius: var(--ct-r-md); padding: 16px 20px; }
+  .alertmsg .bell { width: 30px; height: 30px; flex: 0 0 30px; border-radius: 50%; display: grid; place-items: center;
+    background: var(--ct-break-deep); border: 1px solid var(--ct-break); }
+  .alertmsg .bell svg { width: 16px; height: 16px; stroke: var(--ct-text); fill: none; }
+  .alertmsg .txt { font-family: var(--ct-font-mono); font-size: var(--ct-ui-md); color: var(--ct-text); }
+  .alertmsg .link { color: var(--ct-accent-glow); text-decoration: underline; text-underline-offset: 3px; }
+
+  .disclaimer { position: absolute; left: 0; right: 0; bottom: 0; height: 44px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--ct-surface); border-top: 1px solid var(--ct-line);
+    color: var(--ct-text-muted); font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); letter-spacing: 0.03em; z-index: 20; }
+</style>
+</head>
+<body>
+  <div class="stage" role="img"
+       aria-label="A shared error-handler diagram: several workflows each route a dotted on-failure line into one central error handler node, which fans out to a log-sheet row with columns run, workflow, step, error, and an alert message with a view-run link. Round two, break nine of twenty-five.">
+    <div class="grid-bg"></div>
+    <!-- Kill-Counter HUD (global overlay) — Round 2, break 9 ticking -->
+    <div class="ct-killcounter" data-state="ticking" aria-label="Kill counter: 9 of 25 breaks">
+      <span class="kc-dot"></span>
+      <span class="kc-label">Breaks</span>
+      <span class="kc-tally"><span class="kc-n">09</span><span class="kc-of">/ 25</span></span>
+    </div>
+
+    <div class="wrap">
+      <div class="head">
+        <div class="umb-row">
+          <span class="umbrella">ROUND 2 &middot; ERRORS &amp; RETRIES</span>
+          <span class="rule"></span>
+          <span class="tag">Break 9 &middot; shared error handler</span>
+        </div>
+        <h1>One error handler, <span class="lit">built once</span>, reused everywhere.</h1>
+      </div>
+
+      <div class="diagram">
+        <div class="satellites">
+          <div class="sat">
+            <div class="nm">Classify</div>
+            <div class="sub">workflow</div>
+            <div class="drop" style="height:56px;"></div>
+            <div class="fail-lbl" style="margin-top:60px;">on failure &rarr;</div>
+          </div>
+          <div class="sat">
+            <div class="nm">Rolodash lookup</div>
+            <div class="sub">workflow</div>
+            <div class="drop" style="height:56px;"></div>
+            <div class="fail-lbl" style="margin-top:60px;">on failure &rarr;</div>
+          </div>
+          <div class="sat">
+            <div class="nm">Draft reply</div>
+            <div class="sub">workflow</div>
+            <div class="drop" style="height:56px;"></div>
+            <div class="fail-lbl" style="margin-top:60px;">on failure &rarr;</div>
+          </div>
+          <div class="sat">
+            <div class="nm">Send email</div>
+            <div class="sub">workflow</div>
+            <div class="drop" style="height:56px;"></div>
+            <div class="fail-lbl" style="margin-top:60px;">on failure &rarr;</div>
+          </div>
+        </div>
+
+        <div class="bus"><span class="lbl">on failure &rarr; (all workflows)</span></div>
+        <div class="feed"></div>
+
+        <div class="handler">
+          <div class="kicker">shared workflow &middot; new</div>
+          <div class="ico">
+            <svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M16 5l11 6v10l-11 6-11-6V11l11-6z" stroke-width="2.4" stroke-linejoin="round"/><path d="M16 12v6M16 21v.01" stroke-width="2.6" stroke-linecap="round"/></svg>
+          </div>
+          <div class="nm">Error handler</div>
+          <div class="desc">error trigger &middot; catches run, workflow, step, message</div>
+        </div>
+
+        <div class="branches" aria-hidden="true">
+          <svg viewBox="0 0 900 92" preserveAspectRatio="none">
+            <path d="M450 0 C450 40, 220 40, 220 92" />
+            <path d="M450 0 C450 40, 680 40, 680 92" />
+            <polygon class="arrow" points="212,84 220,96 228,84" />
+            <polygon class="arrow" points="672,84 680,96 688,84" />
+          </svg>
+        </div>
+
+        <div class="outputs">
+          <div class="outcard">
+            <div class="oh">
+              <span class="g"><svg viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h10" stroke-width="2" stroke-linecap="round"/></svg></span>
+              <span class="t">Log sheet &middot; new row</span>
+            </div>
+            <div class="ob">
+              <div class="logrow">
+                <div><div class="col-h">Run</div><div class="col-v">#4471</div></div>
+                <div><div class="col-h">Workflow</div><div class="col-v">Draft reply</div></div>
+                <div><div class="col-h">Step</div><div class="col-v">05</div></div>
+                <div><div class="col-h">Error</div><div class="col-v err">503 timeout</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="outcard">
+            <div class="oh">
+              <span class="g"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9" stroke-width="2" stroke-linejoin="round"/><path d="M10 21a2 2 0 004 0" stroke-width="2" stroke-linecap="round"/></svg></span>
+              <span class="t">Alert &middot; sent</span>
+            </div>
+            <div class="ob">
+              <div class="alertmsg">
+                <span class="bell"><svg viewBox="0 0 24 24"><path d="M12 5v3M6 20h12M8 20a4 4 0 008 0" stroke-width="2" stroke-linecap="round"/></svg></span>
+                <span class="txt">&#9888;&#65039; failure &mdash; <span class="link">view run</span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="disclaimer">FICTIONAL DEMO &middot; Harbor Supply Co., Sift, Rolodash and all senders are invented for Crash Test Agents</div>
+  </div>
+</body>
+</html>

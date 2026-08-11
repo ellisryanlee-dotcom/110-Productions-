@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, initial-scale=1">
+<title>S011 — Rule vs needs-AI chunks · Crash Test Agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  /* ===== S011 — BUILD motion-graphic. The job exploded into logic chunks,
+     most tagged gray "rule" (keyword check, counter), the single reasoning
+     chunk glowing accent "needs AI". Two example logic cards. "Boring is reliable." ===== */
+  .wrap { position: absolute; inset: 0; z-index: 2; display: grid; align-content: center; justify-items: center; gap: var(--s7); }
+
+  .head { width: 1680px; }
+  .head .umb-row { display: flex; align-items: center; gap: 18px; margin-bottom: 16px; }
+  .head .umb-row .rule { flex: 1; height: 1px; background: var(--ct-line); }
+  .head h1 { margin: 0; font-family: var(--ct-font-display); font-stretch: 125%; font-weight: 900;
+    text-transform: uppercase; letter-spacing: 0.02em; font-size: var(--ct-h2); color: var(--ct-text); line-height: 0.98; }
+
+  /* row of chunk cards */
+  .chunks { width: 1680px; display: grid; grid-template-columns: repeat(6, 1fr); gap: 18px; }
+  .chunk { background: var(--ct-surface); border: 1px solid var(--ct-line); border-radius: var(--ct-r-lg);
+    padding: 22px 20px 18px; box-shadow: var(--ct-shadow-1); display: flex; flex-direction: column; gap: 14px; min-height: 214px; }
+  .chunk .ico { width: 52px; height: 52px; display: grid; place-items: center; border-radius: 12px;
+    background: var(--ct-surface-raised); border: 1px solid var(--ct-line); }
+  .chunk .ico svg { width: 30px; height: 30px; stroke: var(--ct-text-muted); fill: none; }
+  .chunk .nm { font-family: var(--ct-font-body); font-weight: 600; font-size: var(--ct-ui-lg); color: var(--ct-text); flex: 1; }
+  .tag { align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px;
+    border-radius: var(--ct-r-pill); font-family: var(--ct-font-mono); font-weight: 700; font-size: var(--ct-ui-xs);
+    text-transform: uppercase; letter-spacing: 0.08em; }
+  .tag.rule { background: color-mix(in srgb, var(--ct-text-muted) 16%, transparent);
+    border: 1px solid color-mix(in srgb, var(--ct-text-muted) 45%, transparent); color: var(--ct-text-muted); }
+  .tag.ai { background: var(--ct-accent-wash); border: 1px solid var(--ct-accent); color: var(--ct-accent-glow); }
+  .tag .d { width: 8px; height: 8px; border-radius: 50%; }
+  .tag.rule .d { background: var(--ct-text-muted); }
+  .tag.ai .d { background: var(--ct-accent); box-shadow: 0 0 8px var(--ct-accent); }
+
+  /* the one chunk that needs a model — glows accent */
+  .chunk.needs-ai { background: linear-gradient(180deg, var(--ct-surface-raised), color-mix(in srgb, var(--ct-accent) 9%, var(--ct-surface-raised)));
+    border: 1px solid var(--ct-accent); box-shadow: 0 0 34px rgba(56,189,248,0.30), var(--ct-shadow-2); }
+  .chunk.needs-ai .ico { border-color: var(--ct-accent); box-shadow: inset 0 0 12px rgba(56,189,248,0.25); }
+  .chunk.needs-ai .ico svg { stroke: var(--ct-accent); }
+  .chunk.needs-ai .nm { color: var(--ct-text); }
+  /* faded gray for the plain rule chunks */
+  .chunk.dim { filter: saturate(0.4); }
+
+  /* example logic cards + caption */
+  .lower { width: 1680px; display: grid; grid-template-columns: 1fr 1fr auto; gap: 24px; align-items: center; }
+  .logic { background: var(--ct-surface); border: 1px solid var(--ct-line); border-left: 5px solid var(--ct-text-muted);
+    border-radius: var(--ct-r-md); padding: 20px 26px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+  .logic .q { font-family: var(--ct-font-mono); font-size: var(--ct-ui-lg); color: var(--ct-text); }
+  .logic .q .lit { color: var(--ct-accent-glow); }
+  .logic .verdict { display: inline-flex; align-items: center; gap: 10px; font-family: var(--ct-font-mono);
+    font-weight: 700; font-size: var(--ct-ui-md); color: var(--ct-text-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+  .logic .verdict .arr { color: var(--ct-text-muted); }
+
+  .caption { justify-self: end; font-family: var(--ct-font-display); font-stretch: 125%; font-weight: 800;
+    font-size: var(--ct-ui-3xl); color: var(--ct-fixed-glow); text-align: right; }
+  .caption .s { display: block; font-family: var(--ct-font-mono); font-weight: 400; font-size: var(--ct-ui-sm);
+    color: var(--ct-text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 6px; }
+</style>
+</head>
+<body>
+  <div class="stage" role="img"
+       aria-label="The agent job broken into chunks: keyword check, counter, label, lookup, draft all tagged rule in gray; one chunk read and understand the email glows needs-AI in cyan. Caption: boring is reliable.">
+    <div class="grid-bg"></div>
+    <!-- Kill-Counter HUD (global overlay) — Option A: armed at 00/25 through the hook -->
+    <div class="ct-killcounter" data-state="armed" aria-label="Kill counter: 0 of 25 breaks">
+      <span class="kc-dot"></span>
+      <span class="kc-label">Breaks</span>
+      <span class="kc-tally"><span class="kc-n">00</span><span class="kc-of">/ 25</span></span>
+    </div>
+
+    <div class="wrap">
+      <div class="head">
+        <div class="umb-row"><span class="umbrella">BUILD THE VICTIM · DOES THIS NEED JUDGMENT?</span><span class="rule"></span></div>
+        <h1>Hard-code the boring chunks. Reserve the model for the one that needs it.</h1>
+      </div>
+
+      <div class="chunks">
+        <!-- the one that needs a model -->
+        <div class="chunk needs-ai">
+          <span class="ico"><svg viewBox="0 0 32 32" fill="none"><rect x="7" y="9" width="18" height="14" rx="3" stroke-width="2.4"/><path d="M16 5v4M11 15h.01M21 15h.01" stroke-width="2.4" stroke-linecap="round"/><path d="M12 20c1.2 1.4 6.8 1.4 8 0" stroke-width="2.4" stroke-linecap="round"/></svg></span>
+          <span class="nm">Read &amp; understand a messy human email</span>
+          <span class="tag ai"><span class="d"></span> needs AI</span>
+        </div>
+        <div class="chunk dim">
+          <span class="ico"><svg viewBox="0 0 32 32" fill="none"><path d="M6 8h20M6 14h20M6 20h13" stroke-width="2.4" stroke-linecap="round"/><circle cx="24" cy="21" r="4" stroke-width="2.4"/></svg></span>
+          <span class="nm">Contains the word "invoice"?</span>
+          <span class="tag rule"><span class="d"></span> rule</span>
+        </div>
+        <div class="chunk dim">
+          <span class="ico"><svg viewBox="0 0 32 32" fill="none"><rect x="6" y="8" width="20" height="18" rx="3" stroke-width="2.4"/><path d="M6 13h20M11 5v5M21 5v5" stroke-width="2.4" stroke-linecap="round"/><path d="M12 20h8" stroke-width="2.4" stroke-linecap="round"/></svg></span>
+          <span class="nm">4th email from this person today?</span>
+          <span class="tag rule"><span class="d"></span> counter</span>
+        </div>
+        <div class="chunk dim">
+          <span class="ico"><svg viewBox="0 0 32 32" fill="none"><path d="M5 8h13l9 8-9 8H5V8z" stroke-width="2.4" stroke-linejoin="round"/><circle cx="11" cy="16" r="1.8" stroke-width="2"/></svg></span>
+          <span class="nm">Apply the label</span>
+          <span class="tag rule"><span class="d"></span> rule</span>
+        </div>
+        <div class="chunk dim">
+          <span class="ico"><svg viewBox="0 0 32 32" fill="none"><circle cx="14" cy="14" r="8" stroke-width="2.4"/><path d="M20 20l7 7" stroke-width="2.4" stroke-linecap="round"/></svg></span>
+          <span class="nm">Look up in Rolodash</span>
+          <span class="tag rule"><span class="d"></span> rule</span>
+        </div>
+        <div class="chunk dim">
+          <span class="ico"><svg viewBox="0 0 32 32" fill="none"><path d="M20 6l6 6-14 14H6v-6L20 6z" stroke-width="2.4" stroke-linejoin="round"/></svg></span>
+          <span class="nm">Fill the reply template</span>
+          <span class="tag rule"><span class="d"></span> rule</span>
+        </div>
+      </div>
+
+      <div class="lower">
+        <div class="logic">
+          <span class="q">contains <span class="lit">"invoice"</span> ?</span>
+          <span class="verdict"><span class="arr">&rarr;</span> rule, not judgment</span>
+        </div>
+        <div class="logic">
+          <span class="q">4th email today?</span>
+          <span class="verdict"><span class="arr">&rarr;</span> a counter, not a genius</span>
+        </div>
+        <div class="caption">Boring is reliable.<span class="s">hard-code the boring, glow the smart</span></div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

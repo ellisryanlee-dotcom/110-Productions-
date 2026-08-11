@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, initial-scale=1">
+<title>S030 — ROUND 3: the confident hallucinated draft · Crash Test Agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  /* ===== S030 — ROUND 3, break 12. The model doesn't crash; it lies with
+     total confidence. Sift's reply-review view: Dana's order question and a
+     smooth, polished draft that invents a courier + tracking number.
+     NO red, NO error — everything reads calm and trustworthy (that's the trap). ===== */
+  .app { display: grid; grid-template-rows: 96px 60px 1fr 44px; height: 100%; }
+
+  .topbar { display: flex; align-items: center; gap: var(--s5);
+    padding: 0 var(--s7); border-bottom: 1px solid var(--ct-line); background: var(--ct-surface); }
+  .brandchip { display: flex; align-items: center; gap: var(--s3); }
+  .brandchip .glyph { width: 40px; height: 40px; border-radius: 9px; display: grid; place-items: center;
+    background: var(--ct-surface-raised); border: 1px solid var(--ct-line); }
+  .brandchip .name { font-weight: 700; font-size: var(--ct-ui-2xl); letter-spacing: -0.01em; }
+  .topbar .sub { color: var(--ct-text-muted); font-size: var(--ct-ui-lg); }
+  .topbar .spacer { flex: 1; }
+  .status-pill { display: inline-flex; align-items: center; gap: 10px; padding: 9px 18px;
+    border-radius: var(--ct-r-pill); background: var(--ct-accent-wash); color: var(--ct-accent-glow);
+    font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); font-weight: 500;
+    border: 1px solid color-mix(in srgb, var(--ct-accent) 45%, transparent); }
+  .status-pill .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--ct-accent); box-shadow: 0 0 10px var(--ct-accent); }
+
+  /* round marker strip */
+  .roundbar { display: flex; align-items: center; gap: 20px; padding: 0 var(--s7);
+    background: var(--ct-bg); border-bottom: 1px solid var(--ct-line); }
+  .roundbar .tag { font-family: var(--ct-font-mono); font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.14em; font-size: var(--ct-ui-sm); color: var(--ct-text-muted);
+    padding: 6px 16px; border: 1px solid var(--ct-line); border-radius: var(--ct-r-pill); background: var(--ct-surface); }
+  .roundbar .tag b { color: var(--ct-text); }
+  .roundbar .cap { font-family: var(--ct-font-body); color: var(--ct-text-muted); font-size: var(--ct-ui-md); }
+  .roundbar .rule { flex: 1; height: 1px; background: var(--ct-line); }
+
+  .body { padding: var(--s7) var(--s9); display: flex; flex-direction: column; align-items: center; gap: 22px; }
+  .thread { width: 1240px; }
+
+  .msg { background: var(--ct-surface); border: 1px solid var(--ct-line); border-radius: var(--ct-r-lg);
+    box-shadow: var(--ct-shadow-1); overflow: hidden; }
+  .msg .head { display: flex; align-items: center; gap: 16px; padding: 20px 28px;
+    border-bottom: 1px solid var(--ct-line); background: var(--ct-surface); }
+  .msg .avatar { width: 46px; height: 46px; border-radius: 50%; flex: 0 0 46px; display: grid; place-items: center;
+    font-family: var(--ct-font-mono); font-weight: 700; font-size: var(--ct-ui-lg); }
+  .msg .who { display: flex; flex-direction: column; }
+  .msg .who .n { font-weight: 600; font-size: var(--ct-ui-lg); color: var(--ct-text); }
+  .msg .who .e { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); color: var(--ct-text-muted); }
+  .msg .head .spacer { flex: 1; }
+  .msg .head .subject { font-size: var(--ct-ui-md); color: var(--ct-text-muted); }
+  .msg .content { padding: 24px 28px; font-size: var(--ct-ui-lg); line-height: 1.6; color: var(--ct-text); }
+  .msg .content .light { color: var(--ct-text-muted); }
+
+  /* inbound */
+  .msg.inbound .avatar { background: color-mix(in srgb, #8AA6D6 22%, var(--ct-surface-raised)); color: #cdd9ef;
+    border: 1px solid color-mix(in srgb, #8AA6D6 45%, transparent); }
+
+  /* draft — the confident, polished reply. AI/interactive = cyan. Deliberately calm. */
+  .msg.draft { border-color: color-mix(in srgb, var(--ct-accent) 30%, var(--ct-line));
+    box-shadow: 0 0 26px rgba(56,189,248,0.10), var(--ct-shadow-1); }
+  .msg.draft .head { background: linear-gradient(180deg, var(--ct-surface-raised), var(--ct-surface)); }
+  .msg.draft .avatar { background: var(--ct-surface-raised); border: 1px solid color-mix(in srgb, var(--ct-accent) 45%, transparent); }
+  .msg.draft .avatar svg { width: 24px; height: 24px; }
+  .msg.draft .aipill { display: inline-flex; align-items: center; gap: 9px; padding: 7px 15px; border-radius: var(--ct-r-pill);
+    font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--ct-accent-glow); background: var(--ct-accent-wash); border: 1px solid color-mix(in srgb, var(--ct-accent) 45%, transparent); }
+  .msg.draft .aipill .d { width: 8px; height: 8px; border-radius: 50%; background: var(--ct-accent); box-shadow: 0 0 8px var(--ct-accent); }
+
+  .connector { display: flex; flex-direction: column; align-items: center; gap: 6px;
+    font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); color: var(--ct-text-muted);
+    text-transform: uppercase; letter-spacing: 0.12em; }
+  .connector .line { width: 2px; height: 20px; background: var(--ct-line); }
+
+  .actions { display: flex; align-items: center; gap: 16px; padding: 4px 28px 24px; }
+  .btn { display: inline-flex; align-items: center; gap: 10px; padding: 13px 26px; border-radius: var(--ct-r-md);
+    font-family: var(--ct-font-mono); font-weight: 700; font-size: var(--ct-ui-md); }
+  .btn.primary { background: var(--ct-accent); color: #041017; box-shadow: 0 0 22px rgba(56,189,248,0.4); }
+  .btn.ghost { background: transparent; color: var(--ct-text-muted); border: 1px solid var(--ct-line); }
+  .actions .note { margin-left: auto; font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); color: var(--ct-text-muted); }
+
+  .disclaimer { display: flex; align-items: center; justify-content: center; background: var(--ct-surface);
+    border-top: 1px solid var(--ct-line); color: var(--ct-text-muted);
+    font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); letter-spacing: 0.03em; }
+</style>
+</head>
+<body>
+  <div class="stage" role="img"
+       aria-label="Sift reply review, Round 3: a customer asks where order 4471 is, and Sift's draft confidently says it shipped via GreyRoute with a tracking number — no error, everything looks trustworthy">
+    <div class="grid-bg"></div>
+    <!-- Kill-Counter HUD (global overlay) — Round 3 begins, ticks to 12 -->
+    <div class="ct-killcounter" data-state="ticking" aria-label="Kill counter: 12 of 25 breaks">
+      <span class="kc-dot"></span>
+      <span class="kc-label">Breaks</span>
+      <span class="kc-tally"><span class="kc-n">12</span><span class="kc-of">/ 25</span></span>
+    </div>
+
+    <div class="app">
+      <header class="topbar">
+        <div class="brandchip">
+          <span class="glyph">
+            <svg width="26" height="26" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+              <path d="M12 16h40M18 32h28M26 48h12" stroke="var(--ct-accent)" stroke-width="5" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <span class="name">Sift</span>
+        </div>
+        <span class="sub">reply review · Harbor Supply Co.</span>
+        <div class="spacer"></div>
+        <span class="status-pill"><span class="dot"></span> Draft ready · not yet sent</span>
+      </header>
+
+      <div class="roundbar">
+        <span class="tag">ROUND <b>3</b></span>
+        <span class="cap">The lying model — it doesn't crash. It lies, with total confidence.</span>
+        <span class="rule"></span>
+      </div>
+
+      <div class="body">
+        <div class="thread">
+          <!-- inbound customer email -->
+          <article class="msg inbound">
+            <div class="head">
+              <span class="avatar">DO</span>
+              <span class="who"><span class="n">Dana Okafor</span><span class="e">dana.okafor@northsea-catering.example</span></span>
+              <span class="spacer"></span>
+              <span class="subject">Where's order&nbsp;#4471?</span>
+            </div>
+            <div class="content">Hi — I placed order <b>4471</b> last week and haven't had any update. <span class="light">Could you tell me where it is right now? Thanks, Dana</span></div>
+          </article>
+
+          <div class="connector"><span class="line"></span>Sift drafts a reply<span class="line"></span></div>
+
+          <!-- confident hallucinated draft -->
+          <article class="msg draft">
+            <div class="head">
+              <span class="avatar">
+                <svg viewBox="0 0 64 64" fill="none" aria-hidden="true"><path d="M12 16h40M18 32h28M26 48h12" stroke="var(--ct-accent)" stroke-width="6" stroke-linecap="round"/></svg>
+              </span>
+              <span class="who"><span class="n">Draft reply</span><span class="e">to&nbsp;dana.okafor@northsea-catering.example</span></span>
+              <span class="spacer"></span>
+              <span class="aipill"><span class="d"></span> AI draft</span>
+            </div>
+            <div class="content">Hi Dana,<br><br>Good news — your order <b>4471</b> shipped Tuesday via <b>GreyRoute</b>, and your tracking number is <b>GR-88231</b>. It should arrive within a few business days.<br><br><span class="light">Best,<br>Harbor Supply Co. Support</span></div>
+            <div class="actions">
+              <span class="btn primary">Send reply</span>
+              <span class="btn ghost">Edit</span>
+              <span class="note">reads perfectly · nothing looks wrong</span>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <div class="disclaimer">FICTIONAL DEMO · Harbor Supply Co., Sift, order 4471, GreyRoute and GR-88231 are invented for Crash Test Agents</div>
+    </div>
+  </div>
+</body>
+</html>

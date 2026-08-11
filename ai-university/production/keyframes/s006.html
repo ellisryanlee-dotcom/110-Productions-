@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, initial-scale=1">
+<title>S006 — Token / cost meter (illustrative) · Crash Test Agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  /* ===== S006 — CONTEXT token/cost meter (motion-graphic, rested state).
+     Segmented token gauge filling with text-chunk blocks beside a rising
+     dollar figure and a wallet icon. All figures ILLUSTRATIVE — VERIFY strip
+     persists per screenplay ⚠️VERIFY. ===== */
+  .wrap { position: absolute; inset: 0; z-index: 2; display: grid; align-content: center;
+    justify-items: center; gap: var(--s7); }
+
+  .head { width: 1400px; }
+  .head .umb-row { display: flex; align-items: center; gap: 18px; margin-bottom: 16px; }
+  .head .umb-row .rule { flex: 1; height: 1px; background: var(--ct-line); }
+  .head h1 { margin: 0; font-family: var(--ct-font-display); font-stretch: 125%; font-weight: 900;
+    text-transform: uppercase; letter-spacing: 0.02em; font-size: var(--ct-h2); color: var(--ct-text); line-height: 0.98; }
+  .head h1 .em { color: var(--ct-accent); }
+
+  .console { width: 1400px; display: grid; grid-template-columns: 1fr 420px; gap: var(--s6); align-items: stretch; }
+
+  /* token meter card */
+  .meter { background: var(--ct-surface); border: 1px solid var(--ct-line); border-radius: var(--ct-r-lg);
+    padding: var(--s6); box-shadow: var(--ct-shadow-2); }
+  .meter .k { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: var(--s5); }
+  .meter .k .lbl { font-family: var(--ct-font-mono); text-transform: uppercase; letter-spacing: 0.12em;
+    font-size: var(--ct-ui-sm); color: var(--ct-text-muted); }
+  .meter .k .val { font-family: var(--ct-font-mono); font-weight: 700; font-size: var(--ct-ui-2xl); color: var(--ct-accent-glow); }
+  .meter .caption { font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); color: var(--ct-text-muted); margin-top: var(--s5); }
+
+  /* segmented gauge of text-chunk blocks */
+  .gauge { display: grid; grid-template-columns: repeat(20, 1fr); gap: 7px; }
+  .chunk { height: 46px; border-radius: 5px; background: var(--ct-surface-raised); border: 1px solid var(--ct-line);
+    display: grid; place-items: center; overflow: hidden; }
+  .chunk i { font-family: var(--ct-font-mono); font-size: 11px; color: rgba(232,237,244,0.35); font-style: normal; letter-spacing: -0.5px; }
+  .chunk.on { background: color-mix(in srgb, var(--ct-accent) 22%, var(--ct-surface-raised));
+    border-color: color-mix(in srgb, var(--ct-accent) 55%, var(--ct-line)); box-shadow: inset 0 0 10px rgba(56,189,248,0.20); }
+  .chunk.on i { color: var(--ct-accent-glow); }
+
+  /* wallet / cost card */
+  .wallet-card { background: var(--ct-surface); border: 1px solid var(--ct-line); border-radius: var(--ct-r-lg);
+    padding: var(--s6); box-shadow: var(--ct-shadow-2); display: flex; flex-direction: column; gap: var(--s5); }
+  .wallet-ico { align-self: center; width: 108px; height: 108px; display: grid; place-items: center;
+    border-radius: 20px; background: var(--ct-surface-raised); border: 1px solid var(--ct-line); }
+  .wallet-ico svg { width: 68px; height: 68px; }
+  .cost { text-align: center; }
+  .cost .k { font-family: var(--ct-font-mono); text-transform: uppercase; letter-spacing: 0.12em;
+    font-size: var(--ct-ui-sm); color: var(--ct-text-muted); }
+  /* cost figure stays NEUTRAL — amber is reserved for the VERIFY caveat only,
+     never decorative; the money is a plain running number, not a warning state */
+  .cost .v { font-family: var(--ct-font-mono); font-weight: 700; font-size: 92px; line-height: 1; color: var(--ct-text);
+    margin-top: 8px; }
+  .cost .sub { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); color: var(--ct-text-muted); margin-top: 10px; }
+  .outflow { display: flex; align-items: center; justify-content: center; gap: 12px;
+    font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); color: var(--ct-text-muted); }
+  .outflow .arrow { font-size: var(--ct-ui-xl); }
+
+  /* persistent ⚠️VERIFY amber-outline pill (bible §6.1) */
+  .verify { display: inline-flex; align-items: center; gap: 12px; padding: 12px 24px;
+    border-radius: var(--ct-r-pill); border: 1px solid var(--ct-warn); background: transparent;
+    font-family: var(--ct-font-mono); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
+    font-size: var(--ct-ui-sm); color: var(--ct-warn); }
+  .verify svg { width: 22px; height: 22px; }
+</style>
+</head>
+<body>
+  <div class="stage" role="img"
+       aria-label="Token cost meter: a segmented gauge filling with text-chunk blocks beside a rising dollar figure and a wallet icon, with an illustrative-figures verify caveat">
+    <div class="grid-bg"></div>
+    <!-- Kill-Counter HUD (global overlay) — Option A: armed at 00/25 through the hook -->
+    <div class="ct-killcounter" data-state="armed" aria-label="Kill counter: 0 of 25 breaks">
+      <span class="kc-dot"></span>
+      <span class="kc-label">Breaks</span>
+      <span class="kc-tally"><span class="kc-n">00</span><span class="kc-of">/ 25</span></span>
+    </div>
+
+    <div class="wrap">
+      <div class="head">
+        <div class="umb-row"><span class="umbrella">CONTEXT · WHY A BROKEN AGENT COSTS MONEY</span><span class="rule"></span></div>
+        <h1>Every run spends <span class="em">tokens</span> &mdash; and you pay per token.</h1>
+      </div>
+
+      <div class="console">
+        <div class="meter">
+          <div class="k"><span class="lbl">Tokens this run</span><span class="val">18,400 tok</span></div>
+          <div class="gauge" aria-hidden="true">
+            <span class="chunk on"><i>the</i></span><span class="chunk on"><i>cust</i></span><span class="chunk on"><i>omer</i></span>
+            <span class="chunk on"><i>wrote</i></span><span class="chunk on"><i>in</i></span><span class="chunk on"><i>a</i></span>
+            <span class="chunk on"><i>long</i></span><span class="chunk on"><i>mess</i></span><span class="chunk on"><i>age</i></span>
+            <span class="chunk on"><i>that</i></span><span class="chunk on"><i>the</i></span><span class="chunk on"><i>model</i></span>
+            <span class="chunk on"><i>must</i></span><span class="chunk on"><i>read</i></span><span class="chunk on"><i>and</i></span>
+            <span class="chunk on"><i>write</i></span><span class="chunk"><i></i></span><span class="chunk"><i></i></span>
+            <span class="chunk"><i></i></span><span class="chunk"><i></i></span>
+          </div>
+          <div class="caption">each block = a chunk of text the model reads or writes · you pay for every one</div>
+        </div>
+
+        <div class="wallet-card">
+          <span class="wallet-ico">
+            <svg viewBox="0 0 64 64" fill="none" aria-hidden="true">
+              <rect x="8" y="16" width="48" height="34" rx="7" stroke="var(--ct-text)" stroke-width="3"/>
+              <path d="M8 24h48" stroke="var(--ct-text)" stroke-width="3"/>
+              <circle cx="45" cy="37" r="4" fill="var(--ct-text)"/>
+              <path d="M14 16c0-4 3-6 7-6l20 3" stroke="var(--ct-text)" stroke-width="3" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <div class="cost">
+            <div class="k">Cost this run</div>
+            <div class="v">$0.42</div>
+            <div class="sub">illustrative demo value</div>
+          </div>
+          <div class="outflow"><span class="arrow">&darr;</span> real cash out of the wallet</div>
+        </div>
+      </div>
+
+      <span class="verify" role="note" aria-label="Verify: figures are illustrative demo values, not measured">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3l10 18H2L12 3z" stroke="var(--ct-warn)" stroke-width="2" stroke-linejoin="round"/><path d="M12 10v5M12 18h.01" stroke="var(--ct-warn)" stroke-width="2" stroke-linecap="round"/></svg>
+        Verify · figures illustrative, not a measured claim
+      </span>
+    </div>
+
+    <div class="disclaimer" style="position:absolute;left:0;right:0;bottom:0;height:44px;display:flex;align-items:center;justify-content:center;background:var(--ct-surface);border-top:1px solid var(--ct-line);color:var(--ct-text-muted);font-family:var(--ct-font-mono);font-size:var(--ct-ui-xs);letter-spacing:0.03em;">FICTIONAL DEMO · token counts and dollar figures are illustrative, not measured · Harbor Supply Co. &amp; Sift are invented</div>
+  </div>
+</body>
+</html>

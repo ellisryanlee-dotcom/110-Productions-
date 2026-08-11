@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, initial-scale=1">
+<title>S018 — Hard-prompt the miss: three-field correction block · Crash Test Agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  /* ===== S018 — ROUND 1 / Break 5 "example bloat".
+     Inside Sift's system-prompt builder (## Examples section): one structured
+     correction example with three stacked fields — Input (the real fumbled
+     email) / What it did wrong (RED = broke) / Correct action (GREEN = fixed).
+     Off to the right, a redundant "easy" example is crossed out and drifting,
+     tagged with the tokens it wastes. Side note: don't pay tokens for examples
+     it already gets right. Frozen rested state. ===== */
+  .app { display: grid; grid-template-rows: 96px 1fr 44px; height: 100%; }
+
+  /* ---- topbar (shared Sift chrome) ---- */
+  .topbar { display: flex; align-items: center; gap: var(--s5);
+    padding: 0 var(--s7); border-bottom: 1px solid var(--ct-line); background: var(--ct-surface); }
+  .brandchip { display: flex; align-items: center; gap: var(--s3); }
+  .brandchip .glyph { width: 40px; height: 40px; border-radius: 9px; display: grid; place-items: center;
+    background: var(--ct-surface-raised); border: 1px solid var(--ct-line); }
+  .brandchip .name { font-weight: 700; font-size: var(--ct-ui-2xl); letter-spacing: -0.01em; }
+  .topbar .sub { color: var(--ct-text-muted); font-size: var(--ct-ui-lg); }
+  .topbar .spacer { flex: 1; }
+  .round-tag { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.14em; color: var(--ct-break-glow);
+    padding: 8px 16px; border: 1px solid color-mix(in srgb, var(--ct-break) 45%, var(--ct-line));
+    border-radius: var(--ct-r-pill); background: var(--ct-break-wash); }
+
+  /* ---- main split: builder panel (left) + discarded aside (right) ---- */
+  .main { display: grid; grid-template-columns: 1.6fr 1fr; min-height: 0; }
+  .pane { padding: var(--s7); overflow: hidden; position: relative; display: flex; flex-direction: column; }
+  .pane.left { border-right: 1px solid var(--ct-line); background: var(--ct-bg); }
+  .pane.right { background: var(--ct-bg);
+    background-image: radial-gradient(120% 90% at 90% 0%, var(--ct-surface) 0%, var(--ct-bg) 62%); }
+
+  .pane-title { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs);
+    text-transform: uppercase; letter-spacing: 0.12em; color: var(--ct-text-muted);
+    font-weight: 500; margin: 0 0 var(--s5); display: flex; align-items: center; gap: 12px; }
+  .pane-title .dotmark { width: 9px; height: 9px; border-radius: 50%; }
+
+  /* ---- LEFT: prompt-builder editor card with the ## Examples section ---- */
+  .panel { background: var(--ct-surface); border: 1px solid var(--ct-line); border-radius: var(--ct-r-lg);
+    box-shadow: var(--ct-shadow-2); overflow: hidden; flex: 1; display: flex; flex-direction: column; }
+  .panel .abar { display: flex; align-items: center; gap: 12px; padding: 16px 26px;
+    background: var(--ct-surface-raised); border-bottom: 1px solid var(--ct-line); }
+  .panel .abar .g { width: 30px; height: 30px; border-radius: 7px; display: grid; place-items: center;
+    background: var(--ct-bg); border: 1px solid var(--ct-line); }
+  .panel .abar .g svg { width: 18px; height: 18px; }
+  .panel .abar .t { font-family: var(--ct-font-mono); font-size: var(--ct-ui-md); color: var(--ct-text); }
+  .panel .abar .t .path { color: var(--ct-text-muted); }
+  .panel .abar .sec { margin-left: auto; font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs);
+    text-transform: uppercase; letter-spacing: 0.1em; color: var(--ct-accent); }
+
+  .body { padding: 26px 30px 8px; display: flex; flex-direction: column; min-height: 0; }
+  .sec-head { font-family: var(--ct-font-mono); font-size: var(--ct-ui-2xl); font-weight: 700;
+    color: var(--ct-accent); margin: 0; }
+  .comment { font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); color: var(--ct-text-muted);
+    margin: 8px 0 22px; }
+
+  /* the three-field correction block */
+  .corr { display: flex; flex-direction: column; gap: 16px; }
+  .field { border: 1px solid var(--ct-line); border-radius: var(--ct-r-md); overflow: hidden;
+    background: var(--ct-bg); }
+  .field .fhead { display: flex; align-items: center; gap: 12px; padding: 12px 20px;
+    background: var(--ct-surface-raised); border-bottom: 1px solid var(--ct-line);
+    font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.08em; }
+  .field .fhead .n { margin-left: auto; font-weight: 500; letter-spacing: 0.04em;
+    text-transform: none; color: var(--ct-text-muted); font-size: var(--ct-ui-xs); }
+  .field .fbody { padding: 16px 20px; font-family: var(--ct-font-body); font-size: var(--ct-ui-md);
+    line-height: 1.5; color: var(--ct-text); }
+  .field .line { display: flex; align-items: flex-start; gap: 12px; margin: 0 0 8px; }
+  .field .line:last-child { margin-bottom: 0; }
+  .field .line .mk { flex: 0 0 22px; width: 22px; height: 22px; border-radius: 50%; display: grid;
+    place-items: center; font-family: var(--ct-font-mono); font-weight: 800; font-size: 14px; margin-top: 2px; }
+  .field .line .mono, .field .fbody .mono { font-family: var(--ct-font-mono); }
+
+  /* INPUT — neutral, the real fumbled email */
+  .field--input .fhead { color: var(--ct-text); }
+  .field--input .fhead .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--ct-text-muted); }
+  .mailmini { display: flex; flex-direction: column; gap: 4px; }
+  .mailmini .mrow { display: flex; align-items: baseline; gap: 12px; font-family: var(--ct-font-mono);
+    font-size: var(--ct-ui-sm); color: var(--ct-text-muted); }
+  .mailmini .mrow b { color: var(--ct-text); font-weight: 600; }
+  .mailmini .msubj { font-weight: 600; font-size: var(--ct-ui-md); color: var(--ct-text); margin: 4px 0 6px; }
+  .mailmini .mtext { font-size: var(--ct-ui-md); color: color-mix(in srgb, var(--ct-text) 90%, transparent);
+    line-height: 1.5; }
+  .mailmini .mtext .hl { color: var(--ct-break-glow); font-weight: 600; }
+
+  /* WHAT IT DID WRONG — red = broke */
+  .field--wrong { border-color: color-mix(in srgb, var(--ct-break) 45%, var(--ct-line));
+    background: linear-gradient(180deg, var(--ct-bg), var(--ct-break-wash)); }
+  .field--wrong .fhead { color: var(--ct-break-glow); background: var(--ct-break-wash);
+    border-bottom-color: color-mix(in srgb, var(--ct-break) 40%, var(--ct-line)); }
+  .field--wrong .fhead .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--ct-break);
+    box-shadow: 0 0 10px var(--ct-break); }
+  .field--wrong .mk { background: var(--ct-break-deep); color: var(--ct-text); }
+  .field--wrong .fbody { color: color-mix(in srgb, var(--ct-text) 94%, var(--ct-break)); }
+
+  /* CORRECT ACTION — green = fixed */
+  .field--right { border-color: color-mix(in srgb, var(--ct-fixed) 45%, var(--ct-line));
+    background: linear-gradient(180deg, var(--ct-bg), var(--ct-fixed-wash)); }
+  .field--right .fhead { color: var(--ct-fixed-glow); background: var(--ct-fixed-wash);
+    border-bottom-color: color-mix(in srgb, var(--ct-fixed) 40%, var(--ct-line)); }
+  .field--right .fhead .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--ct-fixed);
+    box-shadow: 0 0 10px var(--ct-fixed); }
+  .field--right .mk { background: var(--ct-fixed-deep); color: var(--ct-text); }
+
+  /* ---- RIGHT: the discarded redundant example, crossed out + drifting ---- */
+  .aside-lead { font-family: var(--ct-font-body); font-size: var(--ct-caption); font-weight: 700;
+    line-height: 1.12; color: var(--ct-text); margin: 0 0 6px; max-width: 560px; }
+  .aside-sub { font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); color: var(--ct-text-muted);
+    margin: 0 0 var(--s7); }
+
+  .discard-wrap { position: relative; margin-top: var(--s5); align-self: flex-start; width: 100%; }
+  .discard { position: relative; background: var(--ct-surface); border: 1px dashed var(--ct-line);
+    border-radius: var(--ct-r-md); padding: 22px 24px; transform: rotate(-2.4deg) translateX(18px);
+    opacity: 0.5; filter: saturate(0.5); box-shadow: var(--ct-shadow-1); }
+  .discard .dtag { display: inline-flex; align-items: center; gap: 9px; font-family: var(--ct-font-mono);
+    font-size: var(--ct-ui-xs); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--ct-text-muted); padding: 6px 13px; border-radius: var(--ct-r-pill);
+    border: 1px solid var(--ct-line); background: var(--ct-surface-raised); }
+  .discard .dtag .d { width: 7px; height: 7px; border-radius: 50%; background: var(--ct-text-muted); }
+  .discard .ex { font-family: var(--ct-font-mono); font-size: var(--ct-ui-md); color: var(--ct-text);
+    margin: 16px 0 0; line-height: 1.5; position: relative; display: inline-block; }
+  .discard .ex .lit { color: var(--ct-accent-glow); }
+  .discard .ex::after { content: ""; position: absolute; left: -4px; right: -4px; top: 52%; height: 2px;
+    background: var(--ct-break); box-shadow: 0 0 8px var(--ct-break); transform: rotate(-1.5deg); }
+  .discard .verdict { font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); color: var(--ct-text-muted);
+    margin: 12px 0 0; }
+
+  /* token-cost tag pinned to the discarded card — the tokens it wastes */
+  .costtag { position: absolute; right: 6px; bottom: -26px; display: inline-flex; align-items: center;
+    gap: 12px; padding: 12px 18px; border-radius: var(--ct-r-md); background: var(--ct-surface-raised);
+    border: 1px solid color-mix(in srgb, var(--ct-break) 40%, var(--ct-line)); box-shadow: var(--ct-shadow-2);
+    transform: rotate(-2deg); }
+  .costtag .coin { width: 34px; height: 34px; flex: 0 0 34px; border-radius: 50%; display: grid;
+    place-items: center; background: var(--ct-break-wash);
+    border: 1px solid color-mix(in srgb, var(--ct-break) 45%, transparent); }
+  .costtag .coin span { font-family: var(--ct-font-mono); font-weight: 800; color: var(--ct-break-glow); font-size: 17px; }
+  .costtag .txt { display: flex; flex-direction: column; line-height: 1.15; }
+  .costtag .txt .big { font-family: var(--ct-font-mono); font-weight: 700; font-size: var(--ct-ui-lg);
+    color: var(--ct-break-glow); }
+  .costtag .txt .cap { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); color: var(--ct-text-muted);
+    text-transform: uppercase; letter-spacing: 0.08em; }
+
+  .illus { margin-top: 72px; font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs);
+    color: var(--ct-text-muted); letter-spacing: 0.04em; opacity: 0.8; }
+
+  .arrow-note { margin-top: auto; padding-top: var(--s6); display: flex; align-items: center; gap: 14px;
+    font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); color: var(--ct-text-muted); }
+  .arrow-note .drift { color: var(--ct-break-glow); font-weight: 700; }
+
+  /* ---- bottom disclaimer ---- */
+  .disclaimer { display: flex; align-items: center; justify-content: center;
+    background: var(--ct-surface); border-top: 1px solid var(--ct-line);
+    color: var(--ct-text-muted); font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); letter-spacing: 0.03em; }
+
+  /* ambient: a barely-there drift on the discarded card (frame reads fine frozen) */
+  @keyframes driftaway { 0%,100% { transform: rotate(-2.4deg) translateX(18px); }
+    50% { transform: rotate(-2.4deg) translateX(26px); } }
+  .discard { animation: driftaway 6s ease-in-out infinite; }
+</style>
+</head>
+<body>
+  <div class="stage" role="img"
+       aria-label="Sift's system-prompt builder, Examples section. One structured correction example with three stacked fields: Input holds a real fumbled refund email from Marlo Duarte; What it did wrong, in red, shows Sift tagged it shipping and promised the order was on its way; Correct action, in green, shows tag billing, look up Rolodash first, cite the refund and hand to a human. To the right a redundant easy example is crossed out and drifting away with a token-cost tag. Side note: don't pay tokens for examples it already gets right. Round one, break five of twenty-five.">
+    <div class="grid-bg"></div>
+
+    <div class="app">
+      <header class="topbar">
+        <div class="brandchip">
+          <span class="glyph">
+            <svg width="26" height="26" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+              <path d="M12 16h40M18 32h28M26 48h12" stroke="var(--ct-accent)" stroke-width="5" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <span class="name">Sift</span>
+        </div>
+        <span class="sub">system-prompt builder &middot; Harbor Supply Co.</span>
+        <div class="spacer"></div>
+        <span class="round-tag">Round 1 &middot; Break 5 &middot; example bloat</span>
+      </header>
+
+      <div class="main">
+        <!-- LEFT — the ## Examples section with the three-field correction block -->
+        <section class="pane left">
+          <p class="pane-title"><span class="dotmark" style="background:var(--ct-accent)"></span>system-prompt.md &middot; hard-prompt the miss</p>
+          <div class="panel">
+            <div class="abar">
+              <span class="g"><svg viewBox="0 0 24 24" fill="none"><path d="M7 4h7l4 4v12H7z" stroke="var(--ct-text-muted)" stroke-width="2" stroke-linejoin="round"/><path d="M14 4v4h4" stroke="var(--ct-text-muted)" stroke-width="2" stroke-linejoin="round"/></svg></span>
+              <span class="t"><span class="path">sift/</span>system-prompt.md</span>
+              <span class="sec">## Examples</span>
+            </div>
+
+            <div class="body">
+              <h2 class="sec-head">## Examples</h2>
+              <p class="comment"># add one only when Sift gets a real email wrong &mdash; show it the miss</p>
+
+              <div class="corr">
+                <!-- FIELD 1 — Input (the real fumbled email) -->
+                <div class="field field--input">
+                  <div class="fhead"><span class="dot"></span>Input<span class="n">the real email it fumbled</span></div>
+                  <div class="fbody">
+                    <div class="mailmini">
+                      <div class="mrow"><span>from</span> <b>Marlo Duarte</b> <span>&lt;marlo.duarte@tidewater-charters.example&gt;</span></div>
+                      <div class="msubj">still waiting on my refund &mdash; order #5127</div>
+                      <div class="mtext">Three weeks ago you told me the <span class="hl">refund</span> for the busted pressure gauge was &ldquo;processed.&rdquo; I still don&rsquo;t see it on my card. This is the second time I&rsquo;m writing.</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- FIELD 2 — What it did wrong (RED = broke) -->
+                <div class="field field--wrong">
+                  <div class="fhead"><span class="dot"></span>What it did wrong</div>
+                  <div class="fbody">
+                    <div class="line"><span class="mk">&times;</span><span>Tagged it <span class="mono">Shipping</span> and drafted &ldquo;Good news &mdash; your order is on its way!&rdquo;</span></div>
+                    <div class="line"><span class="mk">&times;</span><span>Ignored the word <span class="mono">&ldquo;refund&rdquo;</span>; never called <span class="mono">rolodash.lookup()</span> or read the record.</span></div>
+                  </div>
+                </div>
+
+                <!-- FIELD 3 — Correct action (GREEN = fixed) -->
+                <div class="field field--right">
+                  <div class="fhead"><span class="dot"></span>Correct action</div>
+                  <div class="fbody">
+                    <div class="line"><span class="mk">&check;</span><span>Tag <span class="mono">Billing</span> (rule: the email says &ldquo;refund&rdquo;).</span></div>
+                    <div class="line"><span class="mk">&check;</span><span>Call <span class="mono">rolodash.lookup(marlo.duarte)</span> <b>before</b> drafting; cite the refund status from the record.</span></div>
+                    <div class="line"><span class="mk">&check;</span><span>Don&rsquo;t promise a status you can&rsquo;t cite &mdash; hand it to a human.</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- RIGHT — the discarded redundant example + token-cost tag -->
+        <section class="pane right">
+          <p class="pane-title"><span class="dotmark" style="background:var(--ct-text-muted)"></span>trimmed from the prompt</p>
+
+          <h3 class="aside-lead">Don&rsquo;t pay tokens for examples it already gets right.</h3>
+          <p class="aside-sub"># every example rides along on every single run</p>
+
+          <div class="discard-wrap">
+            <div class="discard">
+              <span class="dtag"><span class="d"></span>redundant &middot; already handled</span>
+              <p class="ex">Input: <span class="lit">&ldquo;where&rsquo;s order #4471?&rdquo;</span> &rarr; look up, then answer.</p>
+              <p class="verdict">Sift already nails this one &mdash; the base rules cover it.</p>
+              <div class="costtag">
+                <span class="coin"><span>&fnof;</span></span>
+                <span class="txt"><span class="big">&asymp; 340 tok / run</span><span class="cap">wasted &middot; pure token bloat</span></span>
+              </div>
+            </div>
+          </div>
+
+          <p class="illus">token figure illustrative &mdash; fabricated demo value</p>
+
+          <div class="arrow-note"><span class="drift">&rarr; drifting out</span> of the prompt &mdash; fewer tokens, sharper agent.</div>
+        </section>
+      </div>
+
+      <div class="disclaimer">FICTIONAL DEMO &middot; Harbor Supply Co., Sift, Rolodash, Marlo Duarte &amp; order #5127 are invented for Crash Test Agents</div>
+    </div>
+
+    <!-- Kill-Counter HUD (global overlay) — Round 1 ticking, break 05 / 25 (example bloat) -->
+    <div class="ct-killcounter" data-state="ticking" aria-label="Kill counter: 5 of 25 breaks">
+      <span class="kc-dot"></span>
+      <span class="kc-label">Breaks</span>
+      <span class="kc-tally"><span class="kc-n">05</span><span class="kc-of">/ 25</span></span>
+    </div>
+  </div>
+</body>
+</html>

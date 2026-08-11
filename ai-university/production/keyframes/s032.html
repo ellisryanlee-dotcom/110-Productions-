@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, initial-scale=1">
+<title>S032 — Mindset slate: failure = data · Crash Test Agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  /* ===== S032 — TITLE-CARD, break 14. Mindset slate "failure = data",
+     built on the reusable round-slate template (see s012). A red error glyph
+     morphs into a clean data row: red = the failure, cyan = the useful signal
+     it becomes. Rested = the fully-resolved slate. ===== */
+  .scrim { position: absolute; inset: 0; z-index: 1;
+    background: radial-gradient(120% 90% at 50% 48%, rgba(11,14,20,0.72) 0%, rgba(11,14,20,0.93) 60%, rgba(5,7,12,0.98) 100%); }
+
+  .slate { position: absolute; inset: 0; z-index: 2; display: grid; place-items: center; }
+  .slate-inner { text-align: center; width: 1280px; }
+  .kicker { font-family: var(--ct-font-mono); text-transform: uppercase; letter-spacing: 0.16em;
+    font-size: var(--ct-lower); color: var(--ct-text-muted); }
+
+  /* the morph row: error glyph → arrow → clean data row */
+  .morph { display: flex; align-items: center; justify-content: center; gap: 44px; margin: 46px 0 50px; }
+  .glyph-box { width: 150px; height: 150px; border-radius: var(--ct-r-lg); display: grid; place-items: center; }
+  .glyph-box.err { background: var(--ct-break-wash); border: 2px solid var(--ct-break);
+    box-shadow: 0 0 40px rgba(255,59,48,0.30); }
+  .glyph-box.err svg { width: 84px; height: 84px; }
+
+  .arrow { display: flex; flex-direction: column; align-items: center; gap: 8px;
+    font-family: var(--ct-font-mono); text-transform: uppercase; letter-spacing: 0.14em;
+    font-size: var(--ct-ui-xs); color: var(--ct-text-muted); }
+  .arrow .big { font-size: 64px; line-height: 1; color: var(--ct-text-muted); }
+
+  /* clean data row — the useful signal (accent cyan) */
+  .datarow { display: grid; grid-template-columns: 44px 1fr auto; align-items: center; gap: 20px;
+    width: 560px; padding: 24px 28px; border-radius: var(--ct-r-md);
+    background: var(--ct-surface); border: 1px solid color-mix(in srgb, var(--ct-accent) 45%, var(--ct-line));
+    box-shadow: 0 0 34px rgba(56,189,248,0.20), var(--ct-shadow-2); text-align: left; }
+  .datarow .dot { width: 22px; height: 22px; border-radius: 50%; background: var(--ct-accent);
+    box-shadow: 0 0 16px var(--ct-accent); }
+  .datarow .cell .k { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--ct-text-muted); }
+  .datarow .cell .v { font-family: var(--ct-font-mono); font-size: var(--ct-ui-lg); font-weight: 600; color: var(--ct-text); margin-top: 3px; }
+  .datarow .tag { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--ct-accent-glow); padding: 6px 13px; border-radius: var(--ct-r-pill);
+    background: var(--ct-accent-wash); border: 1px solid color-mix(in srgb, var(--ct-accent) 45%, transparent); }
+
+  /* the equation */
+  .eq { font-family: var(--ct-font-display); font-stretch: 125%; font-weight: 900; text-transform: lowercase;
+    letter-spacing: 0.01em; line-height: 0.92; font-size: 176px; }
+  .eq .fail { color: var(--ct-break-glow); text-shadow: 0 0 40px rgba(255,59,48,0.30); }
+  .eq .op { color: var(--ct-text-muted); margin: 0 26px; }
+  .eq .data { color: var(--ct-text); }
+  .sub { margin-top: 34px; font-family: var(--ct-font-body); font-weight: 500; font-size: var(--ct-h3); color: var(--ct-text-muted); }
+  .rulebar { width: 640px; height: 1px; background: var(--ct-line); margin: 46px auto 0; }
+</style>
+</head>
+<body>
+  <div class="stage" role="img"
+       aria-label="Mindset title card: a red error glyph morphing into a clean cyan data row, above the words failure equals data. The fix is not to yell at the model, it is a mindset: every failure is data">
+    <div class="grid-bg"></div>
+    <!-- Kill-Counter HUD (global overlay) — ticks to 14 -->
+    <div class="ct-killcounter" data-state="ticking" aria-label="Kill counter: 14 of 25 breaks">
+      <span class="kc-dot"></span>
+      <span class="kc-label">Breaks</span>
+      <span class="kc-tally"><span class="kc-n">14</span><span class="kc-of">/ 25</span></span>
+    </div>
+
+    <div class="scrim"></div>
+
+    <div class="slate">
+      <div class="slate-inner">
+        <div class="kicker">the fix isn't to yell at the model — it's a mindset</div>
+
+        <div class="morph" aria-hidden="true">
+          <span class="glyph-box err">
+            <svg viewBox="0 0 64 64" fill="none"><path d="M32 8L60 56H4L32 8z" stroke="var(--ct-break)" stroke-width="4" stroke-linejoin="round"/><path d="M32 26v14M32 47h.02" stroke="var(--ct-break-glow)" stroke-width="5" stroke-linecap="round"/></svg>
+          </span>
+          <span class="arrow"><span class="big">&rarr;</span>reframe</span>
+          <span class="datarow">
+            <span class="dot"></span>
+            <span class="cell"><span class="k">signal logged</span><span class="v">uncited status → new rule</span></span>
+            <span class="tag">data</span>
+          </span>
+        </div>
+
+        <div class="eq"><span class="fail">failure</span><span class="op">=</span><span class="data">data</span></div>
+        <div class="sub">Every break is a data point that makes the next agent stronger.</div>
+        <div class="rulebar" aria-hidden="true"></div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

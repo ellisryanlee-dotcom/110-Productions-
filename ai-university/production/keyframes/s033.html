@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, initial-scale=1">
+<title>S033 — Fix once, remember forever · Crash Test Agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  /* ===== S033 — ROUND 3, break 15 (round close). Four-beat repair sequence:
+     (1) diagnosis, (2) patched rule + forced step, (3) safe retest on the same
+     email, (4) the lesson written into a persistent memory file. Red only on
+     the diagnosis beat (naming the failure); cyan on the rule-patch mechanism;
+     green/fixed on the beats that are now safe + persisted. ===== */
+  .wrap { position: absolute; inset: 0; z-index: 2; display: grid;
+    grid-template-rows: auto 1fr auto; padding: 52px 76px 0; }
+  .body { min-height: 0; }
+
+  .head .umb-row { display: flex; align-items: center; gap: 18px; margin-bottom: 16px; }
+  .head .umb-row .rule { flex: 1; height: 1px; background: var(--ct-line); }
+  .head h1 { margin: 0; font-family: var(--ct-font-display); font-stretch: 125%; font-weight: 900;
+    text-transform: uppercase; letter-spacing: 0.01em; font-size: 68px; color: var(--ct-text); line-height: 1.02; }
+  .head .dek { margin: 14px 0 0; font-family: var(--ct-font-body); font-size: var(--ct-ui-xl);
+    color: var(--ct-text-muted); max-width: 1240px; }
+  .head .dek b { color: var(--ct-text); font-weight: 600; }
+
+  .beats { display: flex; align-items: stretch; gap: 22px; margin-top: 40px; }
+  .beat { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+  .chev { flex: 0 0 30px; display: flex; align-items: center; justify-content: center;
+    color: var(--ct-text-muted); font-size: 30px; font-family: var(--ct-font-display); }
+
+  .card { background: var(--ct-surface); border: 1px solid var(--ct-line); border-radius: var(--ct-r-lg);
+    box-shadow: var(--ct-shadow-2); overflow: hidden; display: flex; flex-direction: column; height: 100%; }
+  .card .bar { display: flex; align-items: center; gap: 12px; padding: 16px 20px;
+    border-bottom: 1px solid var(--ct-line); background: var(--ct-surface-raised); }
+  .card .bar .num { font-family: var(--ct-font-mono); font-weight: 800; font-size: var(--ct-ui-sm);
+    color: var(--ct-text-muted); }
+  .card .bar .t { font-family: var(--ct-font-mono); font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.09em; font-size: var(--ct-ui-xs); color: var(--ct-text); }
+  .card .content { padding: 22px 20px; flex: 1; display: flex; flex-direction: column; gap: 14px; }
+
+  /* beat 1 — diagnosis (names the failure = red, sparingly) */
+  .card.diag { border-color: color-mix(in srgb, var(--ct-break) 28%, var(--ct-line)); }
+  .diag .ico { width: 44px; height: 44px; border-radius: var(--ct-r-md); display: grid; place-items: center;
+    background: var(--ct-break-wash); border: 1px solid color-mix(in srgb, var(--ct-break) 45%, transparent); }
+  .diag .ico svg { width: 24px; height: 24px; }
+  .diag .note { font-family: var(--ct-font-body); font-size: var(--ct-ui-lg); line-height: 1.5; color: var(--ct-text); }
+  .diag .note b { color: var(--ct-break-glow); }
+
+  /* beat 2 — patched rule (the fix mechanism = cyan/interactive) */
+  .card.patch { border-color: color-mix(in srgb, var(--ct-accent) 30%, var(--ct-line)); }
+  .patch .rule-code { font-family: var(--ct-font-mono); font-size: var(--ct-ui-md); line-height: 1.55;
+    color: var(--ct-accent-glow); background: var(--ct-accent-wash);
+    border: 1px solid color-mix(in srgb, var(--ct-accent) 40%, transparent); border-radius: var(--ct-r-md);
+    padding: 16px 18px; }
+  .patch .forced { display: flex; align-items: center; gap: 10px; font-family: var(--ct-font-mono);
+    font-size: var(--ct-ui-sm); color: var(--ct-text-muted); }
+  .patch .forced .tag { font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
+    font-size: var(--ct-ui-xs); color: var(--ct-accent-glow); border: 1px solid color-mix(in srgb, var(--ct-accent) 45%, transparent);
+    background: var(--ct-accent-wash); border-radius: var(--ct-r-pill); padding: 5px 12px; }
+
+  /* beat 3 — retest (now safe = fixed/green) */
+  .card.retest { border-color: color-mix(in srgb, var(--ct-fixed) 32%, var(--ct-line)); }
+  .retest .bubble { background: var(--ct-surface-raised); border: 1px solid var(--ct-line);
+    border-radius: var(--ct-r-md); padding: 16px 18px; }
+  .retest .bubble .who { display: flex; align-items: center; gap: 8px; font-family: var(--ct-font-mono);
+    font-size: var(--ct-ui-xs); text-transform: uppercase; letter-spacing: 0.08em; color: var(--ct-text-muted); margin-bottom: 8px; }
+  .retest .bubble .who .d { width: 8px; height: 8px; border-radius: 50%; background: var(--ct-accent); box-shadow: 0 0 8px var(--ct-accent); }
+  .retest .bubble .txt { font-family: var(--ct-font-body); font-size: var(--ct-ui-lg); color: var(--ct-text); }
+  .retest .verify { display: flex; align-items: center; gap: 10px; font-family: var(--ct-font-mono);
+    font-size: var(--ct-ui-sm); color: var(--ct-fixed-glow); }
+  .retest .verify .chk { width: 22px; height: 22px; border-radius: 50%; flex: 0 0 22px; display: grid; place-items: center;
+    background: var(--ct-fixed-wash); border: 1px solid color-mix(in srgb, var(--ct-fixed) 50%, transparent); }
+  .retest .verify .chk svg { width: 13px; height: 13px; }
+
+  /* beat 4 — memory file (persisted = fixed/green) */
+  .card.memory { border-color: color-mix(in srgb, var(--ct-fixed) 32%, var(--ct-line)); }
+  .filecard { background: var(--ct-surface-raised); border: 1px solid var(--ct-line); border-radius: var(--ct-r-md);
+    overflow: hidden; }
+  .filecard .fhead { display: flex; align-items: center; gap: 10px; padding: 11px 16px;
+    border-bottom: 1px solid var(--ct-line); font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs);
+    color: var(--ct-text-muted); }
+  .filecard .fhead svg { width: 15px; height: 15px; flex: 0 0 15px; }
+  .filecard .flines { padding: 12px 16px; display: flex; flex-direction: column; gap: 8px; }
+  .filecard .fl { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); line-height: 1.5; color: var(--ct-fixed-glow); }
+  .filecard .fl .plus { color: var(--ct-fixed); font-weight: 700; margin-right: 6px; }
+  .memory .saved { display: flex; align-items: center; gap: 10px; font-family: var(--ct-font-mono);
+    font-size: var(--ct-ui-sm); color: var(--ct-fixed-glow); }
+  .memory .saved .chk { width: 22px; height: 22px; border-radius: 50%; flex: 0 0 22px; display: grid; place-items: center;
+    background: var(--ct-fixed-wash); border: 1px solid color-mix(in srgb, var(--ct-fixed) 50%, transparent); }
+  .memory .saved .chk svg { width: 13px; height: 13px; }
+  .memory .persist { margin-top: auto; font-family: var(--ct-font-body); font-size: var(--ct-ui-sm); color: var(--ct-text-muted); }
+
+  .footer-cap { margin-top: 34px; text-align: center; font-family: var(--ct-font-display); font-stretch: 125%;
+    font-weight: 800; font-size: var(--ct-ui-2xl); color: var(--ct-fixed-glow); letter-spacing: 0.01em; }
+
+  .disclaimer { grid-row: 3; margin: 30px -76px 0; height: 44px; display: flex; align-items: center; justify-content: center;
+    background: var(--ct-surface); border-top: 1px solid var(--ct-line); color: var(--ct-text-muted);
+    font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); letter-spacing: 0.03em; }
+</style>
+</head>
+<body>
+  <div class="stage" role="img"
+       aria-label="Four-beat repair sequence closing Round 3: diagnosis that Sift drafted details it never looked up, a patched rule forbidding uncited shipping status with a forced fetch-order-data-first step, a safe retest draft saying I'm checking on 4471 now, and a memory file showing the lesson saved and persisting across runs — caption: fix once, remember forever">
+    <div class="grid-bg"></div>
+    <!-- Kill-Counter HUD (global overlay) — Round 3 closes, ticks to 15 -->
+    <div class="ct-killcounter" data-state="ticking" aria-label="Kill counter: 15 of 25 breaks">
+      <span class="kc-dot"></span>
+      <span class="kc-label">Breaks</span>
+      <span class="kc-tally"><span class="kc-n">15</span><span class="kc-of">/ 25</span></span>
+    </div>
+
+    <div class="wrap">
+      <div class="head">
+        <div class="umb-row"><span class="umbrella">ROUND 3 · THE LYING MODEL</span><span class="rule"></span></div>
+        <h1>Fix once, remember forever.</h1>
+        <p class="dek">We diagnose it, patch the underlying rule, <b>retest on the same email</b>, then write the lesson into the workflow's own memory — so it survives the next run, not just this session.</p>
+      </div>
+
+      <div class="body">
+      <div class="beats">
+        <div class="beat">
+          <div class="card diag">
+            <div class="bar"><span class="num">01</span><span class="t">Diagnosis</span></div>
+            <div class="content">
+              <span class="ico">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3L22 20H2L12 3z" stroke="var(--ct-break)" stroke-width="2" stroke-linejoin="round"/><path d="M12 9.5v5M12 17.2h.01" stroke="var(--ct-break-glow)" stroke-width="2.2" stroke-linecap="round"/></svg>
+              </span>
+              <p class="note">Sift <b>drafted shipping details it never looked up</b> — no fetch, no citation, just a fluent guess.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="chev" aria-hidden="true">&rarr;</div>
+
+        <div class="beat">
+          <div class="card patch">
+            <div class="bar"><span class="num">02</span><span class="t">Patched rule</span></div>
+            <div class="content">
+              <div class="rule-code">&ldquo;never state a shipping status without a verified record&rdquo;</div>
+              <div class="forced"><span class="tag">forced step</span> fetch order data first</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="chev" aria-hidden="true">&rarr;</div>
+
+        <div class="beat">
+          <div class="card retest">
+            <div class="bar"><span class="num">03</span><span class="t">Retest — same email</span></div>
+            <div class="content">
+              <div class="bubble">
+                <div class="who"><span class="d"></span>Sift — draft reply</div>
+                <div class="txt">&ldquo;I'm checking on 4471 now.&rdquo;</div>
+              </div>
+              <div class="verify">
+                <span class="chk"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12l6 6L20 6" stroke="var(--ct-fixed-glow)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                no unverified claims
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="chev" aria-hidden="true">&rarr;</div>
+
+        <div class="beat">
+          <div class="card memory">
+            <div class="bar"><span class="num">04</span><span class="t">Memory file</span></div>
+            <div class="content">
+              <div class="filecard">
+                <div class="fhead">
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 3h9l5 5v13H6V3z" stroke="var(--ct-text-muted)" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 3v5h5" stroke="var(--ct-text-muted)" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                  sift.memory.md
+                </div>
+                <div class="flines">
+                  <div class="fl"><span class="plus">+</span>never state a shipping status without a verified record</div>
+                  <div class="fl"><span class="plus">+</span>fetch order data first</div>
+                </div>
+              </div>
+              <div class="saved">
+                <span class="chk"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12l6 6L20 6" stroke="var(--ct-fixed-glow)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                lesson saved
+              </div>
+              <p class="persist">persists across runs — not just this session</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-cap">Fix once, remember forever.</div>
+      </div>
+
+      <div class="disclaimer">FICTIONAL DEMO · Harbor Supply Co., Sift, order 4471 and all rules/memory contents are invented for Crash Test Agents</div>
+    </div>
+  </div>
+</body>
+</html>

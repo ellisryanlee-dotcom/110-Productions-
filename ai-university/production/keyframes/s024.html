@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, initial-scale=1">
+<title>S024 — Green ≠ proof it worked · Crash Test Agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  /* ===== S024 — screen-sim run summary (ROUND 2, break 8). A reassuring green
+     "success" run at the top, but a magnifier pushes into one nested step
+     (Rolodash lookup) to expose that it silently returned nothing — the
+     swallowed error under the green. Caption: "Green ≠ proof it worked". ===== */
+  .app { display: grid; grid-template-rows: 96px 1fr 44px; height: 100%; }
+
+  .topbar { display: flex; align-items: center; gap: var(--s5);
+    padding: 0 var(--s7); border-bottom: 1px solid var(--ct-line); background: var(--ct-surface); }
+  .runchip { display: flex; align-items: center; gap: var(--s3); }
+  .runchip .glyph { width: 40px; height: 40px; border-radius: 8px; display: grid; place-items: center;
+    background: var(--ct-bg); border: 1px solid var(--ct-line); }
+  .runchip .nm { font-weight: 700; font-size: var(--ct-ui-xl); letter-spacing: -0.01em; }
+  .runchip .ad { font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); color: var(--ct-text-muted); }
+  .topbar .spacer { flex: 1; }
+  .run-verdict { display: inline-flex; align-items: center; gap: 14px;
+    background: var(--ct-fixed-deep); border: 1px solid var(--ct-fixed); border-radius: var(--ct-r-pill);
+    padding: 12px 26px; box-shadow: 0 0 26px rgba(43,213,118,0.32); }
+  .run-verdict .chk { font-family: var(--ct-font-mono); font-weight: 700; color: var(--ct-fixed-glow); font-size: var(--ct-ui-2xl); line-height: 1; }
+  .run-verdict .lb { font-family: var(--ct-font-mono); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
+    font-size: var(--ct-ui-lg); color: var(--ct-text); }
+
+  .body-cols { display: grid; grid-template-columns: 1.02fr 0.98fr; min-height: 0; }
+  .col { padding: var(--s7) var(--s7) var(--s6); overflow: hidden; }
+  .col.steps { border-right: 1px solid var(--ct-line); background: var(--ct-bg); position: relative; }
+
+  .col-title { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); text-transform: uppercase;
+    letter-spacing: 0.12em; color: var(--ct-text-muted); font-weight: 500; margin: 0 0 var(--s5); }
+
+  .step { display: grid; grid-template-columns: 40px 1fr auto; align-items: center; gap: var(--s4);
+    background: var(--ct-surface); border: 1px solid var(--ct-line); border-radius: var(--ct-r-md);
+    padding: 16px 22px; margin-bottom: 12px; box-shadow: var(--ct-shadow-1); }
+  .step .tick { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center;
+    background: color-mix(in srgb, var(--ct-fixed) 18%, var(--ct-surface));
+    border: 1px solid var(--ct-fixed); }
+  .step .tick svg { width: 18px; height: 18px; }
+  .step .nm { font-weight: 600; font-size: var(--ct-ui-lg); color: var(--ct-text); }
+  .step .nm .sub { display: block; font-family: var(--ct-font-mono); font-weight: 400;
+    font-size: var(--ct-ui-xs); color: var(--ct-text-muted); margin-top: 3px; }
+  .step .ms { font-family: var(--ct-font-mono); font-size: var(--ct-ui-sm); color: var(--ct-fixed); }
+  .step.flagged { border-color: color-mix(in srgb, var(--ct-break) 40%, var(--ct-line)); }
+
+  /* magnifier lens over the flagged step */
+  .lens { position: absolute; left: 296px; top: 292px; width: 300px; height: 300px; z-index: 12; }
+  .lens .glass { position: absolute; inset: 0; border-radius: 50%;
+    border: 10px solid var(--ct-surface-raised);
+    box-shadow: 0 0 0 3px var(--ct-accent), var(--ct-shadow-pop), inset 0 0 40px rgba(0,0,0,0.5);
+    background: radial-gradient(circle at 38% 32%, rgba(56,189,248,0.06), rgba(11,14,20,0) 60%); }
+  .lens .handle { position: absolute; right: -44px; bottom: -44px; width: 92px; height: 26px;
+    border-radius: var(--ct-r-pill); background: var(--ct-surface-raised); border: 3px solid var(--ct-accent);
+    transform: rotate(45deg); transform-origin: left center; }
+
+  /* callout revealing the hidden empty result */
+  .reveal { padding: var(--s7); }
+  .reveal .rt { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); text-transform: uppercase;
+    letter-spacing: 0.12em; color: var(--ct-accent); font-weight: 500; margin: 0 0 var(--s5); }
+
+  .callout { background: var(--ct-surface); border: 1px solid color-mix(in srgb, var(--ct-break) 45%, var(--ct-line));
+    border-left: 6px solid var(--ct-break); border-radius: var(--ct-r-md); padding: 26px 30px;
+    box-shadow: var(--ct-shadow-2), 0 0 40px rgba(255,59,48,0.14); }
+  .callout .head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+  .callout .head .s { font-weight: 700; font-size: var(--ct-ui-2xl); }
+  .callout .head .badge-green { font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); color: var(--ct-fixed);
+    border: 1px solid var(--ct-fixed); border-radius: var(--ct-r-pill); padding: 5px 14px; text-transform: uppercase; letter-spacing: 0.06em; }
+
+  .terminal { font-family: var(--ct-font-mono); font-size: var(--ct-ui-md); line-height: 1.75;
+    background: var(--ct-bg); border: 1px solid var(--ct-line); border-radius: var(--ct-r-sm);
+    padding: 20px 24px; }
+  .terminal .k { color: var(--ct-text-muted); }
+  .terminal .empty { color: var(--ct-break-glow); }
+  .terminal .swallow { color: var(--ct-break); }
+  .terminal .comment { color: var(--ct-text-muted); font-style: italic; }
+
+  .reveal-note { margin-top: var(--s5); font-family: var(--ct-font-mono); font-size: var(--ct-ui-lg);
+    color: var(--ct-break-glow); display: flex; align-items: center; gap: 12px; }
+  .reveal-note .dot { width: 11px; height: 11px; border-radius: 50%; background: var(--ct-break); box-shadow: 0 0 10px var(--ct-break); }
+
+  .caption-bar { position: absolute; left: 0; right: 0; bottom: 44px; height: 120px; z-index: 14;
+    display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(180deg, rgba(11,14,20,0) 0%, var(--ct-scrim) 45%, var(--ct-scrim) 100%); }
+  .caption-bar .cap { font-family: var(--ct-font-display); font-stretch: 125%; font-weight: 900;
+    font-size: var(--ct-h2); letter-spacing: 0.01em; display: inline-flex; align-items: center; gap: 20px; }
+  .caption-bar .cap .g { color: var(--ct-fixed-glow); }
+  .caption-bar .cap .x { color: var(--ct-break-glow); }
+
+  .disclaimer { display: flex; align-items: center; justify-content: center; background: var(--ct-surface);
+    border-top: 1px solid var(--ct-line); color: var(--ct-text-muted); font-family: var(--ct-font-mono);
+    font-size: var(--ct-ui-xs); letter-spacing: 0.03em; }
+</style>
+</head>
+<body>
+  <div class="stage" role="img"
+       aria-label="A run marked green success at the top, but a magnifier pushes into the nested Rolodash lookup step to reveal it returned nothing with a swallowed error, caption Green is not proof it worked">
+    <div class="grid-bg"></div>
+
+    <div class="app">
+      <header class="topbar">
+        <div class="runchip">
+          <span class="glyph">
+            <svg width="22" height="22" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+              <path d="M5 16h6l3-8 4 16 3-8h5" stroke="var(--ct-accent)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <span>
+            <span class="nm">Run #10428 — Sift · classify + label</span><br>
+            <span class="ad">workflow: support-inbox-triage · 5 steps · 1.9s</span>
+          </span>
+        </div>
+        <div class="spacer"></div>
+        <div class="run-verdict"><span class="chk">&#10003;</span><span class="lb">Run: success</span></div>
+      </header>
+
+      <div class="body-cols">
+        <section class="col steps">
+          <p class="col-title">Nested steps · all green</p>
+
+          <div class="step">
+            <span class="tick"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5 9-11" stroke="var(--ct-fixed)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="nm">Trigger — new email received<span class="sub">from dana.okafor@example.com</span></span>
+            <span class="ms">120 ms</span>
+          </div>
+          <div class="step">
+            <span class="tick"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5 9-11" stroke="var(--ct-fixed)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="nm">Classify intent<span class="sub">&rarr; "order status"</span></span>
+            <span class="ms">340 ms</span>
+          </div>
+          <div class="step flagged">
+            <span class="tick"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5 9-11" stroke="var(--ct-fixed)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="nm">Rolodash lookup — customer record<span class="sub">GET /v2/contacts?email=…</span></span>
+            <span class="ms">210 ms</span>
+          </div>
+          <div class="step">
+            <span class="tick"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5 9-11" stroke="var(--ct-fixed)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="nm">Draft label<span class="sub">&rarr; "VIP · billing"</span></span>
+            <span class="ms">150 ms</span>
+          </div>
+          <div class="step">
+            <span class="tick"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5 9-11" stroke="var(--ct-fixed)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="nm">Apply label &amp; archive<span class="sub">thread #4471</span></span>
+            <span class="ms">80 ms</span>
+          </div>
+
+          <!-- magnifier lens pushing into the Rolodash lookup step -->
+          <div class="lens" aria-hidden="true">
+            <span class="glass"></span>
+            <span class="handle"></span>
+          </div>
+        </section>
+
+        <aside class="col reveal">
+          <p class="rt">Under the lens — step 3</p>
+          <div class="callout">
+            <div class="head">
+              <span class="s">Rolodash lookup</span>
+              <span class="badge-green">step: &#10003; green</span>
+            </div>
+            <div class="terminal">
+              <div><span class="k">status</span>&nbsp;&nbsp; : 200 OK</div>
+              <div><span class="k">returned</span> : <span class="empty">[ ]&nbsp;&nbsp;// empty — nothing</span></div>
+              <div><span class="k">match</span>&nbsp;&nbsp;&nbsp; : <span class="empty">null</span></div>
+              <div><span class="swallow">! contact not found — error swallowed, run continued</span></div>
+              <div><span class="comment">// the agent shrugged and moved on</span></div>
+            </div>
+            <div class="reveal-note"><span class="dot"></span> lookup returned nothing</div>
+          </div>
+        </aside>
+      </div>
+
+      <div class="disclaimer">FICTIONAL DEMO · Sift, Rolodash and Harbor Supply Co. are invented for Crash Test Agents</div>
+    </div>
+
+    <div class="caption-bar">
+      <span class="cap"><span class="g">Green</span><span class="x">&ne;</span><span>proof it worked</span></span>
+    </div>
+
+    <!-- Kill-Counter HUD (global overlay) — Round 2, silent-failure beat, tally 08 -->
+    <div class="ct-killcounter" data-state="ticking" aria-label="Kill counter: 8 of 25 breaks">
+      <span class="kc-dot"></span>
+      <span class="kc-label">Breaks</span>
+      <span class="kc-tally"><span class="kc-n">08</span><span class="kc-of">/ 25</span></span>
+    </div>
+  </div>
+</body>
+</html>

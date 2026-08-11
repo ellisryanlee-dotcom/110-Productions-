@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, initial-scale=1">
+<title>S021 — HTTP status-family chart, fully populated, 400 highlighted · Crash Test Agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  /* ===== S021 — MOTION-GRAPHIC explainer (SVG chart, rested/fully-populated
+     state). The status-families chart from S020 finishes filling: 200, 400,
+     401, 403, 404, 500 — each row a code badge + small SVG icon + a plain-
+     English gloss. The 400 row is highlighted (thicker red edge + glow) to
+     tie straight back to the garbage-input break in S019. ===== */
+  .wrap { position: absolute; inset: 0; z-index: 2; display: grid; align-content: center; justify-items: center; gap: var(--s7); }
+
+  .head { width: 1680px; }
+  .umb-row { display: flex; align-items: center; gap: 18px; margin-bottom: 20px; }
+  .umb-row .rule { flex: 1; height: 1px; background: var(--ct-line); }
+  .head h2 { margin: 0; font-family: var(--ct-font-display); font-stretch: 125%; font-weight: 800;
+    font-size: var(--ct-h3); color: var(--ct-text); letter-spacing: 0.01em; }
+  .head .sub { font-family: var(--ct-font-mono); font-size: var(--ct-ui-md); color: var(--ct-text-muted); margin-top: 8px; }
+
+  .chart { width: 1680px; background: var(--ct-surface); border: 1px solid var(--ct-line);
+    border-radius: var(--ct-r-lg); box-shadow: var(--ct-shadow-2); padding: 10px 8px; }
+
+  .row { display: grid; grid-template-columns: 220px 76px 1fr 168px; align-items: center; gap: 26px;
+    padding: 20px 26px; border-bottom: 1px solid var(--ct-line); }
+  .row:last-child { border-bottom: none; }
+
+  .code-badge { display: inline-flex; align-items: baseline; gap: 10px; padding: 10px 20px; border-radius: var(--ct-r-md);
+    font-family: var(--ct-font-mono); font-weight: 700; }
+  .code-badge .n { font-size: var(--ct-ui-3xl); line-height: 1; }
+  .code-badge .fam { font-size: var(--ct-ui-xs); text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.85; }
+
+  .row.ok  .code-badge { background: var(--ct-fixed-wash); border: 1px solid color-mix(in srgb, var(--ct-fixed) 45%, var(--ct-line)); color: var(--ct-fixed-glow); }
+  .row.err .code-badge { background: var(--ct-break-wash); border: 1px solid color-mix(in srgb, var(--ct-break) 45%, var(--ct-line)); color: var(--ct-break-glow); }
+  .row.svr .code-badge { background: color-mix(in srgb, var(--ct-warn) 10%, transparent); border: 1px solid color-mix(in srgb, var(--ct-warn) 45%, var(--ct-line)); color: var(--ct-warn); }
+
+  .icon { width: 56px; height: 56px; border-radius: 12px; display: grid; place-items: center;
+    background: var(--ct-surface-raised); border: 1px solid var(--ct-line); }
+  .icon svg { width: 30px; height: 30px; }
+  .row.ok  .icon { border-color: color-mix(in srgb, var(--ct-fixed) 40%, var(--ct-line)); }
+  .row.ok  .icon svg [stroke] { stroke: var(--ct-fixed-glow); }
+  .row.err .icon { border-color: color-mix(in srgb, var(--ct-break) 40%, var(--ct-line)); }
+  .row.err .icon svg [stroke] { stroke: var(--ct-break-glow); }
+  .row.svr .icon { border-color: color-mix(in srgb, var(--ct-warn) 40%, var(--ct-line)); }
+  .row.svr .icon svg [stroke] { stroke: var(--ct-warn); }
+
+  .gloss { font-family: var(--ct-font-body); font-size: var(--ct-ui-xl); color: var(--ct-text); font-weight: 500; }
+  .gloss b { font-weight: 700; }
+  .gloss .muted { color: var(--ct-text-muted); font-weight: 400; font-size: var(--ct-ui-md); display: block; margin-top: 3px; }
+
+  .fam-tag { justify-self: end; font-family: var(--ct-font-mono); font-size: var(--ct-ui-xs); text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--ct-text-muted); border: 1px dashed var(--ct-line); border-radius: var(--ct-r-pill);
+    padding: 7px 16px; }
+
+  /* ---- the highlighted 400 row: ties back to the S019 garbage-input break ---- */
+  .row.highlight { position: relative; background: var(--ct-break-wash);
+    border-top: 1px solid color-mix(in srgb, var(--ct-break) 55%, var(--ct-line));
+    border-bottom: 1px solid color-mix(in srgb, var(--ct-break) 55%, var(--ct-line));
+    box-shadow: inset 0 0 46px rgba(255,59,48,0.14); }
+  .row.highlight .code-badge { box-shadow: 0 0 22px rgba(255,59,48,0.45); border-width: 1.5px; }
+  .row.highlight .fam-tag { color: var(--ct-break-glow); border: 1px solid var(--ct-break);
+    background: var(--ct-break-deep); }
+</style>
+</head>
+<body>
+  <div class="stage" role="img"
+       aria-label="Fully populated HTTP status-families chart: 200 success, 400 malformed request, 401 wrong key, 403 not allowed, 404 wrong address, 500 their server broke wait and retry; the 400 row is highlighted red to tie back to the earlier garbage-input break">
+    <div class="grid-bg"></div>
+    <!-- Kill-Counter HUD (global overlay) — Round 1, ticking at 06/25 (Break 06: garbage input landed) -->
+    <div class="ct-killcounter" data-state="ticking" aria-label="Kill counter: 6 of 25 breaks">
+      <span class="kc-dot"></span>
+      <span class="kc-label">Breaks</span>
+      <span class="kc-tally"><span class="kc-n">06</span><span class="kc-of">/ 25</span></span>
+    </div>
+
+    <div class="wrap">
+      <div class="head">
+        <div class="umb-row"><span class="umbrella">ROUND 1 · READ THE STATUS CODE</span><span class="rule"></span></div>
+        <h2 class="display">The families, fully filled in</h2>
+        <div class="sub">first digit = whose problem it is · 400 is what our garbage input just caused</div>
+      </div>
+
+      <div class="chart">
+        <div class="row ok">
+          <span class="code-badge"><span class="n">200</span><span class="fam">2xx</span></span>
+          <span class="icon"><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4 10-11" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <span class="gloss"><b>Success</b> — it worked, exactly as asked.<span class="muted">the request went through clean</span></span>
+          <span class="fam-tag">2xx · OK</span>
+        </div>
+
+        <div class="row err highlight">
+          <span class="code-badge"><span class="n">400</span><span class="fam">4xx</span></span>
+          <span class="icon"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12h6M14 12h6M9 8l2 4-2 4" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <span class="gloss"><b>Malformed request</b> — your data is broken, e.g. a stray comma or a broken field.<span class="muted">exactly what our raw garbage input caused in S019</span></span>
+          <span class="fam-tag">4xx · you messed up</span>
+        </div>
+
+        <div class="row err">
+          <span class="code-badge"><span class="n">401</span><span class="fam">4xx</span></span>
+          <span class="icon"><svg viewBox="0 0 24 24" fill="none"><circle cx="9" cy="9" r="4" stroke-width="2.2"/><path d="M12 12l8 8M17 15l3 3M14 18l2 2" stroke-width="2.2" stroke-linecap="round"/></svg></span>
+          <span class="gloss"><b>Wrong key</b> — your credential is invalid or expired.<span class="muted">the service doesn't know who you are</span></span>
+          <span class="fam-tag">4xx · you messed up</span>
+        </div>
+
+        <div class="row err">
+          <span class="code-badge"><span class="n">403</span><span class="fam">4xx</span></span>
+          <span class="icon"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke-width="2.2"/><path d="M7 12h10" stroke-width="2.2" stroke-linecap="round"/></svg></span>
+          <span class="gloss"><b>Not allowed</b> — your account isn't permitted to do this.<span class="muted">it knows you, but you're not cleared</span></span>
+          <span class="fam-tag">4xx · you messed up</span>
+        </div>
+
+        <div class="row err">
+          <span class="code-badge"><span class="n">404</span><span class="fam">4xx</span></span>
+          <span class="icon"><svg viewBox="0 0 24 24" fill="none"><circle cx="10" cy="10" r="6" stroke-width="2.2"/><path d="M14.5 14.5L20 20" stroke-width="2.2" stroke-linecap="round"/><path d="M8 10h4" stroke-width="2" stroke-linecap="round" stroke-dasharray="1 3"/></svg></span>
+          <span class="gloss"><b>Wrong address</b> — the endpoint is a typo or doesn't exist.<span class="muted">nobody's home at that URL</span></span>
+          <span class="fam-tag">4xx · you messed up</span>
+        </div>
+
+        <div class="row svr">
+          <span class="code-badge"><span class="n">500</span><span class="fam">5xx</span></span>
+          <span class="icon"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3c3 4-2 5-1 9 3-1 4-3 4-3 1 3-1 7-5 7s-6-3-6-6c0-4 4-4 4-8 2 1 3 1 4 1z" stroke-width="2" stroke-linejoin="round"/></svg></span>
+          <span class="gloss"><b>Their server broke</b> — not your fault. Stop rewriting a good request.<span class="muted">wait, then retry</span></span>
+          <span class="fam-tag">5xx · their fault</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
